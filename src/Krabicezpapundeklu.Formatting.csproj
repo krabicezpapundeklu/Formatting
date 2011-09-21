@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="IScanner.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="ScannerState.cs" />
     <Compile Include="Token.cs" />

@@ -5,7 +5,7 @@
 
     using T = Token;
 
-    public class Scanner
+    public class Scanner : IScanner
     {
         private readonly string input;
         private readonly StringBuilder textBuilder = new StringBuilder();
