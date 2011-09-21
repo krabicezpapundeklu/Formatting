@@ -8,7 +8,7 @@
     class ScannerTests
     {
         [Test]
-        public void Constructor_WhenParameterIsNull_ThrowsException()
+        public void Constructor_WhenInputIsNull_ThrowsException()
         {
             Assert.That(() => new Scanner(null), Throws.An<ArgumentNullException>());
         }
