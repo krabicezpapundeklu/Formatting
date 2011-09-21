@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Krabicezpapundeklu.Formatting", "src\Krabicezpapundeklu.Formatting.csproj", "{E10AFC12-55DE-4BDB-BDD1-1A83B872BC37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Krabicezpapundeklu.Formatting.Tests", "tests\Krabicezpapundeklu.Formatting.Tests.csproj", "{323671EF-B44E-4C2B-AC8D-1445EDCE1B93}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E10AFC12-55DE-4BDB-BDD1-1A83B872BC37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E10AFC12-55DE-4BDB-BDD1-1A83B872BC37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E10AFC12-55DE-4BDB-BDD1-1A83B872BC37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E10AFC12-55DE-4BDB-BDD1-1A83B872BC37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{323671EF-B44E-4C2B-AC8D-1445EDCE1B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{323671EF-B44E-4C2B-AC8D-1445EDCE1B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{323671EF-B44E-4C2B-AC8D-1445EDCE1B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{323671EF-B44E-4C2B-AC8D-1445EDCE1B93}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
