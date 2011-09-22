@@ -29,6 +29,9 @@
         [Row("{0 {=-1:xxx}}")]
         [Row("{0 {=-{1}:xxx}}")]
         [Row("{0 {>1<3:xxx}}")]
+        [Row("{0 {=1,=2,=3:xxx}}")]
+        [Row("{0 {>1<5,=0:xxx}}")]
+        [Row("{0 {>{1}<{5},={0}:xxx}}")]
         public void Parse_ParsesInputCorrectly(string input)
         {
             Assert.That(new Parser(new Scanner(input)).Parse().ToString(), Is.EqualTo(input));
