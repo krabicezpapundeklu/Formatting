@@ -44,6 +44,9 @@
         {
             switch (Operator.Token)
             {
+                case ',':
+                    return string.Concat(LeftExpression, ',', RightExpression);
+
                 case Token.And:
                     return string.Concat(LeftExpression, RightExpression);
 

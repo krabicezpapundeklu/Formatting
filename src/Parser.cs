@@ -56,21 +56,33 @@
             return currentTokenInfo;
         }
 
-        private IExpression ParseCondition(IExpression leftOperand)
+        private IExpression ParseCondition(IExpression implicitOperand)
         {
             IExpression condition = null;
 
             do
             {
-                var binaryOperator = ParseOperator();
-                var expression = new BinaryExpression(binaryOperator, leftOperand, ParseUnaryExpression());
-    
+                IExpression andExpression = null;
+
+                do
+                {
+                    var binaryOperator = ParseOperator();
+                    var expression = new BinaryExpression(binaryOperator, implicitOperand, ParseUnaryExpression());
+
+                    andExpression = andExpression == null
+                        ? expression
+                        : new BinaryExpression(new Operator(Token.And), andExpression, expression);
+                }
+                while (scanner.Token != ':' && scanner.Token != ',');
+
+                Accept(',');
+
                 condition = condition == null
-                    ? expression
-                    : new BinaryExpression(new Operator(Token.And), condition, expression);
+                    ? andExpression
+                    : new BinaryExpression(new Operator(','), condition, andExpression);
             }
             while (scanner.Token != ':');
-
+            
             return condition;
         }
 
