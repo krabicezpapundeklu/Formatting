@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class Text : FormatStringItem
+    public class Text : AstNode, IFormatStringItem
     {
         public string Value { get; private set; }
 

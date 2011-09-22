@@ -2,7 +2,7 @@
 {
     using System;
 
-    public abstract class Format : FormatStringItem
+    public abstract class Format : AstNode, IFormatStringItem
     {
         public ArgumentIndex ArgumentIndex { get; private set; }
 

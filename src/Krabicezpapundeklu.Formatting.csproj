@@ -34,7 +34,7 @@
     <Compile Include="Ast\ArgumentIndex.cs" />
     <Compile Include="Ast\FormatString.cs" />
     <Compile Include="Ast\AstNode.cs" />
-    <Compile Include="Ast\FormatStringItem.cs" />
+    <Compile Include="Ast\IFormatStringItem.cs" />
     <Compile Include="Ast\Format.cs" />
     <Compile Include="Ast\IAstNode.cs" />
     <Compile Include="Ast\SimpleFormat.cs" />

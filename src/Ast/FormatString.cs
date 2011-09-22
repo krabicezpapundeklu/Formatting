@@ -5,7 +5,7 @@
 
     public class FormatString : IAstNode
     {
-        public List<FormatStringItem> Items { get; private set; }
+        public List<IFormatStringItem> Items { get; private set; }
 
         public int Start
         {
@@ -19,7 +19,7 @@
 
         public FormatString()
         {
-            Items = new List<FormatStringItem>();
+            Items = new List<IFormatStringItem>();
         }
 
         public override string ToString()

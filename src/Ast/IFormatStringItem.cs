@@ -1,6 +1,6 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public class FormatStringItem : AstNode
+    public interface IFormatStringItem : IAstNode
     {
     }
 }
