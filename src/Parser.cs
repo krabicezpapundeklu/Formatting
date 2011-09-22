@@ -15,12 +15,12 @@
             public int end;
         }
 
-        private readonly IScanner scanner;
+        private readonly Scanner scanner;
 
         private TokenInfo currentTokenInfo;
         private TokenInfo nextTokenInfo;
 
-        public Parser(IScanner scanner)
+        public Parser(Scanner scanner)
         {
             if(scanner == null)
             {
