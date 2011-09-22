@@ -1,6 +1,6 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public class ArgumentIndex : AstNode
+    public class ArgumentIndex : AstNode, IExpression
     {
         public int Index { get; private set; }
 
@@ -11,7 +11,7 @@
 
         public override string ToString()
         {
-            return Index.ToString();
+            return string.Format("{{{0}}}", Index);
         }
     }
 }

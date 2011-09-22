@@ -1,6 +1,7 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
     using System;
+    using System.Text;
 
     public class Text : AstNode, IFormatStringItem
     {
@@ -18,7 +19,19 @@
 
         public override string ToString()
         {
-            return Value;
+            var builder = new StringBuilder();
+
+            foreach(char c in Value)
+            {
+                if(c == '\\' || c == '{' || c == '}')
+                {
+                    builder.Append('\\');
+                }
+
+                builder.Append(c);
+            }
+
+            return builder.ToString();
         }
     }
 }
