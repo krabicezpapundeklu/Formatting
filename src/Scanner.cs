@@ -5,18 +5,12 @@
 
     using T = Token;
 
-    public class Scanner
+    public class Scanner : TokenInfo
     {
         private readonly string input;
         private readonly StringBuilder textBuilder = new StringBuilder();
 
         public ScannerState State { get; set; }
-
-        public int Token { get; private set; }
-        public string Text { get; private set; }
-
-        public int Start { get; private set; }
-        public int End { get; private set; }
 
         public Scanner(string input)
         {

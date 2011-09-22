@@ -7,19 +7,9 @@
 
     public class Parser
     {
-        private struct TokenInfo
-        {
-            public int token;
-            public string text;
-            public int start;
-            public int end;
-        }
-
         private readonly Scanner scanner;
-
-        private TokenInfo currentTokenInfo;
-        private TokenInfo nextTokenInfo;
-
+        private readonly TokenInfo currentTokenInfo = new TokenInfo();
+        
         public Parser(Scanner scanner)
         {
             if(scanner == null)
@@ -42,7 +32,7 @@
 
         private bool Accept(int token)
         {
-            if(nextTokenInfo.token == token)
+            if(scanner.Token == token)
             {
                 Consume();
                 return true;
@@ -53,22 +43,18 @@
 
         private void Consume()
         {
-            currentTokenInfo = nextTokenInfo;
-
+            currentTokenInfo.AssignFrom(scanner);
             scanner.Scan();
-
-            nextTokenInfo.token = scanner.Token;
-            nextTokenInfo.text = scanner.Text;
-            nextTokenInfo.start = scanner.Start;
-            nextTokenInfo.end = scanner.End;
         }
 
-        private void Expect(int token)
+        private TokenInfo Expect(int token)
         {
             if(!Accept(token))
             {
                 throw new Exception("invalid token"); // TODO
             }
+
+            return currentTokenInfo;
         }
 
         private FormatString ParseFormatString()
@@ -77,7 +63,7 @@
 
             while(true)
             {
-                switch(nextTokenInfo.token)
+                switch(scanner.Token)
                 {
                     case '{':
                         formatString.Items.Add(ParseFormat());
@@ -95,16 +81,16 @@
 
                     case Token.Text:
                         formatString.Items.Add(
-                            new Text(nextTokenInfo.text)
+                            new Text(scanner.Text)
                             {
-                                Start = nextTokenInfo.start, End = nextTokenInfo.end
+                                Start = scanner.Start, End = scanner.End
                             });
 
                         break;
 
                     default:
                         throw new InvalidOperationException(
-                            string.Format("Token {0} is not valid here.", Token.ToString(nextTokenInfo.token)));
+                            string.Format("Token {0} is not valid here.", Token.ToString(scanner.Token)));
                 }
 
                 Consume();
@@ -117,17 +103,13 @@
 
             try
             {
-                Expect('{');
-
-                int start = currentTokenInfo.start;
-
-                Expect(Token.Integer);
+                int start = Expect('{').Start;
 
                 var argumentIndex =
-                    new ArgumentIndex(int.Parse(currentTokenInfo.text))
+                    new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
                     {
-                        Start = currentTokenInfo.start,
-                        End = currentTokenInfo.end
+                        Start = currentTokenInfo.Start,
+                        End = currentTokenInfo.End
                     };
 
                 bool leftAlign;
@@ -136,8 +118,7 @@
                 if(Accept(','))
                 {
                     leftAlign = Accept('-');
-                    Expect(Token.Integer);
-                    width = int.Parse(currentTokenInfo.text);
+                    width = int.Parse(Expect(Token.Integer).Text);
                 }
                 else
                 {
@@ -149,12 +130,10 @@
 
                 var format =
                     new SimpleFormat(argumentIndex, leftAlign, width,
-                        Accept(':') ? ParseFormatString() : new FormatString());
-
-                Expect('}');
-
-                format.Start = start;
-                format.End = currentTokenInfo.end;
+                        Accept(':') ? ParseFormatString() : new FormatString())
+                    {
+                        Start = start, End = Expect('}').End
+                    };
 
                 return format;
             }
