@@ -15,6 +15,9 @@
         public TokenInfo()
         {
             Token = T.Invalid;
+            Text = string.Empty;
+            Start = -1;
+            End = -1;
         }
 
         public void AssignFrom(TokenInfo other)

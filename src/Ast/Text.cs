@@ -23,7 +23,7 @@
 
             foreach(char c in Value)
             {
-                if(c == '\\' || c == '{' || c == '}')
+                if(Helpers.MustBeEscaped(c))
                 {
                     builder.Append('\\');
                 }
