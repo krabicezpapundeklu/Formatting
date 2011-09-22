@@ -89,7 +89,7 @@
                     case '\\':
                         if(End == input.Length || !CanBeEscaped(c = input[End++]))
                         {
-                            throw new Exception("invalid escape"); // TODO
+                            throw new FormatException("invalid escape"); // TODO
                         }
 
                         break;
