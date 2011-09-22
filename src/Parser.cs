@@ -1,8 +1,7 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
     using System;
-    using System.Linq;
-
+    
     using Ast;
 
     public class Parser
@@ -71,12 +70,6 @@
 
                     case '}':
                     case Token.EndOfInput:
-                        if(formatString.Items.Count > 0)
-                        {
-                            formatString.Start = formatString.Items[0].Start;
-                            formatString.End = formatString.Items.Last().End;
-                        }
-
                         return formatString;
 
                     case Token.Text:
