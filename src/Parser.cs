@@ -74,10 +74,7 @@
 
                     case Token.Text:
                         formatString.Items.Add(
-                            new Text(scanner.Text)
-                            {
-                                Start = scanner.Start, End = scanner.End
-                            });
+                            new Text(scanner.Text){Start = scanner.Start, End = scanner.End});
 
                         break;
 
@@ -98,10 +95,7 @@
 
             var argumentIndex =
                 new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
-                {
-                    Start = currentTokenInfo.Start,
-                    End = currentTokenInfo.End
-                };
+                    {Start = currentTokenInfo.Start, End = currentTokenInfo.End};
 
             bool leftAlign;
             int width;
@@ -122,9 +116,7 @@
             var format =
                 new SimpleFormat(argumentIndex, leftAlign, width,
                     Accept(':') ? ParseFormatString() : new FormatString())
-                {
-                    Start = start, End = Expect('}').End
-                };
+                        {Start = start, End = Expect('}').End};
 
             return format;
         }
