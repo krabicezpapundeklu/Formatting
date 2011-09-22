@@ -97,10 +97,36 @@
                 new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
                     {Start = currentTokenInfo.Start, End = currentTokenInfo.End};
 
+            Format format;
+
+            if(scanner.Token == '{')
+            {
+                format = ParseRestOfConditionalFormat(argumentIndex);
+            }
+            else
+            {
+                format = ParseRestOfSimpleFormat(argumentIndex);
+            }
+
+            scanner.State = ScannerState.ScanningText;
+
+            format.Start = start;
+            format.End = Expect('}').End;
+
+            return format;
+        }
+
+        private ConditionalFormat ParseRestOfConditionalFormat(ArgumentIndex argumentIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        private SimpleFormat ParseRestOfSimpleFormat(ArgumentIndex argumentIndex)
+        {
             bool leftAlign;
             int width;
 
-            if(Accept(','))
+            if (Accept(','))
             {
                 leftAlign = Accept('-');
                 width = int.Parse(Expect(Token.Integer).Text);
@@ -113,12 +139,8 @@
 
             scanner.State = ScannerState.ScanningText;
 
-            var format =
-                new SimpleFormat(argumentIndex, leftAlign, width,
-                    Accept(':') ? ParseFormatString() : new FormatString())
-                        {Start = start, End = Expect('}').End};
-
-            return format;
+            return new SimpleFormat(argumentIndex, leftAlign, width,
+                Accept(':') ? ParseFormatString() : new FormatString());
         }
     }
 }
