@@ -2,7 +2,6 @@
 {
     public interface IAstNode
     {
-        int Start { get; }
-        int End { get; }
+        Location Location { get; }
     }
 }

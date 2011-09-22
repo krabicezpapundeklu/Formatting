@@ -4,8 +4,14 @@
 
     public class Location
     {
+        public static readonly Location Unknown = new Location();
+
         public int Start { get; private set; }
         public int End { get; private set; }
+
+        private Location()
+        {
+        }
 
         public Location(int start, int end)
         {

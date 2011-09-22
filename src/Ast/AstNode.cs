@@ -2,13 +2,11 @@
 {
     public class AstNode : IAstNode
     {
-        public int Start { get; set; }
-        public int End { get; set; }
+        public Location Location { get; set; }
 
         public AstNode()
         {
-            Start = -1;
-            End = -1;
+            Location = Location.Unknown;
         }
     }
 }
