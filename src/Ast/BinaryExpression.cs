@@ -8,14 +8,12 @@
         public IExpression LeftExpression { get; private set; }
         public IExpression RightExpression { get; private set; }
 
-        public int Start
+        public Location Location
         {
-            get { return LeftExpression.Start; }
-        }
-
-        public int End
-        {
-            get { return RightExpression.End; }
+            get
+            {
+                return new Location(LeftExpression.Location.Start, RightExpression.Location.End);
+            }
         }
 
         public BinaryExpression(Operator binaryOperator, IExpression leftExpression, IExpression rightExpression)

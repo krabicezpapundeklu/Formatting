@@ -7,14 +7,12 @@
         public Operator Operator { get; private set; }
         public IExpression Operand { get; private set; }
 
-        public int Start
+        public Location Location
         {
-            get { return Operator.Start; }
-        }
-
-        public int End
-        {
-            get { return Operand.End; }
+            get
+            {
+                return new Location(Operator.Location.Start, Operand.Location.End);
+            }
         }
 
         public UnaryExpression(Operator unaryOperator, IExpression operand)

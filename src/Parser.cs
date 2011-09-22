@@ -106,7 +106,7 @@
 
                     case Token.Text:
                         formatString.Items.Add(
-                            new Text(nextTokenInfo.Text) { Start = nextTokenInfo.Location.Start, End = nextTokenInfo.Location.End });
+                            new Text(nextTokenInfo.Text) { Location = nextTokenInfo.Location });
 
                         break;
 
@@ -127,7 +127,7 @@
 
             var argumentIndex =
                 new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
-                    {Start = currentTokenInfo.Location.Start, End = currentTokenInfo.Location.End};
+                    {Location = currentTokenInfo.Location};
 
             Format format;
 
@@ -142,9 +142,8 @@
 
             scanner.State = ScannerState.ScanningText;
 
-            format.Start = start;
-            format.End = Expect('}').Location.End;
-
+            format.Location = new Location(start, Expect('}').Location.End);
+            
             return format;
         }
 
@@ -159,8 +158,7 @@
                 case '!':
                 case '>':
                 case '<':
-                    return new Operator(currentTokenInfo.Token)
-                        {Start = currentTokenInfo.Location.Start, End = currentTokenInfo.Location.End};
+                    return new Operator(currentTokenInfo.Token){Location = currentTokenInfo.Location};
 
                 default:
                     // TODO
@@ -178,11 +176,10 @@
                     int start = currentTokenInfo.Location.Start;
 
                     return new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
-                        {Start = start, End = Expect('}').Location.End};
+                        {Location = new Location(start, Expect('}').Location.End)};
 
                 case Token.Integer:
-                    return new Integer(int.Parse(currentTokenInfo.Text))
-                        {Start = currentTokenInfo.Location.Start, End = currentTokenInfo.Location.End};
+                    return new Integer(int.Parse(currentTokenInfo.Text)){Location = currentTokenInfo.Location};
 
                 default:
                     // TODO
@@ -210,7 +207,7 @@
                 scanner.State = ScannerState.ScanningTokens;
 
                 conditionalFormat.Cases.Add(
-                    new Case(condition, formatString) { Start = start, End = end });
+                    new Case(condition, formatString) { Location = new Location(start, end)});
             }
             while (nextTokenInfo.Token == '{');
 

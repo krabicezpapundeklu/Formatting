@@ -7,14 +7,14 @@
     {
         public List<IFormatStringItem> Items { get; private set; }
 
-        public int Start
+        public Location Location
         {
-            get { return Items.Count == 0 ? 0 : Items[0].Start; }
-        }
-
-        public int End
-        {
-            get { return Items.Count == 0 ? 0 : Items.Last().End; }
+            get
+            {
+                return Items.Count == 0
+                    ? Location.Unknown
+                    : new Location(Items.First().Location.Start, Items.Last().Location.End);
+            }
         }
 
         public FormatString()
