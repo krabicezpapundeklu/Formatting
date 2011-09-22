@@ -3,12 +3,13 @@
     using System;
     using System.Text;
 
-    using T = Token;
-
-    public class Scanner : TokenInfo
+    public class Scanner
     {
         private readonly string input;
         private readonly StringBuilder textBuilder = new StringBuilder();
+
+        private int tokenStart;
+        private int positionInInput;
 
         public ScannerState State { get; set; }
 
@@ -22,9 +23,6 @@
             this.input = input;
 
             State = ScannerState.ScanningText;
-
-            Start = 0;
-            End = 0;
         }
 
         public TokenInfo Scan()
@@ -36,16 +34,18 @@
                 SkipWhiteSpace();
             }
 
-            if ((Start = End) < input.Length)
+            int token;
+
+            if ((tokenStart = positionInInput) < input.Length)
             {
                 switch (State)
                 {
                     case ScannerState.ScanningText:
-                        ScanText();
+                        token = ScanText();
                         break;
 
                     case ScannerState.ScanningTokens:
-                        ScanTokens();
+                        token = ScanTokens();
                         break;
 
                     default:
@@ -54,19 +54,17 @@
             }
             else
             {
-                Token = T.EndOfInput;
+                token = Token.EndOfInput;
             }
 
-            Text = textBuilder.ToString();
-
-            return this;
+            return new TokenInfo(token, textBuilder.ToString(), new Location(tokenStart, positionInInput));
         }
 
-        private void ScanText()
+        private int ScanText()
         {
             do
             {
-                char c = input[End++];
+                char c = input[positionInInput++];
 
                 switch(c)
                 {
@@ -75,18 +73,14 @@
                         if (textBuilder.Length == 0)
                         {
                             textBuilder.Append(c);
-                            Token = c;
-                        }
-                        else
-                        {
-                            End--;
-                            Token = T.Text;
+                            return c;
                         }
 
-                        return;
+                        positionInInput--;
+                        return Token.Text;
 
                     case '\\':
-                        if(End == input.Length || !Helpers.MustBeEscaped(c = input[End++]))
+                        if (positionInInput == input.Length || !Helpers.MustBeEscaped(c = input[positionInInput++]))
                         {
                             throw new FormatException("invalid escape"); // TODO
                         }
@@ -96,36 +90,35 @@
 
                 textBuilder.Append(c);
             }
-            while (End < input.Length);
+            while (positionInInput < input.Length);
 
-            Token = T.Text;
+            return Token.Text;
         }
 
-        private void ScanTokens()
+        private int ScanTokens()
         {
-            char c = input[End++];
+            char c = input[positionInInput++];
 
             if(char.IsDigit(c))
             {
-                while(End < input.Length && char.IsDigit(input, End))
+                while (positionInInput < input.Length && char.IsDigit(input, positionInInput))
                 {
-                    End++;
+                    positionInInput++;
                 }
 
-                textBuilder.Append(input, Start, End - Start);
-                Token = T.Integer;
-                return;
+                textBuilder.Append(input, tokenStart, positionInInput - tokenStart);
+                return Token.Integer;
             }
 
             textBuilder.Append(c);
-            Token = c;
+            return c;
         }
 
         private void SkipWhiteSpace()
         {
-            while(End < input.Length && char.IsWhiteSpace(input, End))
+            while (positionInInput < input.Length && char.IsWhiteSpace(input, positionInInput))
             {
-                ++End;
+                ++positionInInput;
             }
         }
     }
