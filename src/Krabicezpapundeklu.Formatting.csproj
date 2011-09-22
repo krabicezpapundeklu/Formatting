@@ -42,6 +42,7 @@
     <Compile Include="Scanner.cs" />
     <Compile Include="ScannerState.cs" />
     <Compile Include="Token.cs" />
+    <Compile Include="TokenInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
