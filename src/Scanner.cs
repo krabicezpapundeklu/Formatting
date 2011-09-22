@@ -22,7 +22,9 @@
             this.input = input;
 
             State = ScannerState.ScanningText;
-            Token = T.Invalid;
+
+            Start = 0;
+            End = 0;
         }
 
         public TokenInfo Scan()
@@ -60,11 +62,6 @@
             return this;
         }
 
-        private static bool CanBeEscaped(char c)
-        {
-            return c == '\\' || c == '{' || c == '}';
-        }
-
         private void ScanText()
         {
             do
@@ -89,7 +86,7 @@
                         return;
 
                     case '\\':
-                        if(End == input.Length || !CanBeEscaped(c = input[End++]))
+                        if(End == input.Length || !Helpers.MustBeEscaped(c = input[End++]))
                         {
                             throw new FormatException("invalid escape"); // TODO
                         }
