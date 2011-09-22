@@ -51,7 +51,7 @@
         {
             if(!Accept(token))
             {
-                throw new Exception("invalid token"); // TODO
+                throw new FormatException("invalid token"); // TODO
             }
 
             return currentTokenInfo;
@@ -101,46 +101,39 @@
         {
             scanner.State = ScannerState.ScanningTokens;
 
-            try
-            {
-                int start = Expect('{').Start;
+            int start = Expect('{').Start;
 
-                var argumentIndex =
-                    new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
-                    {
-                        Start = currentTokenInfo.Start,
-                        End = currentTokenInfo.End
-                    };
-
-                bool leftAlign;
-                int width;
-
-                if(Accept(','))
+            var argumentIndex =
+                new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
                 {
-                    leftAlign = Accept('-');
-                    width = int.Parse(Expect(Token.Integer).Text);
-                }
-                else
-                {
-                    leftAlign = false;
-                    width = 0;
-                }
+                    Start = currentTokenInfo.Start,
+                    End = currentTokenInfo.End
+                };
 
-                scanner.State = ScannerState.ScanningText;
+            bool leftAlign;
+            int width;
 
-                var format =
-                    new SimpleFormat(argumentIndex, leftAlign, width,
-                        Accept(':') ? ParseFormatString() : new FormatString())
-                    {
-                        Start = start, End = Expect('}').End
-                    };
-
-                return format;
-            }
-            finally
+            if(Accept(','))
             {
-                scanner.State = ScannerState.ScanningText;
+                leftAlign = Accept('-');
+                width = int.Parse(Expect(Token.Integer).Text);
             }
+            else
+            {
+                leftAlign = false;
+                width = 0;
+            }
+
+            scanner.State = ScannerState.ScanningText;
+
+            var format =
+                new SimpleFormat(argumentIndex, leftAlign, width,
+                    Accept(':') ? ParseFormatString() : new FormatString())
+                {
+                    Start = start, End = Expect('}').End
+                };
+
+            return format;
         }
     }
 }
