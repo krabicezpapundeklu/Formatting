@@ -15,13 +15,17 @@
         {
             var tokens = new List<string>();
 
-            do
+            while(true)
             {
-                tokens.Add(scanner.Scan().ToString());
+                var tokenInfo = scanner.Scan();
+
+                tokens.Add(tokenInfo.ToString());
+
+                if(tokenInfo.Token == Token.EndOfInput)
+                {
+                    return tokens;
+                }
             }
-            while (scanner.Token != Token.EndOfInput);
-            
-            return tokens;
         }
     }
 }
