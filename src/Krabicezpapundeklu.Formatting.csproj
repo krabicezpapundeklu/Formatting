@@ -38,7 +38,6 @@
     <Compile Include="Ast\Format.cs" />
     <Compile Include="Ast\SimpleFormat.cs" />
     <Compile Include="Ast\Text.cs" />
-    <Compile Include="IScanner.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="ScannerState.cs" />
