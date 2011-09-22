@@ -27,7 +27,7 @@
             var builder = new StringBuilder();
 
             builder.Append('{');
-            builder.Append(ArgumentIndex);
+            builder.Append(ArgumentIndex.Index);
 
             if(Width > 0)
             {

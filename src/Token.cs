@@ -12,6 +12,8 @@
         public const int Text = -3;
         public const int Integer = -4;
 
+        public const int And = -5;
+
         private static readonly Dictionary<int, string> tokenNames =
             typeof (Token).GetFields().ToDictionary(x => (int) x.GetValue(null), x => x.Name);
 

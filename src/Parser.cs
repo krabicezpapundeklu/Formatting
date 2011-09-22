@@ -56,6 +56,24 @@
             return currentTokenInfo;
         }
 
+        private IExpression ParseCondition(IExpression leftOperand)
+        {
+            IExpression condition = null;
+
+            do
+            {
+                var binaryOperator = ParseOperator();
+                var expression = new BinaryExpression(binaryOperator, leftOperand, ParseUnaryExpression());
+    
+                condition = condition == null
+                    ? expression
+                    : new BinaryExpression(new Operator(Token.And), condition, expression);
+            }
+            while (scanner.Token != ':');
+
+            return condition;
+        }
+
         private FormatString ParseFormatString()
         {
             var formatString = new FormatString();
@@ -101,11 +119,11 @@
 
             if(scanner.Token == '{')
             {
-                format = ParseRestOfConditionalFormat(argumentIndex);
+                format = ParseConditionalFormat(argumentIndex);
             }
             else
             {
-                format = ParseRestOfSimpleFormat(argumentIndex);
+                format = ParseSimpleFormat(argumentIndex);
             }
 
             scanner.State = ScannerState.ScanningText;
@@ -116,12 +134,76 @@
             return format;
         }
 
-        private ConditionalFormat ParseRestOfConditionalFormat(ArgumentIndex argumentIndex)
+        private Operator ParseOperator()
         {
-            throw new NotImplementedException();
+            Consume();
+
+            switch (currentTokenInfo.Token)
+            {
+                case '-':
+                case '=':
+                case '!':
+                case '>':
+                case '<':
+                    return new Operator(currentTokenInfo.Token)
+                        {Start = currentTokenInfo.Start, End = currentTokenInfo.End};
+
+                default:
+                    // TODO
+                    throw new FormatException(string.Format("Unknown operator \"{0}\".", currentTokenInfo.Text));
+            }
         }
 
-        private SimpleFormat ParseRestOfSimpleFormat(ArgumentIndex argumentIndex)
+        private IExpression ParsePrimaryExpression()
+        {
+            Consume();
+
+            switch(currentTokenInfo.Token)
+            {
+                case '{':
+                    int start = currentTokenInfo.Start;
+
+                    return new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
+                        {Start = start, End = Expect('}').End};
+
+                case Token.Integer:
+                    return new Integer(int.Parse(currentTokenInfo.Text))
+                        {Start = currentTokenInfo.Start, End = currentTokenInfo.End};
+
+                default:
+                    // TODO
+                    throw new FormatException(
+                        string.Format("Expected argument, but got \"{0}\".", currentTokenInfo.Text));
+            }
+        }
+
+        private ConditionalFormat ParseConditionalFormat(ArgumentIndex argumentIndex)
+        {
+            var conditionalFormat = new ConditionalFormat(argumentIndex);
+
+            do
+            {
+                int start = Expect('{').Start;
+                var condition = ParseCondition(argumentIndex);
+
+                scanner.State = ScannerState.ScanningText;
+
+                Expect(':');
+
+                var formatString = ParseFormatString();
+                int end = Expect('}').End;
+
+                scanner.State = ScannerState.ScanningTokens;
+
+                conditionalFormat.Cases.Add(
+                    new Case(condition, formatString) { Start = start, End = end });
+            }
+            while (scanner.Token == '{');
+
+            return conditionalFormat;
+        }
+
+        private SimpleFormat ParseSimpleFormat(ArgumentIndex argumentIndex)
         {
             bool leftAlign;
             int width;
@@ -141,6 +223,13 @@
 
             return new SimpleFormat(argumentIndex, leftAlign, width,
                 Accept(':') ? ParseFormatString() : new FormatString());
+        }
+
+        private IExpression ParseUnaryExpression()
+        {
+            return scanner.Token == '-'
+                ? new UnaryExpression(ParseOperator(), ParsePrimaryExpression())
+                : ParsePrimaryExpression();
         }
     }
 }

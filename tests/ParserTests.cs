@@ -14,17 +14,24 @@
         }
 
         [Test]
-        [Row("", "")]
-        [Row("xxx", "xxx")]
-        [Row(@"xxx\{yyy\}zzz", "xxx{yyy}zzz")]
-        [Row("xxx{0}xxx", "xxx{0}xxx")]
-        [Row("xxx{123,-456}xxx", "xxx{123,-456}xxx")]
-        [Row("xxx{123,-456:xxx}xxx", "xxx{123,-456:xxx}xxx")]
-        [Row("xxx{0:{0}}xxx", "xxx{0:{0}}xxx")]
-        [Row(@"xxx{0:\{0\}}xxx", "xxx{0:{0}}xxx")]
-        public void Parse_ParsesInputCorrectly(string input, string expectedResult)
+        [Row("")]
+        [Row("xxx")]
+        [Row(@"xxx\{yyy\}zzz")]
+        [Row("xxx{0}xxx")]
+        [Row("{123,-456}")]
+        [Row("{123,-456:xxx}")]
+        [Row("{0:{0}}")]
+        [Row(@"{0:\{0\}}")]
+        [Row("{0 {=1:aaa}}")]
+        [Row("{0 {=1:aaa{0}bbb}}")]
+        [Row(@"{0 {=1:aaa\{0\}bbb}}")]
+        [Row("{0 {=1:aaa}{=2:aaa}}")]
+        [Row("{0 {=-1:xxx}}")]
+        [Row("{0 {=-{1}:xxx}}")]
+        [Row("{0 {>1<3:xxx}}")]
+        public void Parse_ParsesInputCorrectly(string input)
         {
-            Assert.That(new Parser(new Scanner(input)).Parse().ToString(), Is.EqualTo(expectedResult));
+            Assert.That(new Parser(new Scanner(input)).Parse().ToString(), Is.EqualTo(input));
         }
     }
 }
