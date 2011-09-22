@@ -17,13 +17,7 @@
 
             do
             {
-                scanner.Scan();
-
-                string text =
-                    scanner.Text.Length > 0 ? string.Format(": {0}", scanner.Text) : string.Empty;
-
-                tokens.Add(string.Format("<{0}, {1}, {2}{3}>",
-                    Token.ToString(scanner.Token), scanner.Start, scanner.End, text));
+                tokens.Add(scanner.Scan().ToString());
             }
             while (scanner.Token != Token.EndOfInput);
             

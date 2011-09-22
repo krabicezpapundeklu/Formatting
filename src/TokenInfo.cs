@@ -1,5 +1,7 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
+    using System.Text;
+
     using T = Token;
 
     public class TokenInfo
@@ -20,6 +22,23 @@
             Text = other.Text;
             Start = other.Start;
             End = other.End;
+        }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendFormat("<{0}, {1}, {2}", T.ToString(Token), Start, End);
+
+            if(Text.Length > 0)
+            {
+                builder.Append(": ");
+                builder.Append(Text);
+            }
+
+            builder.Append('>');
+
+            return builder.ToString();
         }
     }
 }

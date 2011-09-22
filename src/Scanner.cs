@@ -25,7 +25,7 @@
             Token = T.Invalid;
         }
 
-        public void Scan()
+        public TokenInfo Scan()
         {
             textBuilder.Clear();
 
@@ -56,6 +56,8 @@
             }
 
             Text = textBuilder.ToString();
+
+            return this;
         }
 
         private static bool CanBeEscaped(char c)
