@@ -1,5 +1,6 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
+    using System;
     using System.Text;
 
     using T = Token;
@@ -18,6 +19,11 @@
 
         public void AssignFrom(TokenInfo other)
         {
+            if(other == null)
+            {
+                throw new ArgumentNullException("other");
+            }
+
             Token = other.Token;
             Text = other.Text;
             Start = other.Start;
