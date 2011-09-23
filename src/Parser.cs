@@ -2,22 +2,20 @@
 {
     using System;
     using System.Collections.Generic;
-    
+
     using Ast;
 
     public class Parser
     {
         private readonly Scanner scanner;
-        
+
         private TokenInfo currentTokenInfo;
         private TokenInfo nextTokenInfo;
 
         public Parser(Scanner scanner)
         {
             if(scanner == null)
-            {
                 throw new ArgumentNullException("scanner");
-            }
 
             this.scanner = scanner;
 
@@ -26,7 +24,7 @@
 
         public FormatString Parse()
         {
-            var formatString = ParseFormatString();
+            FormatString formatString = ParseFormatString();
             Expect(Token.EndOfInput);
 
             return formatString;
@@ -34,7 +32,7 @@
 
         private bool Accept(int token)
         {
-            if (nextTokenInfo.Token == token)
+            if(nextTokenInfo.Token == token)
             {
                 Consume();
                 return true;
@@ -52,9 +50,7 @@
         private TokenInfo Expect(int token)
         {
             if(!Accept(token))
-            {
                 throw new FormatException("invalid token"); // TODO
-            }
 
             return currentTokenInfo;
         }
@@ -69,16 +65,17 @@
 
                 do
                 {
-                    var binaryOperator = ParseOperator();
-                    
+                    Operator binaryOperator = ParseOperator();
+
                     var expression = new BinaryExpression(
-                            binaryOperator, (Expression) implicitOperand.Clone(binaryOperator.Location), ParseUnaryExpression());
+                        binaryOperator, (Expression)implicitOperand.Clone(binaryOperator.Location),
+                        ParseUnaryExpression());
 
                     andExpression = andExpression == null
                         ? expression
                         : new BinaryExpression(new Operator(Token.And), andExpression, expression);
                 }
-                while (nextTokenInfo.Token != ':' && nextTokenInfo.Token != ',');
+                while(nextTokenInfo.Token != ':' && nextTokenInfo.Token != ',');
 
                 Accept(',');
 
@@ -86,9 +83,55 @@
                     ? andExpression
                     : new BinaryExpression(new Operator(currentTokenInfo.Location, ','), condition, andExpression);
             }
-            while (nextTokenInfo.Token != ':');
-            
+            while(nextTokenInfo.Token != ':');
+
             return condition;
+        }
+
+        private ConditionalFormat ParseConditionalFormat(ArgumentIndex argumentIndex)
+        {
+            var cases = new List<Case>();
+
+            do
+            {
+                int start = Expect('{').Location.Start;
+                Expression condition = ParseCondition(argumentIndex);
+
+                scanner.State = ScannerState.ScanningText;
+
+                Expect(':');
+
+                FormatString formatString = ParseFormatString();
+                int end = Expect('}').Location.End;
+
+                scanner.State = ScannerState.ScanningTokens;
+
+                cases.Add(new Case(new Location(start, end), condition, formatString));
+            }
+            while(nextTokenInfo.Token == '{');
+
+            return new ConditionalFormat(argumentIndex, cases);
+        }
+
+        private Format ParseFormat()
+        {
+            scanner.State = ScannerState.ScanningTokens;
+
+            int start = Expect('{').Location.Start;
+            int index = int.Parse(Expect(Token.Integer).Text);
+
+            var argumentIndex = new ArgumentIndex(currentTokenInfo.Location, index);
+
+            Format format;
+
+            if(nextTokenInfo.Token == '{')
+                format = ParseConditionalFormat(argumentIndex);
+            else
+                format = ParseSimpleFormat(argumentIndex);
+
+            scanner.State = ScannerState.ScanningText;
+
+            return (Format)format.Clone(new Location(start, Expect('}').Location.End));
         }
 
         private FormatString ParseFormatString()
@@ -97,7 +140,7 @@
 
             while(true)
             {
-                switch (nextTokenInfo.Token)
+                switch(nextTokenInfo.Token)
                 {
                     case '{':
                         items.Add(ParseFormat());
@@ -122,36 +165,11 @@
             }
         }
 
-        private Format ParseFormat()
-        {
-            scanner.State = ScannerState.ScanningTokens;
-
-            int start = Expect('{').Location.Start;
-            int index = int.Parse(Expect(Token.Integer).Text);
-
-            var argumentIndex = new ArgumentIndex(currentTokenInfo.Location, index);
-
-            Format format;
-
-            if (nextTokenInfo.Token == '{')
-            {
-                format = ParseConditionalFormat(argumentIndex);
-            }
-            else
-            {
-                format = ParseSimpleFormat(argumentIndex);
-            }
-
-            scanner.State = ScannerState.ScanningText;
-
-            return (Format) format.Clone(new Location(start, Expect('}').Location.End));
-        }
-
         private Operator ParseOperator()
         {
             Consume();
 
-            switch (currentTokenInfo.Token)
+            switch(currentTokenInfo.Token)
             {
                 case '-':
                 case '=':
@@ -177,7 +195,7 @@
                     int index = int.Parse(Expect(Token.Integer).Text);
                     int end = Expect('}').Location.End;
 
-                    return new ArgumentIndex(new Location(start, end), index); 
+                    return new ArgumentIndex(new Location(start, end), index);
 
                 case Token.Integer:
                     return new Integer(currentTokenInfo.Location, int.Parse(currentTokenInfo.Text));
@@ -189,37 +207,12 @@
             }
         }
 
-        private ConditionalFormat ParseConditionalFormat(ArgumentIndex argumentIndex)
-        {
-            var cases = new List<Case>();
-
-            do
-            {
-                int start = Expect('{').Location.Start;
-                var condition = ParseCondition(argumentIndex);
-
-                scanner.State = ScannerState.ScanningText;
-
-                Expect(':');
-
-                var formatString = ParseFormatString();
-                int end = Expect('}').Location.End;
-
-                scanner.State = ScannerState.ScanningTokens;
-
-                cases.Add(new Case(new Location(start, end),  condition, formatString));
-            }
-            while (nextTokenInfo.Token == '{');
-
-            return new ConditionalFormat(argumentIndex, cases);
-        }
-
         private SimpleFormat ParseSimpleFormat(ArgumentIndex argumentIndex)
         {
             bool leftAlign;
             int width;
 
-            if (Accept(','))
+            if(Accept(','))
             {
                 leftAlign = Accept('-');
                 width = int.Parse(Expect(Token.Integer).Text);
@@ -232,8 +225,10 @@
 
             scanner.State = ScannerState.ScanningText;
 
-            return new SimpleFormat(argumentIndex, leftAlign, width,
-                Accept(':') ? ParseFormatString() : FormatString.Empty);
+            return new SimpleFormat(
+                argumentIndex, leftAlign, width, Accept(':')
+                    ? ParseFormatString()
+                    : FormatString.Empty);
         }
 
         private Expression ParseUnaryExpression()

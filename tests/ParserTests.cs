@@ -3,9 +3,10 @@
     using System;
 
     using MbUnit.Framework;
+
     using NHamcrest.Core;
 
-    class ParserTests
+    internal class ParserTests
     {
         [Test]
         public void Constructor_WhenScannerIsNull_ThrowsException()

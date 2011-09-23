@@ -2,18 +2,16 @@
 {
     public class Integer : Expression
     {
-        public int Value { get; private set; }
-
         public Integer(int value)
-            : this(Location.Unknown, value)
-        {
-        }
+            : this(Location.Unknown, value) {}
 
         public Integer(Location location, int value)
             : base(location)
         {
             Value = value;
         }
+
+        public int Value { get; private set; }
 
         public override string ToString()
         {

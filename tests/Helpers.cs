@@ -4,11 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    static class Helpers
+    internal static class Helpers
     {
         public static List<KeyValuePair<string, T>> GetFields<T>(Type type)
         {
-            return type.GetFields().Select(x => new KeyValuePair<string, T>(x.Name, (T) x.GetValue(null))).ToList();
+            return type.GetFields().Select(x => new KeyValuePair<string, T>(x.Name, (T)x.GetValue(null))).ToList();
         }
 
         public static List<string> Tokenize(Scanner scanner)
@@ -17,14 +17,12 @@
 
             while(true)
             {
-                var tokenInfo = scanner.Scan();
+                TokenInfo tokenInfo = scanner.Scan();
 
                 tokens.Add(tokenInfo.ToString());
 
                 if(tokenInfo.Token == Token.EndOfInput)
-                {
                     return tokens;
-                }
             }
         }
     }

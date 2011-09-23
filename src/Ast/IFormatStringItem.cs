@@ -1,6 +1,4 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public interface IFormatStringItem : ILocated
-    {
-    }
+    public interface IFormatStringItem : ILocated {}
 }

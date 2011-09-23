@@ -2,13 +2,9 @@
 {
     public abstract class Expression : AstNode
     {
-        protected Expression()
-        {
-        }
+        protected Expression() {}
 
         protected Expression(Location location)
-            : base(location)
-        {
-        }
+            : base(location) {}
     }
 }
