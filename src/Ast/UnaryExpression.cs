@@ -2,33 +2,41 @@
 {
     using System;
 
-    public class UnaryExpression : IExpression
+    public class UnaryExpression : Expression
     {
         public Operator Operator { get; private set; }
-        public IExpression Operand { get; private set; }
+        public Expression Operand { get; private set; }
 
-        public Location Location { get; private set; }
-
-        public UnaryExpression(Operator unaryOperator, IExpression operand)
+        public UnaryExpression(Operator unaryOperator, Expression operand)
+            : this(Location.FromRange(unaryOperator, operand), unaryOperator, operand)
         {
-            if(unaryOperator == null)
+        }
+
+        public UnaryExpression(Location location, Operator unaryOperator, Expression operand)
+            : base(location)
+        {
+            if (unaryOperator == null)
             {
                 throw new ArgumentNullException("unaryOperator");
             }
 
-            if(operand == null)
+            if (operand == null)
             {
                 throw new ArgumentNullException("operand");
             }
 
             Operator = unaryOperator;
             Operand = operand;
-            Location = Location.FromRange(Operator, Operand);
         }
 
         public override string ToString()
         {
             return string.Concat(Operator, Operand);
+        }
+
+        protected override AstNode DoClone(Location newLocation)
+        {
+            return new UnaryExpression(newLocation, Operator, Operand);
         }
     }
 }

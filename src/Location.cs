@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class Location
     {
@@ -47,7 +48,7 @@
             int start = int.MaxValue;
             int end = int.MinValue;
 
-            foreach(var item in items)
+            foreach(var item in items.Where(x => x != null && x.Location != Unknown))
             {
                 hasSomeItem = true;
                 start = Math.Min(start, item.Location.Start);
@@ -55,6 +56,11 @@
             }
 
             return hasSomeItem ? new Location(start, end) : Unknown;
+        }
+
+        public override string ToString()
+        {
+            return this == Unknown ? "Unknown" : string.Format("{0}, {1}", Start, End);
         }
     }
 }

@@ -9,6 +9,11 @@
     {
         public ReadOnlyCollection<Case> Cases { get; private set; }
 
+        public ConditionalFormat(ArgumentIndex argumentIndex, IEnumerable<Case> cases)
+            : this(Location.Unknown, argumentIndex, cases)
+        {
+        }
+
         public ConditionalFormat(Location location, ArgumentIndex argumentIndex, IEnumerable<Case> cases)
             : base(location, argumentIndex)
         {
@@ -25,7 +30,7 @@
             return string.Format("{{{0} {1}}}", ArgumentIndex.Index, string.Concat(Cases.Select(x => x.ToString())));
         }
 
-        protected override Format DoClone(Location newLocation)
+        protected override AstNode DoClone(Location newLocation)
         {
             return new ConditionalFormat(newLocation, ArgumentIndex, Cases);
         }

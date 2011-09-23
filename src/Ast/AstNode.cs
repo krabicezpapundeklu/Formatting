@@ -2,9 +2,14 @@
 {
     using System;
 
-    public abstract class AstNode : IAstNode
+    public abstract class AstNode : ILocated
     {
         public Location Location { get; private set; }
+
+        protected AstNode()
+            : this(Location.Unknown)
+        {
+        }
 
         protected AstNode(Location location)
         {
@@ -15,5 +20,17 @@
 
             Location = location;
         }
+
+        public AstNode Clone(Location newLocation)
+        {
+            if (newLocation == null)
+            {
+                throw new ArgumentNullException("newLocation");
+            }
+
+            return DoClone(newLocation);
+        }
+
+        protected abstract AstNode DoClone(Location newLocation);
     }
 }
