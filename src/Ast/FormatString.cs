@@ -9,23 +9,19 @@
     {
         public static readonly FormatString Empty = new FormatString(Enumerable.Empty<IFormatStringItem>());
 
-        public ReadOnlyCollection<IFormatStringItem> Items { get; private set; }
-        
         public FormatString(IEnumerable<IFormatStringItem> items)
-            : this(Location.FromRange(items), items)
-        {
-        }
+            : this(Location.FromRange(items), items) {}
 
         public FormatString(Location location, IEnumerable<IFormatStringItem> items)
             : base(location)
         {
             if(items == null)
-            {
                 throw new ArgumentNullException("items");
-            }
 
             Items = new ReadOnlyCollection<IFormatStringItem>(new List<IFormatStringItem>(items));
         }
+
+        public ReadOnlyCollection<IFormatStringItem> Items { get; private set; }
 
         public override string ToString()
         {

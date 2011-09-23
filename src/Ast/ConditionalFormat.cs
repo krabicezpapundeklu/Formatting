@@ -7,23 +7,19 @@
 
     public class ConditionalFormat : Format
     {
-        public ReadOnlyCollection<Case> Cases { get; private set; }
-
         public ConditionalFormat(ArgumentIndex argumentIndex, IEnumerable<Case> cases)
-            : this(Location.Unknown, argumentIndex, cases)
-        {
-        }
+            : this(Location.Unknown, argumentIndex, cases) {}
 
         public ConditionalFormat(Location location, ArgumentIndex argumentIndex, IEnumerable<Case> cases)
             : base(location, argumentIndex)
         {
             if(cases == null)
-            {
                 throw new ArgumentNullException("cases");
-            }
 
             Cases = new ReadOnlyCollection<Case>(new List<Case>(cases));
         }
+
+        public ReadOnlyCollection<Case> Cases { get; private set; }
 
         public override string ToString()
         {

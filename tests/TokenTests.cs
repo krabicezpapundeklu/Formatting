@@ -4,28 +4,25 @@
     using System.Linq;
 
     using MbUnit.Framework;
+
     using NHamcrest.Core;
 
-    class TokenTests
+    internal class TokenTests
     {
         [Test]
         [MultipleAsserts]
         public void FieldValues_AreNegative()
         {
-            foreach (var field in Helpers.GetFields<int>(typeof(Token)).Where(x => x.Value >= 0))
-            {
+            foreach(var field in Helpers.GetFields<int>(typeof(Token)).Where(x => x.Value >= 0))
                 Assert.Fail("Token [{0}] has non-negative value {1}.", field.Key, field.Value);
-            }
         }
 
         [Test]
         [MultipleAsserts]
         public void FieldValues_AreUnique()
         {
-            foreach(var group in Helpers.GetFields<int>(typeof (Token)).GroupBy(x => x.Value).Where(x => x.Count() > 1))
-            {
+            foreach(var group in Helpers.GetFields<int>(typeof(Token)).GroupBy(x => x.Value).Where(x => x.Count() > 1))
                 Assert.Fail("Tokens [{0}] have same value {1}.", string.Join(", ", group.Select(x => x.Key)), group.Key);
-            }
         }
 
         [Test]

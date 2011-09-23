@@ -5,23 +5,19 @@
 
     public class Text : AstNode, IFormatStringItem
     {
-        public string Value { get; private set; }
-
         public Text(string value)
-            : this(Location.Unknown, value)
-        {
-        }
+            : this(Location.Unknown, value) {}
 
         public Text(Location location, string value)
             : base(location)
         {
             if(value == null)
-            {
                 throw new ArgumentNullException("value");
-            }
 
             Value = value;
         }
+
+        public string Value { get; private set; }
 
         public override string ToString()
         {
@@ -30,9 +26,7 @@
             foreach(char c in Value)
             {
                 if(Helpers.MustBeEscaped(c))
-                {
                     builder.Append('\\');
-                }
 
                 builder.Append(c);
             }

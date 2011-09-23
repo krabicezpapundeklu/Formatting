@@ -7,26 +7,22 @@
 
     public class TokenInfo
     {
-        public int Token { get; private set; }
-        public string Text { get; private set; }
-        public Location Location { get; private set; }
-
         public TokenInfo(int token, string text, Location location)
         {
             if(text == null)
-            {
                 throw new ArgumentNullException("text");
-            }
 
             if(location == null)
-            {
                 throw new ArgumentNullException("location");
-            }
 
             Token = token;
             Text = text;
             Location = location;
         }
+
+        public int Token { get; private set; }
+        public string Text { get; private set; }
+        public Location Location { get; private set; }
 
         public override string ToString()
         {

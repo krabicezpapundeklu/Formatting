@@ -4,41 +4,34 @@
 
     public class BinaryExpression : Expression
     {
-        public Operator Operator { get; private set; }
-        public Expression LeftExpression { get; private set; }
-        public Expression RightExpression { get; private set; }
-
         public BinaryExpression(Operator binaryOperator, Expression leftExpression, Expression rightExpression)
-            : this(Location.FromRange(leftExpression, rightExpression), binaryOperator, leftExpression, rightExpression)
-        {
-        }
+            : this(Location.FromRange(leftExpression, rightExpression), binaryOperator, leftExpression, rightExpression) {}
 
-        public BinaryExpression(Location location, Operator binaryOperator, Expression leftExpression, Expression rightExpression)
+        public BinaryExpression(
+            Location location, Operator binaryOperator, Expression leftExpression, Expression rightExpression)
             : base(location)
         {
             if(binaryOperator == null)
-            {
                 throw new ArgumentNullException("binaryOperator");
-            }
 
             if(leftExpression == null)
-            {
                 throw new ArgumentNullException("leftExpression");
-            }
 
             if(rightExpression == null)
-            {
                 throw new ArgumentNullException("rightExpression");
-            }
 
             Operator = binaryOperator;
             LeftExpression = leftExpression;
             RightExpression = rightExpression;
         }
 
+        public Operator Operator { get; private set; }
+        public Expression LeftExpression { get; private set; }
+        public Expression RightExpression { get; private set; }
+
         public override string ToString()
         {
-            switch (Operator.Token)
+            switch(Operator.Token)
             {
                 case ',':
                     return string.Concat(LeftExpression, ',', RightExpression);

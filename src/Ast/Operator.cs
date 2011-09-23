@@ -4,18 +4,16 @@
 
     public class Operator : AstNode
     {
-        public int Token { get; private set; }
-
         public Operator(int token)
-            : this(Location.Unknown, token)
-        {
-        }
+            : this(Location.Unknown, token) {}
 
         public Operator(Location location, int token)
             : base(location)
         {
             Token = token;
         }
+
+        public int Token { get; private set; }
 
         public override string ToString()
         {

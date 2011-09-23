@@ -1,6 +1,6 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
-    class Helpers
+    internal class Helpers
     {
         public static bool MustBeEscaped(char c)
         {
