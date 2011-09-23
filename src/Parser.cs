@@ -59,22 +59,24 @@
             return currentTokenInfo;
         }
 
-        private IExpression ParseCondition(IExpression implicitOperand)
+        private Expression ParseCondition(Expression implicitOperand)
         {
-            IExpression condition = null;
+            Expression condition = null;
 
             do
             {
-                IExpression andExpression = null;
+                Expression andExpression = null;
 
                 do
                 {
                     var binaryOperator = ParseOperator();
-                    var expression = new BinaryExpression(binaryOperator, implicitOperand, ParseUnaryExpression());
+                    
+                    var expression = new BinaryExpression(
+                            binaryOperator, (Expression) implicitOperand.Clone(binaryOperator.Location), ParseUnaryExpression());
 
                     andExpression = andExpression == null
                         ? expression
-                        : new BinaryExpression(new Operator(Location.Unknown, Token.And), andExpression, expression);
+                        : new BinaryExpression(new Operator(Token.And), andExpression, expression);
                 }
                 while (nextTokenInfo.Token != ':' && nextTokenInfo.Token != ',');
 
@@ -103,7 +105,9 @@
 
                     case '}':
                     case Token.EndOfInput:
-                        return new FormatString(items);
+                        return items.Count == 0
+                            ? new FormatString(new Location(0, 0), items)
+                            : new FormatString(items);
 
                     case Token.Text:
                         items.Add(new Text(nextTokenInfo.Location, nextTokenInfo.Text));
@@ -140,7 +144,7 @@
 
             scanner.State = ScannerState.ScanningText;
 
-            return format.Clone(new Location(start, Expect('}').Location.End));
+            return (Format) format.Clone(new Location(start, Expect('}').Location.End));
         }
 
         private Operator ParseOperator()
@@ -162,7 +166,7 @@
             }
         }
 
-        private IExpression ParsePrimaryExpression()
+        private Expression ParsePrimaryExpression()
         {
             Consume();
 
@@ -207,7 +211,7 @@
             }
             while (nextTokenInfo.Token == '{');
 
-            return new ConditionalFormat(Location.Unknown, argumentIndex, cases);
+            return new ConditionalFormat(argumentIndex, cases);
         }
 
         private SimpleFormat ParseSimpleFormat(ArgumentIndex argumentIndex)
@@ -228,11 +232,11 @@
 
             scanner.State = ScannerState.ScanningText;
 
-            return new SimpleFormat(Location.Unknown, argumentIndex, leftAlign, width,
+            return new SimpleFormat(argumentIndex, leftAlign, width,
                 Accept(':') ? ParseFormatString() : FormatString.Empty);
         }
 
-        private IExpression ParseUnaryExpression()
+        private Expression ParseUnaryExpression()
         {
             return nextTokenInfo.Token == '-'
                 ? new UnaryExpression(ParseOperator(), ParsePrimaryExpression())

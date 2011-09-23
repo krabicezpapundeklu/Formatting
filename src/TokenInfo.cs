@@ -32,7 +32,7 @@
         {
             var builder = new StringBuilder();
 
-            builder.AppendFormat("<{0}, {1}, {2}", T.ToString(Token), Location.Start, Location.End);
+            builder.AppendFormat("<{0}, {1}", T.ToString(Token), Location);
 
             if(Text.Length > 0)
             {

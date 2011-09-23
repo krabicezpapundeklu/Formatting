@@ -9,6 +9,11 @@
         public int Width { get; private set; }
         public FormatString FormatString { get; private set; }
 
+        public SimpleFormat(ArgumentIndex argumentIndex, bool leftAlign, int width, FormatString formatString)
+            : this(Location.Unknown, argumentIndex, leftAlign, width, formatString)
+        {
+        }
+
         public SimpleFormat(Location location, ArgumentIndex argumentIndex, bool leftAlign, int width, FormatString formatString)
             : base(location, argumentIndex)
         {
@@ -54,7 +59,7 @@
             return builder.ToString();
         }
 
-        protected override Format DoClone(Location newLocation)
+        protected override AstNode DoClone(Location newLocation)
         {
             return new SimpleFormat(newLocation, ArgumentIndex, LeftAlign, Width, FormatString);
         }

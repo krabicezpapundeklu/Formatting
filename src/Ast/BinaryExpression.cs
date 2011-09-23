@@ -2,15 +2,19 @@
 {
     using System;
 
-    public class BinaryExpression : IExpression
+    public class BinaryExpression : Expression
     {
         public Operator Operator { get; private set; }
-        public IExpression LeftExpression { get; private set; }
-        public IExpression RightExpression { get; private set; }
+        public Expression LeftExpression { get; private set; }
+        public Expression RightExpression { get; private set; }
 
-        public Location Location { get; private set; }
+        public BinaryExpression(Operator binaryOperator, Expression leftExpression, Expression rightExpression)
+            : this(Location.FromRange(leftExpression, rightExpression), binaryOperator, leftExpression, rightExpression)
+        {
+        }
 
-        public BinaryExpression(Operator binaryOperator, IExpression leftExpression, IExpression rightExpression)
+        public BinaryExpression(Location location, Operator binaryOperator, Expression leftExpression, Expression rightExpression)
+            : base(location)
         {
             if(binaryOperator == null)
             {
@@ -30,8 +34,6 @@
             Operator = binaryOperator;
             LeftExpression = leftExpression;
             RightExpression = rightExpression;
-
-            Location = Location.FromRange(leftExpression, rightExpression);
         }
 
         public override string ToString()
@@ -47,6 +49,11 @@
                 default:
                     return string.Concat(Operator, RightExpression);
             }
+        }
+
+        protected override AstNode DoClone(Location newLocation)
+        {
+            return new BinaryExpression(newLocation, Operator, LeftExpression, RightExpression);
         }
     }
 }

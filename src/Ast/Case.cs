@@ -4,10 +4,15 @@
 
     public class Case : AstNode
     {
-        public IExpression Condition { get; private set; }
+        public Expression Condition { get; private set; }
         public FormatString FormatString { get; private set; }
 
-        public Case(Location location, IExpression condition, FormatString formatString)
+        public Case(Expression condition, FormatString formatString)
+            : this(Location.Unknown, condition, formatString)
+        {
+        }
+
+        public Case(Location location, Expression condition, FormatString formatString)
             : base(location)
         {
             if(condition == null)
@@ -27,6 +32,11 @@
         public override string ToString()
         {
             return string.Format("{{{0}:{1}}}", Condition, FormatString);
+        }
+
+        protected override AstNode DoClone(Location newLocation)
+        {
+            return new Case(newLocation, Condition, FormatString);
         }
     }
 }

@@ -7,6 +7,11 @@
     {
         public string Value { get; private set; }
 
+        public Text(string value)
+            : this(Location.Unknown, value)
+        {
+        }
+
         public Text(Location location, string value)
             : base(location)
         {
@@ -33,6 +38,11 @@
             }
 
             return builder.ToString();
+        }
+
+        protected override AstNode DoClone(Location newLocation)
+        {
+            return new Text(newLocation, Value);
         }
     }
 }
