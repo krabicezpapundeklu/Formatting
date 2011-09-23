@@ -9,8 +9,8 @@
         public int Width { get; private set; }
         public FormatString FormatString { get; private set; }
 
-        public SimpleFormat(ArgumentIndex argumentIndex, bool leftAlign, int width, FormatString formatString)
-            : base(argumentIndex)
+        public SimpleFormat(Location location, ArgumentIndex argumentIndex, bool leftAlign, int width, FormatString formatString)
+            : base(location, argumentIndex)
         {
             if(formatString == null)
             {
@@ -52,6 +52,11 @@
             builder.Append('}');
 
             return builder.ToString();
+        }
+
+        protected override Format DoClone(Location newLocation)
+        {
+            return new SimpleFormat(newLocation, ArgumentIndex, LeftAlign, Width, FormatString);
         }
     }
 }

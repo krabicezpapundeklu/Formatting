@@ -1,12 +1,19 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public class AstNode : IAstNode
-    {
-        public Location Location { get; set; }
+    using System;
 
-        public AstNode()
+    public abstract class AstNode : IAstNode
+    {
+        public Location Location { get; private set; }
+
+        protected AstNode(Location location)
         {
-            Location = Location.Unknown;
+            if(location == null)
+            {
+                throw new ArgumentNullException("location");
+            }
+
+            Location = location;
         }
     }
 }

@@ -7,7 +7,8 @@
     {
         public string Value { get; private set; }
 
-        public Text(string value)
+        public Text(Location location, string value)
+            : base(location)
         {
             if(value == null)
             {

@@ -1,25 +1,26 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
+    using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
 
     public class FormatString : IAstNode
     {
-        public List<IFormatStringItem> Items { get; private set; }
+        public static readonly FormatString Empty = new FormatString(Enumerable.Empty<IFormatStringItem>());
 
-        public Location Location
+        public ReadOnlyCollection<IFormatStringItem> Items { get; private set; }
+        public Location Location { get; private set; }
+
+        public FormatString(IEnumerable<IFormatStringItem> items)
         {
-            get
+            if(items == null)
             {
-                return Items.Count == 0
-                    ? Location.Unknown
-                    : new Location(Items.First().Location.Start, Items.Last().Location.End);
+                throw new ArgumentNullException("items");
             }
-        }
 
-        public FormatString()
-        {
-            Items = new List<IFormatStringItem>();
+            Items = new ReadOnlyCollection<IFormatStringItem>(new List<IFormatStringItem>(items));
+            Location = Location.FromRange(Items);
         }
 
         public override string ToString()

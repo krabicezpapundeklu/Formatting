@@ -7,13 +7,7 @@
         public Operator Operator { get; private set; }
         public IExpression Operand { get; private set; }
 
-        public Location Location
-        {
-            get
-            {
-                return new Location(Operator.Location.Start, Operand.Location.End);
-            }
-        }
+        public Location Location { get; private set; }
 
         public UnaryExpression(Operator unaryOperator, IExpression operand)
         {
@@ -29,6 +23,7 @@
 
             Operator = unaryOperator;
             Operand = operand;
+            Location = Location.FromRange(Operator, Operand);
         }
 
         public override string ToString()

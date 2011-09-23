@@ -8,13 +8,7 @@
         public IExpression LeftExpression { get; private set; }
         public IExpression RightExpression { get; private set; }
 
-        public Location Location
-        {
-            get
-            {
-                return new Location(LeftExpression.Location.Start, RightExpression.Location.End);
-            }
-        }
+        public Location Location { get; private set; }
 
         public BinaryExpression(Operator binaryOperator, IExpression leftExpression, IExpression rightExpression)
         {
@@ -36,6 +30,8 @@
             Operator = binaryOperator;
             LeftExpression = leftExpression;
             RightExpression = rightExpression;
+
+            Location = Location.FromRange(leftExpression, rightExpression);
         }
 
         public override string ToString()

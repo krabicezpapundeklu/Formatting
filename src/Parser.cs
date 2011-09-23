@@ -1,6 +1,7 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
     using System;
+    using System.Collections.Generic;
     
     using Ast;
 
@@ -73,7 +74,7 @@
 
                     andExpression = andExpression == null
                         ? expression
-                        : new BinaryExpression(new Operator(Token.And), andExpression, expression);
+                        : new BinaryExpression(new Operator(Location.Unknown, Token.And), andExpression, expression);
                 }
                 while (nextTokenInfo.Token != ':' && nextTokenInfo.Token != ',');
 
@@ -81,7 +82,7 @@
 
                 condition = condition == null
                     ? andExpression
-                    : new BinaryExpression(new Operator(','), condition, andExpression);
+                    : new BinaryExpression(new Operator(currentTokenInfo.Location, ','), condition, andExpression);
             }
             while (nextTokenInfo.Token != ':');
             
@@ -90,24 +91,22 @@
 
         private FormatString ParseFormatString()
         {
-            var formatString = new FormatString();
+            var items = new List<IFormatStringItem>();
 
             while(true)
             {
                 switch (nextTokenInfo.Token)
                 {
                     case '{':
-                        formatString.Items.Add(ParseFormat());
+                        items.Add(ParseFormat());
                         continue;
 
                     case '}':
                     case Token.EndOfInput:
-                        return formatString;
+                        return new FormatString(items);
 
                     case Token.Text:
-                        formatString.Items.Add(
-                            new Text(nextTokenInfo.Text) { Location = nextTokenInfo.Location });
-
+                        items.Add(new Text(nextTokenInfo.Location, nextTokenInfo.Text));
                         break;
 
                     default:
@@ -124,10 +123,9 @@
             scanner.State = ScannerState.ScanningTokens;
 
             int start = Expect('{').Location.Start;
+            int index = int.Parse(Expect(Token.Integer).Text);
 
-            var argumentIndex =
-                new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
-                    {Location = currentTokenInfo.Location};
+            var argumentIndex = new ArgumentIndex(currentTokenInfo.Location, index);
 
             Format format;
 
@@ -142,9 +140,7 @@
 
             scanner.State = ScannerState.ScanningText;
 
-            format.Location = new Location(start, Expect('}').Location.End);
-            
-            return format;
+            return format.Clone(new Location(start, Expect('}').Location.End));
         }
 
         private Operator ParseOperator()
@@ -158,7 +154,7 @@
                 case '!':
                 case '>':
                 case '<':
-                    return new Operator(currentTokenInfo.Token){Location = currentTokenInfo.Location};
+                    return new Operator(currentTokenInfo.Location, currentTokenInfo.Token);
 
                 default:
                     // TODO
@@ -174,12 +170,13 @@
             {
                 case '{':
                     int start = currentTokenInfo.Location.Start;
+                    int index = int.Parse(Expect(Token.Integer).Text);
+                    int end = Expect('}').Location.End;
 
-                    return new ArgumentIndex(int.Parse(Expect(Token.Integer).Text))
-                        {Location = new Location(start, Expect('}').Location.End)};
+                    return new ArgumentIndex(new Location(start, end), index); 
 
                 case Token.Integer:
-                    return new Integer(int.Parse(currentTokenInfo.Text)){Location = currentTokenInfo.Location};
+                    return new Integer(currentTokenInfo.Location, int.Parse(currentTokenInfo.Text));
 
                 default:
                     // TODO
@@ -190,7 +187,7 @@
 
         private ConditionalFormat ParseConditionalFormat(ArgumentIndex argumentIndex)
         {
-            var conditionalFormat = new ConditionalFormat(argumentIndex);
+            var cases = new List<Case>();
 
             do
             {
@@ -206,12 +203,11 @@
 
                 scanner.State = ScannerState.ScanningTokens;
 
-                conditionalFormat.Cases.Add(
-                    new Case(condition, formatString) { Location = new Location(start, end)});
+                cases.Add(new Case(new Location(start, end),  condition, formatString));
             }
             while (nextTokenInfo.Token == '{');
 
-            return conditionalFormat;
+            return new ConditionalFormat(Location.Unknown, argumentIndex, cases);
         }
 
         private SimpleFormat ParseSimpleFormat(ArgumentIndex argumentIndex)
@@ -232,8 +228,8 @@
 
             scanner.State = ScannerState.ScanningText;
 
-            return new SimpleFormat(argumentIndex, leftAlign, width,
-                Accept(':') ? ParseFormatString() : new FormatString());
+            return new SimpleFormat(Location.Unknown, argumentIndex, leftAlign, width,
+                Accept(':') ? ParseFormatString() : FormatString.Empty);
         }
 
         private IExpression ParseUnaryExpression()

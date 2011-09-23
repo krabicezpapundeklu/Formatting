@@ -6,7 +6,8 @@
     {
         public ArgumentIndex ArgumentIndex { get; private set; }
 
-        protected Format(ArgumentIndex argumentIndex)
+        protected Format(Location location, ArgumentIndex argumentIndex)
+            : base(location)
         {
             if(argumentIndex == null)
             {
@@ -15,5 +16,17 @@
 
             ArgumentIndex = argumentIndex;
         }
+
+        public Format Clone(Location newLocation)
+        {
+            if(newLocation == null)
+            {
+                throw new ArgumentNullException("newLocation");
+            }
+
+            return DoClone(newLocation);
+        }
+
+        protected abstract Format DoClone(Location newLocation);
     }
 }

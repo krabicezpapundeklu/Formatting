@@ -6,7 +6,8 @@
     {
         public int Token { get; private set; }
 
-        public Operator(int token)
+        public Operator(Location location, int token)
+            : base(location)
         {
             Token = token;
         }
