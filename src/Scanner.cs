@@ -72,7 +72,7 @@
                         return Token.Text;
 
                     case '\\':
-                        if(positionInInput == input.Length || !Helpers.MustBeEscaped(c = input[positionInInput++]))
+                        if(positionInInput == input.Length || !EscapeHelpers.MustBeEscaped(c = input[positionInInput++]))
                             throw new FormatException("invalid escape"); // TODO
 
                         break;

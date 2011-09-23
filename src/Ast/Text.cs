@@ -1,7 +1,6 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
     using System;
-    using System.Text;
 
     public class Text : AstNode, IFormatStringItem
     {
@@ -21,17 +20,7 @@
 
         public override string ToString()
         {
-            var builder = new StringBuilder();
-
-            foreach(char c in Value)
-            {
-                if(Helpers.MustBeEscaped(c))
-                    builder.Append('\\');
-
-                builder.Append(c);
-            }
-
-            return builder.ToString();
+            return EscapeHelpers.Escape(Value);
         }
 
         protected override AstNode DoClone(Location newLocation)
