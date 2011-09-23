@@ -4,7 +4,8 @@
     {
         public int Value { get; private set; }
 
-        public Integer(int value)
+        public Integer(Location location, int value)
+            : base(location)
         {
             Value = value;
         }

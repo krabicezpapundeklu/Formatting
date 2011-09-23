@@ -7,7 +7,8 @@
         public IExpression Condition { get; private set; }
         public FormatString FormatString { get; private set; }
 
-        public Case(IExpression condition, FormatString formatString)
+        public Case(Location location, IExpression condition, FormatString formatString)
+            : base(location)
         {
             if(condition == null)
             {

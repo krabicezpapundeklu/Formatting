@@ -1,7 +1,6 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public interface IAstNode
+    public interface IAstNode : ILocated
     {
-        Location Location { get; }
     }
 }

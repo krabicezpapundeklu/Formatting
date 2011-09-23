@@ -38,15 +38,16 @@
     <Compile Include="Ast\IExpression.cs" />
     <Compile Include="Ast\FormatString.cs" />
     <Compile Include="Ast\AstNode.cs" />
+    <Compile Include="Ast\IAstNode.cs" />
     <Compile Include="Ast\IFormatStringItem.cs" />
     <Compile Include="Ast\Format.cs" />
-    <Compile Include="Ast\IAstNode.cs" />
     <Compile Include="Ast\Integer.cs" />
     <Compile Include="Ast\Operator.cs" />
     <Compile Include="Ast\SimpleFormat.cs" />
     <Compile Include="Ast\Text.cs" />
     <Compile Include="Ast\UnaryExpression.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="ILocated.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Scanner.cs" />

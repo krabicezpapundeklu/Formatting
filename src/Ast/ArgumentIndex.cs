@@ -4,7 +4,8 @@
     {
         public int Index { get; private set; }
 
-        public ArgumentIndex(int index)
+        public ArgumentIndex(Location location, int index)
+            : base(location)
         {
             Index = index;
         }
