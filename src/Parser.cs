@@ -47,6 +47,11 @@
             nextTokenInfo = scanner.Scan();
         }
 
+        private FormattingException UnexpectedEndOfInput(Location location)
+        {
+            return new FormattingException(location, "Unexpected end of input.");
+        }
+
         private TokenInfo Expect(int token)
         {
             if(!Accept(token))
@@ -179,10 +184,11 @@
                     return new Operator(currentTokenInfo.Location, currentTokenInfo.Token);
 
                 default:
+                    if(currentTokenInfo.Token == Token.EndOfInput)
+                        throw UnexpectedEndOfInput(currentTokenInfo.Location);
+
                     throw new FormattingException(
-                        currentTokenInfo.Location, currentTokenInfo.Token == Token.EndOfInput
-                            ? "Unexpected end of input."
-                            : string.Format("Unknown operator \"{0}\".", currentTokenInfo.Text));
+                        currentTokenInfo.Location, "Unknown operator \"{0}\".", currentTokenInfo.Text);
             }
         }
 
@@ -203,9 +209,11 @@
                     return new Integer(currentTokenInfo.Location, int.Parse(currentTokenInfo.Text));
 
                 default:
-                    // TODO
-                    throw new FormatException(
-                        string.Format("Expected argument, but got \"{0}\".", currentTokenInfo.Text));
+                    if(currentTokenInfo.Token == Token.EndOfInput)
+                        throw UnexpectedEndOfInput(currentTokenInfo.Location);
+
+                    throw new FormattingException(
+                        currentTokenInfo.Location, "Expected argument, but got \"{0}\".", currentTokenInfo.Text);
             }
         }
 
