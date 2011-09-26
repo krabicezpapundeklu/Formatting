@@ -26,6 +26,11 @@
             return string.Format("{{{0} {1}}}", ArgumentIndex.Index, string.Concat(Cases.Select(x => x.ToString())));
         }
 
+        protected override void DoAccept(IAstVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         protected override AstNode DoClone(Location newLocation)
         {
             return new ConditionalFormat(newLocation, ArgumentIndex, Cases);

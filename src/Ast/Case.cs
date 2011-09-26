@@ -28,6 +28,11 @@
             return string.Format("{{{0}:{1}}}", Condition, FormatString);
         }
 
+        protected override void DoAccept(IAstVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         protected override AstNode DoClone(Location newLocation)
         {
             return new Case(newLocation, Condition, FormatString);

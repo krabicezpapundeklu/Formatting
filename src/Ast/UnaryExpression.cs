@@ -32,6 +32,11 @@
             return string.Concat(Operator, Operand);
         }
 
+        protected override void DoAccept(IAstVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         protected override AstNode DoClone(Location newLocation)
         {
             return new UnaryExpression(newLocation, Operator, Operand);
