@@ -15,7 +15,7 @@
 
         protected override AstNode DoClone(Location newLocation)
         {
-            return new Integer(newLocation, (int)Constant);
+            return new Integer(newLocation, (int)Value);
         }
     }
 }
