@@ -23,6 +23,11 @@
             return EscapeHelpers.Escape(Value);
         }
 
+        protected override void DoAccept(IAstVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         protected override AstNode DoClone(Location newLocation)
         {
             return new Text(newLocation, Value);

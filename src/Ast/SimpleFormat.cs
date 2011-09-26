@@ -54,6 +54,11 @@
             return builder.ToString();
         }
 
+        protected override void DoAccept(IAstVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         protected override AstNode DoClone(Location newLocation)
         {
             return new SimpleFormat(newLocation, ArgumentIndex, LeftAlign, Width, FormatString);

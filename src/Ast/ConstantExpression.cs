@@ -30,6 +30,11 @@
             return Text;
         }
 
+        protected override void DoAccept(IAstVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         protected override AstNode DoClone(Location newLocation)
         {
             return new ConstantExpression(newLocation, Constant, Text);

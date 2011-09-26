@@ -1,26 +1,21 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public class Integer : Expression
+    public class Integer : ConstantExpression
     {
         public Integer(int value)
             : this(Location.Unknown, value) {}
 
         public Integer(Location location, int value)
-            : base(location)
-        {
-            Value = value;
-        }
+            : base(location, value) {}
 
-        public int Value { get; private set; }
-
-        public override string ToString()
+        protected override void DoAccept(IAstVisitor visitor)
         {
-            return Value.ToString();
+            visitor.Visit(this);
         }
 
         protected override AstNode DoClone(Location newLocation)
         {
-            return new Integer(newLocation, Value);
+            return new Integer(newLocation, (int)Constant);
         }
     }
 }

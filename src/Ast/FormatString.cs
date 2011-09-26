@@ -28,6 +28,11 @@
             return string.Concat(Items.Select(x => x.ToString()));
         }
 
+        protected override void DoAccept(IAstVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         protected override AstNode DoClone(Location newLocation)
         {
             return new FormatString(newLocation, Items);
