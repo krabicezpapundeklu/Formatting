@@ -56,6 +56,8 @@
         [Row("<=", new[] {"<LessOrEqual, 0, 2: <=>", "<EndOfInput, 2, 2>"})]
         [Row(">", new[] {"<>, 0, 1: >>", "<EndOfInput, 1, 1>"})]
         [Row(">=", new[] {"<GreaterOrEqual, 0, 2: >=>", "<EndOfInput, 2, 2>"})]
+        [Row("else", new[] { "<Else, 0, 4: else>", "<EndOfInput, 4, 4>" })]
+        [Row("else x", new[] { "<Else, 0, 4: else>", "<x, 5, 6: x>", "<EndOfInput, 6, 6>" })]
         public void Scan_WhenScanningTokens_ScansThemCorrectly(string input, string[] expectedTokens)
         {
             Assert.AreElementsEqual(expectedTokens, Helpers.Tokenize(Helpers.CreateTokenScanner(input)));
