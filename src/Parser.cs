@@ -82,7 +82,7 @@
 
                         andExpression = andExpression == null
                             ? expression
-                            : new BinaryExpression(new Operator(Token.And), andExpression, expression);
+                            : new BinaryExpression(new Operator(Token.And, string.Empty), andExpression, expression);
                     }
                     catch(ArgumentException)
                     {
@@ -191,7 +191,9 @@
                 case '!':
                 case '>':
                 case '<':
-                    return new Operator(currentTokenInfo.Location, currentTokenInfo.Token);
+                case Token.LessOrEqual:
+                case Token.GreaterOrEqual:
+                    return new Operator(currentTokenInfo.Location, currentTokenInfo.Token, currentTokenInfo.Text);
 
                 default:
                     if(currentTokenInfo.Token == Token.EndOfInput)

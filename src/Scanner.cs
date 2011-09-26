@@ -95,17 +95,41 @@
         {
             char c = input[positionInInput++];
 
-            if(char.IsDigit(c))
+            switch(c)
             {
-                while(positionInInput < input.Length && char.IsDigit(input, positionInInput))
-                    positionInInput++;
+                case '<':
+                    textBuilder.Append(c);
+                    return Select('=', Token.LessOrEqual, '<');
 
-                textBuilder.Append(input, tokenStart, positionInInput - tokenStart);
-                return Token.Integer;
+                case '>':
+                    textBuilder.Append(c);
+                    return Select('=', Token.GreaterOrEqual, '>');
+
+                default:
+                    if(char.IsDigit(c))
+                    {
+                        while(positionInInput < input.Length && char.IsDigit(input, positionInInput))
+                            positionInInput++;
+
+                        textBuilder.Append(input, tokenStart, positionInInput - tokenStart);
+                        return Token.Integer;
+                    }
+
+                    textBuilder.Append(c);
+                    return c;
+            }
+        }
+
+        private int Select(char following, int ifFollows, int ifDoesNotFollow)
+        {
+            if(positionInInput < input.Length && input[positionInInput] == following)
+            {
+                textBuilder.Append(following);
+                positionInInput++;
+                return ifFollows;
             }
 
-            textBuilder.Append(c);
-            return c;
+            return ifDoesNotFollow;
         }
 
         private void SkipWhiteSpace()
