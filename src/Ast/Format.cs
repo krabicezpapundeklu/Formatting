@@ -2,7 +2,7 @@
 {
     using System;
 
-    public abstract class Format : AstNode, IFormatStringItem
+    public abstract class Format : FormatStringItem
     {
         protected Format(ArgumentIndex argumentIndex)
             : this(Location.Unknown, argumentIndex) {}

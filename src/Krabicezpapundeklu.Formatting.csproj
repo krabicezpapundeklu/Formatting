@@ -39,8 +39,8 @@
     <Compile Include="Ast\Expression.cs" />
     <Compile Include="Ast\FormatString.cs" />
     <Compile Include="Ast\AstNode.cs" />
+    <Compile Include="Ast\FormatStringItem.cs" />
     <Compile Include="Ast\IAstVisitor.cs" />
-    <Compile Include="Ast\IFormatStringItem.cs" />
     <Compile Include="Ast\Format.cs" />
     <Compile Include="Ast\Integer.cs" />
     <Compile Include="Ast\Operator.cs" />

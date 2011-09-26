@@ -7,30 +7,30 @@
 
     public class FormatString : AstNode
     {
-        public static readonly FormatString Empty = new FormatString(Enumerable.Empty<IFormatStringItem>());
+        public static readonly FormatString Empty = new FormatString(Enumerable.Empty<FormatStringItem>());
 
-        public FormatString(IEnumerable<IFormatStringItem> items)
+        public FormatString(IEnumerable<FormatStringItem> items)
             : this(Location.FromRange(items), items) {}
 
-        public FormatString(Location location, IEnumerable<IFormatStringItem> items)
+        public FormatString(Location location, IEnumerable<FormatStringItem> items)
             : base(location)
         {
             if(items == null)
                 throw new ArgumentNullException("items");
 
-            Items = new ReadOnlyCollection<IFormatStringItem>(new List<IFormatStringItem>(items));
+            Items = new ReadOnlyCollection<FormatStringItem>(new List<FormatStringItem>(items));
         }
 
-        public ReadOnlyCollection<IFormatStringItem> Items { get; private set; }
+        public ReadOnlyCollection<FormatStringItem> Items { get; private set; }
 
         public override string ToString()
         {
             return string.Concat(Items.Select(x => x.ToString()));
         }
 
-        protected override void DoAccept(IAstVisitor visitor)
+        protected override object DoAccept(IAstVisitor visitor)
         {
-            visitor.Visit(this);
+            return visitor.Visit(this);
         }
 
         protected override AstNode DoClone(Location newLocation)

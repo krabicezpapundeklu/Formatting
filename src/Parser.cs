@@ -159,7 +159,7 @@
 
         private FormatString ParseFormatString()
         {
-            var items = new List<IFormatStringItem>();
+            var items = new List<FormatStringItem>();
 
             while(true)
             {
