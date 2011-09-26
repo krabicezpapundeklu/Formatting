@@ -44,6 +44,7 @@
                         break;
 
                     default:
+                        // this should not happen
                         throw new InvalidOperationException(string.Format("State \"{0}\" is not supported.", State));
                 }
             else

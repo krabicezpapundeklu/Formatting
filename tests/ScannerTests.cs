@@ -18,7 +18,7 @@
         [MultipleAsserts]
         [Row(@"\", "Unexpected end of input.", 1, 1)]
         [Row(@"\x", "\"x\" cannot be escaped.", 0, 2)]
-        public void Scan_WhenHavingLexicalError_ThrowsException(
+        public void Scan_WhenHavingError_ThrowsException(
             string input, string errorMessage, int errorStart, int errorEnd)
         {
             Helpers.RequireFormattingException(

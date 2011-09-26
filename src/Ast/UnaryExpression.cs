@@ -16,6 +16,10 @@
             if(operand == null)
                 throw new ArgumentNullException("operand");
 
+            if(unaryOperator.Token != '-')
+                throw new ArgumentException(
+                    string.Format("\"{0}\" is not unary operator.", unaryOperator), "unaryOperator");
+
             Operator = unaryOperator;
             Operand = operand;
         }

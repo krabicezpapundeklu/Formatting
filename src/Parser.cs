@@ -25,7 +25,9 @@
         public FormatString Parse()
         {
             FormatString formatString = ParseFormatString();
-            Expect(Token.EndOfInput);
+
+            if(!Accept(Token.EndOfInput))
+                throw new FormattingException(nextTokenInfo.Location, "Unescaped \"}}\".");
 
             return formatString;
         }
@@ -47,15 +49,15 @@
             nextTokenInfo = scanner.Scan();
         }
 
-        private FormattingException UnexpectedEndOfInput(Location location)
-        {
-            return new FormattingException(location, "Unexpected end of input.");
-        }
-
         private TokenInfo Expect(int token)
         {
             if(!Accept(token))
-                throw new FormatException("invalid token"); // TODO
+            {
+                if(nextTokenInfo.Token == Token.EndOfInput)
+                    throw UnexpectedEndOfInput(nextTokenInfo.Location);
+
+                throw new FormattingException(nextTokenInfo.Location, "Unexpected \"{0}\".", nextTokenInfo.Text);
+            }
 
             return currentTokenInfo;
         }
@@ -72,13 +74,20 @@
                 {
                     Operator binaryOperator = ParseOperator();
 
-                    var expression = new BinaryExpression(
-                        binaryOperator, (Expression)implicitOperand.Clone(binaryOperator.Location),
-                        ParseUnaryExpression());
+                    try
+                    {
+                        var expression = new BinaryExpression(
+                            binaryOperator, (Expression)implicitOperand.Clone(binaryOperator.Location),
+                            ParseUnaryExpression());
 
-                    andExpression = andExpression == null
-                        ? expression
-                        : new BinaryExpression(new Operator(Token.And), andExpression, expression);
+                        andExpression = andExpression == null
+                            ? expression
+                            : new BinaryExpression(new Operator(Token.And), andExpression, expression);
+                    }
+                    catch(ArgumentException)
+                    {
+                        throw new FormattingException(binaryOperator.Location, "Expected binary operator.");
+                    }
                 }
                 while(nextTokenInfo.Token != ':' && nextTokenInfo.Token != ',');
 
@@ -162,6 +171,7 @@
                         break;
 
                     default:
+                        // this should not happen
                         throw new InvalidOperationException(
                             string.Format("Token {0} is not valid here.", Token.ToString(nextTokenInfo.Token)));
                 }
@@ -246,6 +256,11 @@
             return nextTokenInfo.Token == '-'
                 ? new UnaryExpression(ParseOperator(), ParsePrimaryExpression())
                 : ParsePrimaryExpression();
+        }
+
+        private static FormattingException UnexpectedEndOfInput(Location location)
+        {
+            return new FormattingException(location, "Unexpected end of input.");
         }
     }
 }

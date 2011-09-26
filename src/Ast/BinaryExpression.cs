@@ -20,6 +20,20 @@
             if(rightExpression == null)
                 throw new ArgumentNullException("rightExpression");
 
+            switch(binaryOperator.Token)
+            {
+                case '=':
+                case '!':
+                case '>':
+                case '<':
+                    // nothing to do
+                    break;
+
+                default:
+                    throw new ArgumentException(
+                        string.Format("\"{0}\" is not binary operator.", binaryOperator), "binaryOperator");
+            }
+
             Operator = binaryOperator;
             LeftExpression = leftExpression;
             RightExpression = rightExpression;

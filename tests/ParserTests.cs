@@ -40,11 +40,15 @@
 
         [Test]
         [MultipleAsserts]
+        [Row("xx}xx", "Unescaped \"}\".", 2, 3)]
         [Row("{0 {x", "Unknown operator \"x\".", 4, 5)]
         [Row("{0 {", "Unexpected end of input.", 4, 4)]
         [Row("{0 {=z", "Expected argument, but got \"z\".", 5, 6)]
         [Row("{0 {=", "Unexpected end of input.", 5, 5)]
-        public void Parse_WhenHavingSyntaxError_ThrowsException(
+        [Row("{0", "Unexpected end of input.", 2, 2)]
+        [Row("{x", "Unexpected \"x\".", 1, 2)]
+        [Row("{0 {-1", "Expected binary operator.", 4, 5)]
+        public void Parse_WhenHavingError_ThrowsException(
             string input, string errorMessage, int errorStart, int errorEnd)
         {
             Helpers.RequireFormattingException(
