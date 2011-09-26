@@ -18,11 +18,11 @@
             if(text == null)
                 throw new ArgumentNullException("text");
 
-            Constant = constant;
+            Value = constant;
             Text = text;
         }
 
-        public object Constant { get; private set; }
+        public object Value { get; private set; }
         public string Text { get; private set; }
 
         public override string ToString()
@@ -37,7 +37,7 @@
 
         protected override AstNode DoClone(Location newLocation)
         {
-            return new ConstantExpression(newLocation, Constant, Text);
+            return new ConstantExpression(newLocation, Value, Text);
         }
     }
 }
