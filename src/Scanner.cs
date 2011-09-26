@@ -105,6 +105,18 @@
                     textBuilder.Append(c);
                     return Select('=', Token.GreaterOrEqual, '>');
 
+                case 'e':
+                    if(positionInInput + 2 < input.Length && input[positionInInput] == 'l' &&
+                        input[positionInInput + 1] == 's' && input[positionInInput + 2] == 'e' &&
+                            (positionInInput + 3 == input.Length || !char.IsLetterOrDigit(input, positionInInput + 3)))
+                    {
+                        positionInInput += 3;
+                        textBuilder.Append(input, tokenStart, positionInInput - tokenStart);
+                        return Token.Else;
+                    }
+
+                    return c;
+
                 default:
                     if(char.IsDigit(c))
                     {
