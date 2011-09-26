@@ -16,14 +16,16 @@
 
         [Test]
         [MultipleAsserts]
-        [Row(@"\", 1, 1)]
-        [Row(@"\x", 0, 2)]
-        public void Scan_WhenScanningInvalidEscape_ThrowsException(string input, int errorStart, int errorEnd)
+        [Row(@"\", "Unexpected end of input.", 1, 1)]
+        [Row(@"\x", "\"x\" cannot be escaped.", 0, 2)]
+        public void Scan_WhenScanningInvalidEscape_ThrowsException(
+            string input, string errorMessage, int errorStart, int errorEnd)
         {
-            var error = Assert.Throws<FormattingException>(() => Helpers.CreateTextScanner(input).Scan());
+            var exception = Assert.Throws<FormattingException>(() => Helpers.CreateTextScanner(input).Scan());
 
-            Assert.That(error.Location.Start, Is.EqualTo(errorStart), "Error start");
-            Assert.That(error.Location.End, Is.EqualTo(errorEnd), "Error end");
+            Assert.That(exception.Message, Is.EqualTo(errorMessage), "Error message doesn't match.");
+            Assert.That(exception.Location.Start, Is.EqualTo(errorStart), "Error start doesn't match.");
+            Assert.That(exception.Location.End, Is.EqualTo(errorEnd), "Error end doesn't match.");
         }
 
         [Test]

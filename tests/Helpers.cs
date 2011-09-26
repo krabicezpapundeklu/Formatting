@@ -6,14 +6,19 @@
 
     internal static class Helpers
     {
-        public static Scanner CreateTextScanner(string text)
+        public static Scanner CreateTextScanner(string input)
         {
-            return new Scanner(text) {State = ScannerState.ScanningText};
+            return new Scanner(input) {State = ScannerState.ScanningText};
         }
 
-        public static Scanner CreateTokenScanner(string text)
+        public static Scanner CreateTokenScanner(string input)
         {
-            return new Scanner(text) {State = ScannerState.ScanningTokens};
+            return new Scanner(input) {State = ScannerState.ScanningTokens};
+        }
+
+        public static Parser CreateParser(string input)
+        {
+            return new Parser(CreateTextScanner(input));
         }
 
         public static List<KeyValuePair<string, T>> GetFields<T>(Type type)
