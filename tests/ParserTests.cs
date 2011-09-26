@@ -35,7 +35,21 @@
         [Row("{0 {>{1}<{5},={0}:xxx}}")]
         public void Parse_ParsesInputCorrectly(string input)
         {
-            Assert.That(new Parser(new Scanner(input)).Parse().ToString(), Is.EqualTo(input));
+            Assert.That(Helpers.CreateParser(input).Parse().ToString(), Is.EqualTo(input));
+        }
+
+        [Test]
+        [MultipleAsserts]
+        [Row("{0 {x", "Unknown operator \"x\".", 4, 5)]
+        [Row("{0 {", "Unexpected end of input.", 4, 4)]
+        public void Parse_WhenParsingUnknownOperator_ThrowsException(
+            string input, string errorMessage, int errorStart, int errorEnd)
+        {
+            var exception = Assert.Throws<FormattingException>(() => Helpers.CreateParser(input).Parse());
+
+            Assert.That(exception.Message, Is.EqualTo(errorMessage), "Error message doesn't match.");
+            Assert.That(exception.Location.Start, Is.EqualTo(errorStart), "Error start doesn't match.");
+            Assert.That(exception.Location.End, Is.EqualTo(errorEnd), "Error end doesn't match.");
         }
     }
 }

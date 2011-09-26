@@ -179,8 +179,10 @@
                     return new Operator(currentTokenInfo.Location, currentTokenInfo.Token);
 
                 default:
-                    // TODO
-                    throw new FormatException(string.Format("Unknown operator \"{0}\".", currentTokenInfo.Text));
+                    throw new FormattingException(
+                        currentTokenInfo.Location, currentTokenInfo.Token == Token.EndOfInput
+                            ? "Unexpected end of input."
+                            : string.Format("Unknown operator \"{0}\".", currentTokenInfo.Text));
             }
         }
 
