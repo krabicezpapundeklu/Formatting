@@ -64,6 +64,12 @@
 
         private Expression ParseCondition(Expression implicitOperand)
         {
+            if(nextTokenInfo.Token == Token.Else)
+            {
+                Consume();
+                return new ConstantExpression(currentTokenInfo.Location, true, "else");
+            }
+
             Expression condition = null;
 
             do
@@ -72,6 +78,9 @@
 
                 do
                 {
+                    if(nextTokenInfo.Token == Token.Else)
+                        throw new FormattingException(nextTokenInfo.Location, "\"else\" must be used alone.");
+
                     Operator binaryOperator = ParseOperator();
 
                     try

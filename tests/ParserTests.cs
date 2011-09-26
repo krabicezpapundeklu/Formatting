@@ -34,6 +34,7 @@
         [Row("{0 {>1<5,=0:xxx}}")]
         [Row("{0 {>{1}<{5},={0}:xxx}}")]
         [Row("{0 {>=1:aaa}}")]
+        [Row("{0 {else:aaa}}")]
         public void Parse_ParsesInputCorrectly(string input)
         {
             Assert.That(Helpers.CreateParser(input).Parse().ToString(), Is.EqualTo(input));
@@ -49,6 +50,8 @@
         [Row("{0", "Unexpected end of input.", 2, 2)]
         [Row("{x", "Unexpected \"x\".", 1, 2)]
         [Row("{0 {-1", "Expected binary operator.", 4, 5)]
+        [Row("{0 {else 123", "Unexpected \"123\".", 9, 12)]
+        [Row("{0 {=1 else:", "\"else\" must be used alone.", 7, 11)]
         public void Parse_WhenHavingError_ThrowsException(
             string input, string errorMessage, int errorStart, int errorEnd)
         {
