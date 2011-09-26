@@ -26,6 +26,10 @@
                 case '!':
                 case '>':
                 case '<':
+                case ',':
+                case Token.LessOrEqual:
+                case Token.GreaterOrEqual:
+                case Token.And:
                     // nothing to do
                     break;
 

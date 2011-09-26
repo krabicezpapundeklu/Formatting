@@ -33,6 +33,7 @@
         [Row("{0 {=1,=2,=3:xxx}}")]
         [Row("{0 {>1<5,=0:xxx}}")]
         [Row("{0 {>{1}<{5},={0}:xxx}}")]
+        [Row("{0 {>=1:aaa}}")]
         public void Parse_ParsesInputCorrectly(string input)
         {
             Assert.That(Helpers.CreateParser(input).Parse().ToString(), Is.EqualTo(input));
