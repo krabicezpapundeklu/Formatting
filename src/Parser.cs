@@ -136,7 +136,7 @@
             return new ConditionalFormat(argumentIndex, cases);
         }
 
-        private Format ParseFormat()
+        private Ast.Format ParseFormat()
         {
             scanner.State = ScannerState.ScanningTokens;
 
@@ -145,7 +145,7 @@
 
             var argumentIndex = new ArgumentIndex(currentTokenInfo.Location, index);
 
-            Format format;
+            Ast.Format format;
 
             if(nextTokenInfo.Token == '{')
                 format = ParseConditionalFormat(argumentIndex);
@@ -154,7 +154,7 @@
 
             scanner.State = ScannerState.ScanningText;
 
-            return (Format)format.Clone(new Location(start, Expect('}').Location.End));
+            return (Ast.Format)format.Clone(new Location(start, Expect('}').Location.End));
         }
 
         private FormatString ParseFormatString()

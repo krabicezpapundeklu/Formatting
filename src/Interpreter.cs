@@ -38,30 +38,46 @@
             if(binaryExpression == null)
                 throw new ArgumentNullException("binaryExpression");
 
-            int leftOperand;
-            int rightOperand;
+            int leftIntegerOperand;
+            int rightIntegerOperand;
 
-            ExpectIntegerOperands(binaryExpression, out leftOperand, out rightOperand);
+            bool leftBooleanOperand;
+            bool rightBooleanOperand;
 
+            // TODO: support more operand types... if need ;-)
             switch(binaryExpression.Operator.Token)
             {
                 case '=':
-                    return leftOperand == rightOperand;
+                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
+                    return leftIntegerOperand == rightIntegerOperand;
 
                 case '!':
-                    return leftOperand != rightOperand;
+                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
+                    return leftIntegerOperand != rightIntegerOperand;
 
                 case '>':
-                    return leftOperand > rightOperand;
+                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
+                    return leftIntegerOperand > rightIntegerOperand;
 
                 case '<':
-                    return leftOperand < rightOperand;
+                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
+                    return leftIntegerOperand < rightIntegerOperand;
+
+                case ',':
+                    CastOperands(binaryExpression, out leftBooleanOperand, out rightBooleanOperand);
+                    return leftBooleanOperand || rightBooleanOperand;
 
                 case Token.LessOrEqual:
-                    return leftOperand <= rightOperand;
+                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
+                    return leftIntegerOperand <= rightIntegerOperand;
 
                 case Token.GreaterOrEqual:
-                    return leftOperand >= rightOperand;
+                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
+                    return leftIntegerOperand >= rightIntegerOperand;
+
+                case Token.And:
+                    CastOperands(binaryExpression, out leftBooleanOperand, out rightBooleanOperand);
+                    return leftBooleanOperand && rightBooleanOperand;
 
                 default:
                     throw new FormattingException(
@@ -170,7 +186,7 @@
 
                     throw new FormattingException(
                         unaryExpression.Operator.Location,
-                        "Operator \"-\" cannot be applied to operand of type \"{1}\".", operand.GetType());
+                        "Operator \"-\" cannot be applied to operand of type \"{0}\".", operand.GetType());
 
                 default:
                     throw new FormattingException(
@@ -180,15 +196,15 @@
 
         #endregion
 
-        private void ExpectIntegerOperands(BinaryExpression binaryExpression, out int leftOperand, out int rightOperand)
+        private void CastOperands<T>(BinaryExpression binaryExpression, out T leftOperand, out T rightOperand)
         {
             object left = binaryExpression.LeftExpression.Accept(this);
             object right = binaryExpression.RightExpression.Accept(this);
 
-            if(left is int && right is int)
+            if(left is T && right is T)
             {
-                leftOperand = (int)left;
-                rightOperand = (int)right;
+                leftOperand = (T)left;
+                rightOperand = (T)right;
                 return;
             }
 
