@@ -35,6 +35,7 @@
     <Compile Include="Ast\BinaryExpression.cs" />
     <Compile Include="Ast\Case.cs" />
     <Compile Include="Ast\ConditionalFormat.cs" />
+    <Compile Include="Ast\ConstantExpression.cs" />
     <Compile Include="Ast\Expression.cs" />
     <Compile Include="Ast\FormatString.cs" />
     <Compile Include="Ast\AstNode.cs" />
