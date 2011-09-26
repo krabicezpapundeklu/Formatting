@@ -21,12 +21,12 @@
 
         #endregion
 
-        public void Accept(IAstVisitor visitor)
+        public object Accept(IAstVisitor visitor)
         {
             if(visitor == null)
                 throw new ArgumentNullException("visitor");
 
-            DoAccept(visitor);
+            return DoAccept(visitor);
         }
 
         public AstNode Clone(Location newLocation)
@@ -37,7 +37,7 @@
             return DoClone(newLocation);
         }
 
-        protected abstract void DoAccept(IAstVisitor visitor);
+        protected abstract object DoAccept(IAstVisitor visitor);
         protected abstract AstNode DoClone(Location newLocation);
     }
 }

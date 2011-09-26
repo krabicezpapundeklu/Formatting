@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class Text : AstNode, IFormatStringItem
+    public class Text : FormatStringItem
     {
         public Text(string value)
             : this(Location.Unknown, value) {}
@@ -23,9 +23,9 @@
             return EscapeHelpers.Escape(Value);
         }
 
-        protected override void DoAccept(IAstVisitor visitor)
+        protected override object DoAccept(IAstVisitor visitor)
         {
-            visitor.Visit(this);
+            return visitor.Visit(this);
         }
 
         protected override AstNode DoClone(Location newLocation)

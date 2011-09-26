@@ -2,16 +2,16 @@
 {
     public interface IAstVisitor
     {
-        void Visit(ArgumentIndex argumentIndex);
-        void Visit(BinaryExpression binaryExpression);
-        void Visit(Case @case);
-        void Visit(ConditionalFormat conditionalFormat);
-        void Visit(ConstantExpression constantExpression);
-        void Visit(FormatString formatString);
-        void Visit(Integer integer);
-        void Visit(Operator @operator);
-        void Visit(SimpleFormat simpleFormat);
-        void Visit(Text text);
-        void Visit(UnaryExpression unaryExpression);
+        object Visit(ArgumentIndex argumentIndex);
+        object Visit(BinaryExpression binaryExpression);
+        object Visit(Case @case);
+        object Visit(ConditionalFormat conditionalFormat);
+        object Visit(ConstantExpression constantExpression);
+        object Visit(FormatString formatString);
+        object Visit(Integer integer);
+        object Visit(Operator @operator);
+        object Visit(SimpleFormat simpleFormat);
+        object Visit(Text text);
+        object Visit(UnaryExpression unaryExpression);
     }
 }
