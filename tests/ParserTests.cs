@@ -42,14 +42,13 @@
         [MultipleAsserts]
         [Row("{0 {x", "Unknown operator \"x\".", 4, 5)]
         [Row("{0 {", "Unexpected end of input.", 4, 4)]
-        public void Parse_WhenParsingUnknownOperator_ThrowsException(
+        [Row("{0 {=z", "Expected argument, but got \"z\".", 5, 6)]
+        [Row("{0 {=", "Unexpected end of input.", 5, 5)]
+        public void Parse_WhenHavingSyntaxError_ThrowsException(
             string input, string errorMessage, int errorStart, int errorEnd)
         {
-            var exception = Assert.Throws<FormattingException>(() => Helpers.CreateParser(input).Parse());
-
-            Assert.That(exception.Message, Is.EqualTo(errorMessage), "Error message doesn't match.");
-            Assert.That(exception.Location.Start, Is.EqualTo(errorStart), "Error start doesn't match.");
-            Assert.That(exception.Location.End, Is.EqualTo(errorEnd), "Error end doesn't match.");
+            Helpers.RequireFormattingException(
+                () => Helpers.CreateParser(input).Parse(), errorMessage, errorStart, errorEnd);
         }
     }
 }

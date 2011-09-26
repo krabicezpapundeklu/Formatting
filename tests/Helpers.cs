@@ -4,6 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using MbUnit.Framework;
+
+    using NHamcrest.Core;
+
     internal static class Helpers
     {
         public static Scanner CreateTextScanner(string input)
@@ -24,6 +28,15 @@
         public static List<KeyValuePair<string, T>> GetFields<T>(Type type)
         {
             return type.GetFields().Select(x => new KeyValuePair<string, T>(x.Name, (T)x.GetValue(null))).ToList();
+        }
+
+        public static void RequireFormattingException(Action action, string errorMessage, int errorStart, int errorEnd)
+        {
+            var exception = Assert.Throws<FormattingException>(() => action());
+
+            Assert.That(exception.Message, Is.EqualTo(errorMessage), "Error message doesn't match.");
+            Assert.That(exception.Location.Start, Is.EqualTo(errorStart), "Error start doesn't match.");
+            Assert.That(exception.Location.End, Is.EqualTo(errorEnd), "Error end doesn't match.");
         }
 
         public static List<string> Tokenize(Scanner scanner)
