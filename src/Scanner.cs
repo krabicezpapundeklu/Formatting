@@ -72,8 +72,13 @@
                         return Token.Text;
 
                     case '\\':
-                        if(positionInInput == input.Length || !EscapeHelpers.MustBeEscaped(c = input[positionInInput++]))
-                            throw new FormatException("invalid escape"); // TODO
+                        if(positionInInput == input.Length)
+                            throw new FormattingException(
+                                new Location(positionInInput, positionInInput), "Unexpected end of input.");
+
+                        if(!EscapeHelpers.MustBeEscaped(c = input[positionInInput++]))
+                            throw new FormattingException(
+                                new Location(positionInInput - 2, positionInInput), "\"{0}\" cannot be escaped.", c);
 
                         break;
                 }

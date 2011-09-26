@@ -15,6 +15,18 @@
         }
 
         [Test]
+        [MultipleAsserts]
+        [Row(@"\", 1, 1)]
+        [Row(@"\x", 0, 2)]
+        public void Scan_WhenScanningInvalidEscape_ThrowsException(string input, int errorStart, int errorEnd)
+        {
+            var error = Assert.Throws<FormattingException>(() => Helpers.CreateTextScanner(input).Scan());
+
+            Assert.That(error.Location.Start, Is.EqualTo(errorStart), "Error start");
+            Assert.That(error.Location.End, Is.EqualTo(errorEnd), "Error end");
+        }
+
+        [Test]
         [Row("", new[] {"<EndOfInput, 0, 0>"})]
         [Row("xxx", new[] {"<Text, 0, 3: xxx>", "<EndOfInput, 3, 3>"})]
         [Row("{", new[] {"<{, 0, 1: {>", "<EndOfInput, 1, 1>"})]
@@ -32,8 +44,7 @@
         [Row(@"xxx\\\{yyy", new[] {@"<Text, 0, 10: xxx\{yyy>", "<EndOfInput, 10, 10>"})]
         public void Scan_WhenScanningText_ScansItCorrectly(string input, string[] expectedTokens)
         {
-            Assert.AreElementsEqual(
-                expectedTokens, Helpers.Tokenize(new Scanner(input) {State = ScannerState.ScanningText}));
+            Assert.AreElementsEqual(expectedTokens, Helpers.Tokenize(Helpers.CreateTextScanner(input)));
         }
 
         [Test]
@@ -44,8 +55,7 @@
         [Row("123", new[] {"<Integer, 0, 3: 123>", "<EndOfInput, 3, 3>"})]
         public void Scan_WhenScanningTokens_ScansThemCorrectly(string input, string[] expectedTokens)
         {
-            Assert.AreElementsEqual(
-                expectedTokens, Helpers.Tokenize(new Scanner(input) {State = ScannerState.ScanningTokens}));
+            Assert.AreElementsEqual(expectedTokens, Helpers.Tokenize(Helpers.CreateTokenScanner(input)));
         }
     }
 }

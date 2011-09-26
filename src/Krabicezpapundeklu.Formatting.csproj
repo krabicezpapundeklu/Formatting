@@ -46,6 +46,7 @@
     <Compile Include="Ast\Text.cs" />
     <Compile Include="Ast\UnaryExpression.cs" />
     <Compile Include="EscapeHelpers.cs" />
+    <Compile Include="FormattingException.cs" />
     <Compile Include="ILocated.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Parser.cs" />

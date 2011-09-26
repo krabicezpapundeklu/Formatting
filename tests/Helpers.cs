@@ -6,6 +6,16 @@
 
     internal static class Helpers
     {
+        public static Scanner CreateTextScanner(string text)
+        {
+            return new Scanner(text) {State = ScannerState.ScanningText};
+        }
+
+        public static Scanner CreateTokenScanner(string text)
+        {
+            return new Scanner(text) {State = ScannerState.ScanningTokens};
+        }
+
         public static List<KeyValuePair<string, T>> GetFields<T>(Type type)
         {
             return type.GetFields().Select(x => new KeyValuePair<string, T>(x.Name, (T)x.GetValue(null))).ToList();
