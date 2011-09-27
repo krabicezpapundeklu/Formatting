@@ -6,7 +6,7 @@
 
     using Ast;
 
-    public class Interpreter : IAstVisitor
+    public class Interpreter : AstVisitor
     {
         private readonly object[] arguments;
         private readonly IFormatProvider formatProvider;
@@ -20,24 +20,21 @@
             this.arguments = arguments;
         }
 
-        #region IAstVisitor Members
-
-        public object Visit(ArgumentIndex argumentIndex)
+        protected override object Default(AstNode node)
         {
-            if(argumentIndex == null)
-                throw new ArgumentNullException("argumentIndex");
+            return null;
+        }
 
+        protected override object DoVisit(ArgumentIndex argumentIndex)
+        {
             if(argumentIndex.Index >= arguments.Length)
                 throw new FormattingException(argumentIndex.Location, "Argument index is out of range.");
 
             return arguments[argumentIndex.Index];
         }
 
-        public object Visit(BinaryExpression binaryExpression)
+        protected override object DoVisit(BinaryExpression binaryExpression)
         {
-            if(binaryExpression == null)
-                throw new ArgumentNullException("binaryExpression");
-
             int leftIntegerOperand;
             int rightIntegerOperand;
 
@@ -85,38 +82,21 @@
             }
         }
 
-        public object Visit(Case @case)
+        protected override object DoVisit(ConditionalFormat conditionalFormat)
         {
-            if(@case == null)
-                throw new ArgumentNullException("case");
-
-            return null;
-        }
-
-        public object Visit(ConditionalFormat conditionalFormat)
-        {
-            if(conditionalFormat == null)
-                throw new ArgumentNullException("conditionalFormat");
-
             foreach(Case @case in conditionalFormat.Cases.Where(x => (bool)x.Condition.Accept(this)))
                 return @case.FormatString.Accept(this);
 
             return string.Empty;
         }
 
-        public object Visit(ConstantExpression constantExpression)
+        protected override object DoVisit(ConstantExpression constantExpression)
         {
-            if(constantExpression == null)
-                throw new ArgumentNullException("constantExpression");
-
             return constantExpression.Value;
         }
 
-        public object Visit(FormatString formatString)
+        protected override object DoVisit(FormatString formatString)
         {
-            if(formatString == null)
-                throw new ArgumentNullException("formatString");
-
             var builder = new StringBuilder();
 
             foreach(FormatStringItem item in formatString.Items)
@@ -125,27 +105,13 @@
             return builder.ToString();
         }
 
-        public object Visit(Integer integer)
+        protected override object DoVisit(Integer integer)
         {
-            if(integer == null)
-                throw new ArgumentNullException("integer");
-
             return integer.Value;
         }
 
-        public object Visit(Operator @operator)
+        protected override object DoVisit(SimpleFormat simpleFormat)
         {
-            if(@operator == null)
-                throw new ArgumentNullException("operator");
-
-            return null;
-        }
-
-        public object Visit(SimpleFormat simpleFormat)
-        {
-            if(simpleFormat == null)
-                throw new ArgumentNullException("simpleFormat");
-
             object argument = simpleFormat.ArgumentIndex.Accept(this);
             var format = (string)simpleFormat.FormatString.Accept(this);
 
@@ -163,19 +129,13 @@
             return formatted;
         }
 
-        public object Visit(Text text)
+        protected override object DoVisit(Text text)
         {
-            if(text == null)
-                throw new ArgumentNullException("text");
-
             return text.Value;
         }
 
-        public object Visit(UnaryExpression unaryExpression)
+        protected override object DoVisit(UnaryExpression unaryExpression)
         {
-            if(unaryExpression == null)
-                throw new ArgumentNullException("unaryExpression");
-
             switch(unaryExpression.Operator.Token)
             {
                 case '-':
@@ -193,8 +153,6 @@
                         unaryExpression.Operator.Location, "Invalid operator \"{0}\".", unaryExpression.Operator.Text);
             }
         }
-
-        #endregion
 
         private void CastOperands<T>(BinaryExpression binaryExpression, out T leftOperand, out T rightOperand)
         {
