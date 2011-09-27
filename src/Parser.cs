@@ -251,7 +251,7 @@
 
         private Expression ParseUnaryExpression()
         {
-            return nextTokenInfo.Token == '-'
+            return Operator.IsUnaryOperator(nextTokenInfo.Token)
                 ? new UnaryExpression(ParseOperator(), ParsePrimaryExpression())
                 : ParsePrimaryExpression();
         }
