@@ -85,9 +85,11 @@
 
                     try
                     {
+                        Expression rightOperand = ParseUnaryExpression();
+
                         var expression = new BinaryExpression(
-                            binaryOperator, (Expression)implicitOperand.Clone(binaryOperator.Location),
-                            ParseUnaryExpression());
+                            Location.FromRange(binaryOperator, rightOperand), binaryOperator, implicitOperand,
+                            rightOperand);
 
                         andExpression = andExpression == null
                             ? expression

@@ -25,6 +25,11 @@
         public int Start { get; private set; }
         public int End { get; private set; }
 
+        public bool IsKnown
+        {
+            get { return this != Unknown; }
+        }
+
         public static Location FromRange(params ILocated[] items)
         {
             return FromRange((IEnumerable<ILocated>)items);
