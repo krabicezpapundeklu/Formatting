@@ -95,14 +95,14 @@
         {
             char c = input[positionInInput++];
 
+            textBuilder.Append(c);
+
             switch(c)
             {
                 case '<':
-                    textBuilder.Append(c);
                     return Select('=', Token.LessOrEqual, '<');
 
                 case '>':
-                    textBuilder.Append(c);
                     return Select('=', Token.GreaterOrEqual, '>');
 
                 case 'e':
@@ -111,11 +111,10 @@
                             (positionInInput + 3 == input.Length || !char.IsLetterOrDigit(input, positionInInput + 3)))
                     {
                         positionInInput += 3;
-                        textBuilder.Append(input, tokenStart, positionInInput - tokenStart);
+                        textBuilder.Append(input, tokenStart + 1, positionInInput - tokenStart - 1);
                         return Token.Else;
                     }
 
-                    textBuilder.Append(c);
                     return c;
 
                 default:
@@ -124,11 +123,10 @@
                         while(positionInInput < input.Length && char.IsDigit(input, positionInInput))
                             positionInInput++;
 
-                        textBuilder.Append(input, tokenStart, positionInInput - tokenStart);
+                        textBuilder.Append(input, tokenStart + 1, positionInInput - tokenStart - 1);
                         return Token.Integer;
                     }
 
-                    textBuilder.Append(c);
                     return c;
             }
         }
