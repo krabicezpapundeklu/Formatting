@@ -115,6 +115,7 @@
                         return Token.Else;
                     }
 
+                    textBuilder.Append(c);
                     return c;
 
                 default:
