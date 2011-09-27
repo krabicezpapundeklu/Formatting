@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Ast\ArgumentIndex.cs" />
+    <Compile Include="Ast\AstVisitor.cs" />
     <Compile Include="Ast\BinaryExpression.cs" />
     <Compile Include="Ast\Case.cs" />
     <Compile Include="Ast\ConditionalFormat.cs" />
