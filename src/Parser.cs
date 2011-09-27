@@ -188,26 +188,16 @@
 
         private Operator ParseOperator()
         {
-            Consume();
-
-            switch(currentTokenInfo.Token)
+            if(Operator.IsOperator(nextTokenInfo.Token))
             {
-                case '-':
-                case '=':
-                case '!':
-                case '>':
-                case '<':
-                case Token.LessOrEqual:
-                case Token.GreaterOrEqual:
-                    return new Operator(currentTokenInfo.Location, currentTokenInfo.Token, currentTokenInfo.Text);
-
-                default:
-                    if(currentTokenInfo.Token == Token.EndOfInput)
-                        throw UnexpectedEndOfInput(currentTokenInfo.Location);
-
-                    throw new FormattingException(
-                        currentTokenInfo.Location, "Unknown operator \"{0}\".", currentTokenInfo.Text);
+                Consume();
+                return new Operator(currentTokenInfo.Location, currentTokenInfo.Token, currentTokenInfo.Text);
             }
+
+            if(nextTokenInfo.Token == Token.EndOfInput)
+                throw UnexpectedEndOfInput(nextTokenInfo.Location);
+
+            throw new FormattingException(nextTokenInfo.Location, "Unknown operator \"{0}\".", nextTokenInfo.Text);
         }
 
         private Expression ParsePrimaryExpression()

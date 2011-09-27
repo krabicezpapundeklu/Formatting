@@ -21,6 +21,9 @@
             if(text == null)
                 throw new ArgumentNullException("text");
 
+            if(!IsOperator(token))
+                throw new ArgumentException(string.Format("\"{0}\" is not valid operator.", T.ToString(token)), "token");
+
             Token = token;
             Text = text;
         }
@@ -31,6 +34,11 @@
         public bool IsBinary
         {
             get { return IsBinaryOperator(Token); }
+        }
+
+        public bool IsUnary
+        {
+            get { return IsUnaryOperator(Token); }
         }
 
         public static bool IsBinaryOperator(int token)
@@ -50,6 +58,16 @@
                 default:
                     return false;
             }
+        }
+
+        public static bool IsOperator(int token)
+        {
+            return IsBinaryOperator(token) || IsUnaryOperator(token);
+        }
+
+        public static bool IsUnaryOperator(int token)
+        {
+            return token == '-';
         }
 
         public override string ToString()
