@@ -81,24 +81,19 @@
                     if(nextTokenInfo.Token == Token.Else)
                         throw new FormattingException(nextTokenInfo.Location, "\"else\" must be used alone.");
 
-                    Operator binaryOperator = ParseOperator();
+                    Operator @operator = ParseOperator();
 
-                    try
-                    {
-                        Expression rightOperand = ParseUnaryExpression();
+                    if(!@operator.IsBinary)
+                        throw new FormattingException(@operator.Location, "Expected binary operator.");
 
-                        var expression = new BinaryExpression(
-                            Location.FromRange(binaryOperator, rightOperand), binaryOperator, implicitOperand,
-                            rightOperand);
+                    Expression rightOperand = ParseUnaryExpression();
 
-                        andExpression = andExpression == null
-                            ? expression
-                            : new BinaryExpression(new Operator(Token.And, string.Empty), andExpression, expression);
-                    }
-                    catch(ArgumentException)
-                    {
-                        throw new FormattingException(binaryOperator.Location, "Expected binary operator.");
-                    }
+                    var expression = new BinaryExpression(
+                        Location.FromRange(@operator, rightOperand), @operator, implicitOperand, rightOperand);
+
+                    andExpression = andExpression == null
+                        ? expression
+                        : new BinaryExpression(new Operator(Token.And, string.Empty), andExpression, expression);
                 }
                 while(nextTokenInfo.Token != ':' && nextTokenInfo.Token != ',');
 

@@ -28,6 +28,30 @@
         public int Token { get; private set; }
         public string Text { get; private set; }
 
+        public bool IsBinary
+        {
+            get { return IsBinaryOperator(Token); }
+        }
+
+        public static bool IsBinaryOperator(int token)
+        {
+            switch(token)
+            {
+                case '=':
+                case '!':
+                case '>':
+                case '<':
+                case ',':
+                case T.LessOrEqual:
+                case T.GreaterOrEqual:
+                case T.And:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         public override string ToString()
         {
             return Text;
