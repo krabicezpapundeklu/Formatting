@@ -10,6 +10,7 @@
     {
         private readonly object[] arguments;
         private readonly IFormatProvider formatProvider;
+        private readonly StringBuilder formatted = new StringBuilder();
 
         public Interpreter(IFormatProvider formatProvider, object[] arguments)
         {
@@ -97,12 +98,16 @@
 
         protected override object DoVisit(FormatString formatString)
         {
-            var builder = new StringBuilder();
+            int originalLength = formatted.Length;
 
             foreach(FormatStringItem item in formatString.Items)
-                builder.Append(item.Accept(this));
+                formatted.Append(item.Accept(this));
 
-            return builder.ToString();
+            string formattedString = formatted.ToString(originalLength, formatted.Length - originalLength);
+
+            formatted.Length = originalLength;
+
+            return formattedString;
         }
 
         protected override object DoVisit(Integer integer)
@@ -115,18 +120,25 @@
             object argument = simpleFormat.ArgumentIndex.Accept(this);
             var format = (string)simpleFormat.FormatString.Accept(this);
 
-            string formatted = Format(argument, format);
+            string formattedArgument = Format(argument, format);
 
-            if(formatted.Length < simpleFormat.Width)
-            {
-                var padding = new string(' ', simpleFormat.Width - formatted.Length);
+            int padding = simpleFormat.Width - formattedArgument.Length;
 
-                return simpleFormat.LeftAlign
-                    ? string.Concat(formatted, padding)
-                    : string.Concat(padding, formatted);
-            }
+            if(padding > 0)
+                if(simpleFormat.LeftAlign)
+                {
+                    formatted.Append(formattedArgument);
+                    formatted.Append(' ', padding);
+                }
+                else
+                {
+                    formatted.Append(' ', padding);
+                    formatted.Append(formattedArgument);
+                }
+            else
+                formatted.Append(formattedArgument);
 
-            return formatted;
+            return null;
         }
 
         protected override object DoVisit(Text text)
