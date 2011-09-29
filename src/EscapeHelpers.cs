@@ -1,11 +1,15 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
+    using System;
     using System.Text;
 
     public static class EscapeHelpers
     {
         public static string Escape(string text)
         {
+            if(text == null)
+                throw new ArgumentNullException("text");
+
             var builder = new StringBuilder();
 
             foreach(char c in text)

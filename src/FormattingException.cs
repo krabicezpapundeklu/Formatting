@@ -16,6 +16,10 @@
             Location = location;
         }
 
+        #region ILocated Members
+
         public Location Location { get; private set; }
+
+        #endregion
     }
 }
