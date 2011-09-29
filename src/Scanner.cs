@@ -50,7 +50,7 @@
             else
                 token = Token.EndOfInput;
 
-            return new TokenInfo(token, textBuilder.ToString(), new Location(tokenStart, positionInInput));
+            return new TokenInfo(new Location(tokenStart, positionInInput), token, textBuilder.ToString());
         }
 
         private int ScanText()
