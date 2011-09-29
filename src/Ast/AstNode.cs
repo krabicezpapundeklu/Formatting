@@ -2,7 +2,7 @@
 {
     using System;
 
-    public abstract class AstNode : ICloneable, ILocated
+    public abstract class AstNode : ILocated
     {
         protected AstNode()
             : this(Location.Unknown) {}
@@ -14,15 +14,6 @@
 
             Location = location;
         }
-
-        #region ICloneable Members
-
-        public object Clone()
-        {
-            return DoClone(Location);
-        }
-
-        #endregion
 
         #region ILocated Members
 
