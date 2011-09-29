@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class FormattingException : FormatException
+    public class FormattingException : FormatException, ILocated
     {
         public FormattingException(string format, params object[] arguments)
             : this(Location.Unknown, format, arguments) {}
