@@ -5,24 +5,32 @@
 
     using T = Token;
 
-    public class TokenInfo
+    public class TokenInfo : ILocated
     {
-        public TokenInfo(int token, string text, Location location)
-        {
-            if(text == null)
-                throw new ArgumentNullException("text");
+        public TokenInfo(int token, string text)
+            : this(Location.Unknown, token, text) {}
 
+        public TokenInfo(Location location, int token, string text)
+        {
             if(location == null)
                 throw new ArgumentNullException("location");
 
+            if(text == null)
+                throw new ArgumentNullException("text");
+
+            Location = location;
             Token = token;
             Text = text;
-            Location = location;
         }
 
         public int Token { get; private set; }
         public string Text { get; private set; }
+
+        #region ILocated Members
+
         public Location Location { get; private set; }
+
+        #endregion
 
         public override string ToString()
         {
