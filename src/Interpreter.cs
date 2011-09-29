@@ -85,6 +85,9 @@
 
         protected override object DoVisit(ConditionalFormat conditionalFormat)
         {
+            // to throw exception if argument is out of range
+            conditionalFormat.ArgumentIndex.Accept(this);
+
             foreach(Case @case in conditionalFormat.Cases.Where(x => (bool)x.Condition.Accept(this)))
                 return @case.FormatString.Accept(this);
 
