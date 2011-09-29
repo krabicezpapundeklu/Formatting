@@ -10,19 +10,19 @@
     internal class FormatTests
     {
         [Test]
-        [Row("", new object[] {}, "")]
-        [Row("xxx", new object[] {}, "xxx")]
-        [Row(@"xxx\{xxx\}xxx", new object[] {}, "xxx{xxx}xxx")]
-        [Row("xxx{0}xxx", new object[] {123}, "xxx123xxx")]
-        [Row("{0,5}", new object[] {123}, "  123")]
-        [Row("{0,-5}", new object[] {123}, "123  ")]
-        [Row("{0 {=0:0}}", new object[] {123}, "")]
-        [Row("{0 {=123:123}}", new object[] {123}, "123")]
-        [Row("{0 {=123:x{0}x}}", new object[] {123}, "x123x")]
-        [Row(@"{0 {else:x\{0\}x}}", new object[] {123}, "x{0}x")]
-        [Row("{0 {=0:0}{>100<200:x}}", new object[] {123}, "x")]
-        [Row("{0 {=0:0}{>100<200:x}}", new object[] {123}, "x")]
-        [Row("{0 {=0,=1,>=123<200:aaa}{>100<200:bbb}}", new object[] {123}, "aaa")]
+        [Row("", new object[] { }, "")]
+        [Row("xxx", new object[] { }, "xxx")]
+        [Row(@"xxx\{xxx\}xxx", new object[] { }, "xxx{xxx}xxx")]
+        [Row("xxx{0}xxx", new object[] { 123 }, "xxx123xxx")]
+        [Row("{0,5}", new object[] { 123 }, "  123")]
+        [Row("{0,-5}", new object[] { 123 }, "123  ")]
+        [Row("{0 {=0:0}}", new object[] { 123 }, "")]
+        [Row("{0 {=123:123}}", new object[] { 123 }, "123")]
+        [Row("{0 {=123:x{0}x}}", new object[] { 123 }, "x123x")]
+        [Row(@"{0 {else:x\{0\}x}}", new object[] { 123 }, "x{0}x")]
+        [Row("{0 {=0:0}{>100<200:x}}", new object[] { 123 }, "x")]
+        [Row("{0 {=0:0}{>100<200:x}}", new object[] { 123 }, "x")]
+        [Row("{0 {=0,=1,>=123<200:aaa}{>100<200:bbb}}", new object[] { 123 }, "aaa")]
         public void Evaluate_EvaluatesFormatCorrectly(string format, object[] arguments, string expectedResult)
         {
             Assert.That(Format.Evaluate(format, arguments), Is.EqualTo(expectedResult));
