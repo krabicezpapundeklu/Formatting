@@ -116,7 +116,7 @@
                     {
                         ScanWhile(char.IsLetter);
 
-                        return textBuilder.ToString() == "else"
+                        return textBuilder.ToString().Equals("else", StringComparison.OrdinalIgnoreCase)
                             ? Token.Else
                             : Token.Identifier;
                     }

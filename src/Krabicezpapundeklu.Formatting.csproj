@@ -31,6 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Argument.cs" />
+    <Compile Include="ArgumentCollection.cs" />
     <Compile Include="Ast\ArgumentIndex.cs" />
     <Compile Include="Ast\AstVisitor.cs" />
     <Compile Include="Ast\BinaryExpression.cs" />
