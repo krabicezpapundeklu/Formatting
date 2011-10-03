@@ -108,19 +108,13 @@
                 default:
                     if(char.IsDigit(c))
                     {
-                        while(positionInInput < input.Length && char.IsDigit(input, positionInInput))
-                            positionInInput++;
-
-                        textBuilder.Append(input, tokenStart + 1, positionInInput - tokenStart - 1);
+                        ScanWhile(char.IsDigit);
                         return Token.Integer;
                     }
 
                     if(char.IsLetter(c))
                     {
-                        while(positionInInput < input.Length && char.IsLetter(input, positionInInput))
-                            positionInInput++;
-
-                        textBuilder.Append(input, tokenStart + 1, positionInInput - tokenStart - 1);
+                        ScanWhile(char.IsLetter);
 
                         return textBuilder.ToString() == "else"
                             ? Token.Else
@@ -129,6 +123,14 @@
 
                     return c;
             }
+        }
+
+        private void ScanWhile(Func<string, int, bool> predicate)
+        {
+            while(positionInInput < input.Length && predicate(input, positionInInput))
+                positionInInput++;
+
+            textBuilder.Append(input, tokenStart + 1, positionInInput - tokenStart - 1);
         }
 
         private int Select(char following, int ifFollows, int ifDoesNotFollow)
