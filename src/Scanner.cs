@@ -23,6 +23,14 @@
 
         public ScannerState State { get; set; }
 
+        public static bool IsValidIdentifier(string text)
+        {
+            if(text == null)
+                throw new ArgumentNullException("text");
+
+            return new Scanner(text) {State = ScannerState.ScanningTokens}.Scan().Token == Token.Identifier;
+        }
+
         public TokenInfo Scan()
         {
             textBuilder.Clear();
