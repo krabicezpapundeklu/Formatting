@@ -18,6 +18,7 @@
         public const int GreaterOrEqual = -7;
 
         public const int Else = -8;
+        public const int Identifier = -9;
 
         private static readonly Dictionary<int, string> TokenNames =
             typeof(Token).GetFields().ToDictionary(x => (int)x.GetValue(null), x => x.Name);
