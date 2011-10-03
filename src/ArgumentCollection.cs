@@ -23,5 +23,18 @@
 
             AddRange(arguments);
         }
+
+        public Argument this[string name]
+        {
+            get { return Find(x => x.Name.Equals(name, StringComparison.OrdinalIgnoreCase)); }
+        }
+
+        public bool Contains(string name)
+        {
+            if(name == null)
+                throw new ArgumentNullException("name");
+
+            return this[name] != null;
+        }
     }
 }

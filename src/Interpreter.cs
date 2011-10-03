@@ -1,10 +1,11 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
     using System;
-    using System.Linq;
     using System.Text;
 
     using Ast;
+
+    using Enumerable = System.Linq.Enumerable;
 
     public class Interpreter : AstVisitor
     {
@@ -37,6 +38,15 @@
                 throw new FormattingException(argumentIndex.Location, "Argument index is out of range.");
 
             return arguments[argumentIndex.Index].Value;
+        }
+
+        protected override object DoVisit(ArgumentName argumentName)
+        {
+            if(!arguments.Contains(argumentName.Name))
+                throw new FormattingException(
+                    argumentName.Location, "Argument with name \"{0}\" doesn't exist.", argumentName.Name);
+
+            return arguments[argumentName.Name].Value;
         }
 
         protected override object DoVisit(BinaryExpression binaryExpression)
@@ -91,9 +101,9 @@
         protected override object DoVisit(ConditionalFormat conditionalFormat)
         {
             // to throw exception if argument is out of range
-            Visit(conditionalFormat.ArgumentIndex);
+            Visit(conditionalFormat.Argument);
 
-            foreach(Case @case in conditionalFormat.Cases.Where(x => Visit<bool>(x.Condition)))
+            foreach(Case @case in Enumerable.Where(conditionalFormat.Cases, x => Visit<bool>(x.Condition)))
                 return Visit(@case.FormatString);
 
             return string.Empty;
@@ -125,7 +135,7 @@
 
         protected override object DoVisit(SimpleFormat simpleFormat)
         {
-            object argument = Visit(simpleFormat.ArgumentIndex);
+            object argument = Visit(simpleFormat.Argument);
             var format = Visit<string>(simpleFormat.FormatString);
 
             string formattedArgument = Format(argument, format);

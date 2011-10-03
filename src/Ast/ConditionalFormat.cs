@@ -3,15 +3,15 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Linq;
+    using System.Text;
 
     public class ConditionalFormat : Format
     {
-        public ConditionalFormat(ArgumentIndex argumentIndex, IEnumerable<Case> cases)
-            : this(Location.Unknown, argumentIndex, cases) {}
+        public ConditionalFormat(Expression argument, IEnumerable<Case> cases)
+            : this(Location.Unknown, argument, cases) {}
 
-        public ConditionalFormat(Location location, ArgumentIndex argumentIndex, IEnumerable<Case> cases)
-            : base(location, argumentIndex)
+        public ConditionalFormat(Location location, Expression argument, IEnumerable<Case> cases)
+            : base(location, argument)
         {
             if(cases == null)
                 throw new ArgumentNullException("cases");
@@ -23,7 +23,19 @@
 
         public override string ToString()
         {
-            return string.Format("{{{0} {1}}}", ArgumentIndex.Index, string.Concat(Cases.Select(x => x.ToString())));
+            var builder = new StringBuilder();
+
+            builder.Append(Argument);
+            builder.Length--;
+
+            builder.Append(' ');
+
+            foreach(Case @case in Cases)
+                builder.Append(@case);
+
+            builder.Append('}');
+
+            return builder.ToString();
         }
 
         protected override object DoAccept(IAstVisitor visitor)
@@ -33,7 +45,7 @@
 
         protected override AstNode DoClone(Location newLocation)
         {
-            return new ConditionalFormat(newLocation, ArgumentIndex, Cases);
+            return new ConditionalFormat(newLocation, Argument, Cases);
         }
     }
 }

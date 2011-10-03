@@ -4,18 +4,18 @@
 
     public abstract class Format : FormatStringItem
     {
-        protected Format(ArgumentIndex argumentIndex)
-            : this(Location.Unknown, argumentIndex) {}
+        protected Format(Expression argument)
+            : this(Location.Unknown, argument) {}
 
-        protected Format(Location location, ArgumentIndex argumentIndex)
+        protected Format(Location location, Expression argument)
             : base(location)
         {
-            if(argumentIndex == null)
-                throw new ArgumentNullException("argumentIndex");
+            if(argument == null)
+                throw new ArgumentNullException("argument");
 
-            ArgumentIndex = argumentIndex;
+            Argument = argument;
         }
 
-        public ArgumentIndex ArgumentIndex { get; private set; }
+        public Expression Argument { get; private set; }
     }
 }

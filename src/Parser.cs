@@ -52,14 +52,27 @@
         private TokenInfo Expect(int token)
         {
             if(!Accept(token))
-            {
-                if(nextTokenInfo.Token == Token.EndOfInput)
-                    throw UnexpectedEndOfInput(nextTokenInfo.Location);
-
-                throw new FormattingException(nextTokenInfo.Location, "Unexpected \"{0}\".", nextTokenInfo.Text);
-            }
+                throw SyntaxError(nextTokenInfo, "Unexpected \"{0}\".", nextTokenInfo.Text);
 
             return currentTokenInfo;
+        }
+
+        private Expression ParseArgumentReference()
+        {
+            switch(nextTokenInfo.Token)
+            {
+                case Token.Identifier:
+                    Consume();
+                    return new ArgumentName(currentTokenInfo.Location, currentTokenInfo.Text);
+
+                case Token.Integer:
+                    Consume();
+                    return new ArgumentIndex(currentTokenInfo.Location, int.Parse(currentTokenInfo.Text));
+
+                default:
+                    throw SyntaxError(
+                        nextTokenInfo, "Expected argument index or name, but got \"{0}\".", nextTokenInfo.Text);
+            }
         }
 
         private Expression ParseCondition(Expression implicitOperand)
@@ -108,14 +121,14 @@
             return condition;
         }
 
-        private ConditionalFormat ParseConditionalFormat(ArgumentIndex argumentIndex)
+        private ConditionalFormat ParseConditionalFormat(Expression argument)
         {
             var cases = new List<Case>();
 
             do
             {
                 int start = Expect('{').Location.Start;
-                Expression condition = ParseCondition(argumentIndex);
+                Expression condition = ParseCondition(argument);
 
                 scanner.State = ScannerState.ScanningText;
 
@@ -130,7 +143,7 @@
             }
             while(nextTokenInfo.Token == '{');
 
-            return new ConditionalFormat(argumentIndex, cases);
+            return new ConditionalFormat(argument, cases);
         }
 
         private Ast.Format ParseFormat()
@@ -138,16 +151,15 @@
             scanner.State = ScannerState.ScanningTokens;
 
             int start = Expect('{').Location.Start;
-            int index = int.Parse(Expect(Token.Integer).Text);
 
-            var argumentIndex = new ArgumentIndex(currentTokenInfo.Location, index);
+            Expression argument = ParseArgumentReference();
 
             Ast.Format format;
 
             if(nextTokenInfo.Token == '{')
-                format = ParseConditionalFormat(argumentIndex);
+                format = ParseConditionalFormat(argument);
             else
-                format = ParseSimpleFormat(argumentIndex);
+                format = ParseSimpleFormat(argument);
 
             scanner.State = ScannerState.ScanningText;
 
@@ -194,10 +206,7 @@
                 return new Operator(currentTokenInfo.Location, currentTokenInfo.Token, currentTokenInfo.Text);
             }
 
-            if(nextTokenInfo.Token == Token.EndOfInput)
-                throw UnexpectedEndOfInput(nextTokenInfo.Location);
-
-            throw new FormattingException(nextTokenInfo.Location, "Unknown operator \"{0}\".", nextTokenInfo.Text);
+            throw SyntaxError(nextTokenInfo, "Unknown operator \"{0}\".", nextTokenInfo.Text);
         }
 
         private Expression ParsePrimaryExpression()
@@ -207,25 +216,19 @@
             switch(currentTokenInfo.Token)
             {
                 case '{':
-                    int start = currentTokenInfo.Location.Start;
-                    int index = int.Parse(Expect(Token.Integer).Text);
-                    int end = Expect('}').Location.End;
-
-                    return new ArgumentIndex(new Location(start, end), index);
+                    Expression argument = ParseArgumentReference();
+                    Expect('}');
+                    return argument;
 
                 case Token.Integer:
                     return new Integer(currentTokenInfo.Location, int.Parse(currentTokenInfo.Text));
 
                 default:
-                    if(currentTokenInfo.Token == Token.EndOfInput)
-                        throw UnexpectedEndOfInput(currentTokenInfo.Location);
-
-                    throw new FormattingException(
-                        currentTokenInfo.Location, "Expected argument, but got \"{0}\".", currentTokenInfo.Text);
+                    throw SyntaxError(currentTokenInfo, "Expected argument, but got \"{0}\".", currentTokenInfo.Text);
             }
         }
 
-        private SimpleFormat ParseSimpleFormat(ArgumentIndex argumentIndex)
+        private SimpleFormat ParseSimpleFormat(Expression argument)
         {
             bool leftAlign;
             int width;
@@ -244,7 +247,7 @@
             scanner.State = ScannerState.ScanningText;
 
             return new SimpleFormat(
-                argumentIndex, leftAlign, width, Accept(':')
+                argument, leftAlign, width, Accept(':')
                     ? ParseFormatString()
                     : FormatString.Empty);
         }
@@ -256,9 +259,11 @@
                 : ParsePrimaryExpression();
         }
 
-        private static FormattingException UnexpectedEndOfInput(Location location)
+        private static FormattingException SyntaxError(TokenInfo tokenInfo, string format, params object[] arguments)
         {
-            return new FormattingException(location, "Unexpected end of input.");
+            return tokenInfo.Token == Token.EndOfInput
+                ? new FormattingException(tokenInfo.Location, "Unexpected end of input.")
+                : new FormattingException(tokenInfo.Location, format, arguments);
         }
     }
 }

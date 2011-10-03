@@ -3,6 +3,7 @@
     public interface IAstVisitor
     {
         object Visit(ArgumentIndex argumentIndex);
+        object Visit(ArgumentName argumentName);
         object Visit(BinaryExpression binaryExpression);
         object Visit(Case @case);
         object Visit(ConditionalFormat conditionalFormat);
