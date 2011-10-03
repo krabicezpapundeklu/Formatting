@@ -5,12 +5,12 @@
 
     public class SimpleFormat : Format
     {
-        public SimpleFormat(ArgumentIndex argumentIndex, bool leftAlign, int width, FormatString formatString)
-            : this(Location.Unknown, argumentIndex, leftAlign, width, formatString) {}
+        public SimpleFormat(Expression argument, bool leftAlign, int width, FormatString formatString)
+            : this(Location.Unknown, argument, leftAlign, width, formatString) {}
 
         public SimpleFormat(
-            Location location, ArgumentIndex argumentIndex, bool leftAlign, int width, FormatString formatString)
-            : base(location, argumentIndex)
+            Location location, Expression argument, bool leftAlign, int width, FormatString formatString)
+            : base(location, argument)
         {
             if(formatString == null)
                 throw new ArgumentNullException("formatString");
@@ -28,8 +28,8 @@
         {
             var builder = new StringBuilder();
 
-            builder.Append('{');
-            builder.Append(ArgumentIndex.Index);
+            builder.Append(Argument);
+            builder.Length--;
 
             if(Width > 0)
             {
@@ -61,7 +61,7 @@
 
         protected override AstNode DoClone(Location newLocation)
         {
-            return new SimpleFormat(newLocation, ArgumentIndex, LeftAlign, Width, FormatString);
+            return new SimpleFormat(newLocation, Argument, LeftAlign, Width, FormatString);
         }
     }
 }

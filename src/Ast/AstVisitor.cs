@@ -14,6 +14,14 @@
             return DoVisit(argumentIndex);
         }
 
+        public object Visit(ArgumentName argumentName)
+        {
+            if(argumentName == null)
+                throw new ArgumentNullException("argumentName");
+
+            return DoVisit(argumentName);
+        }
+
         public object Visit(BinaryExpression binaryExpression)
         {
             if(binaryExpression == null)
@@ -101,6 +109,11 @@
         protected virtual object DoVisit(ArgumentIndex argumentIndex)
         {
             return Default(argumentIndex);
+        }
+
+        protected virtual object DoVisit(ArgumentName argumentName)
+        {
+            return Default(argumentName);
         }
 
         protected virtual object DoVisit(BinaryExpression binaryExpression)

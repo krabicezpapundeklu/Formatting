@@ -53,6 +53,11 @@
             return new TokenInfo(new Location(tokenStart, positionInInput), token, textBuilder.ToString());
         }
 
+        private static bool IsValidIdentifierCharacter(string text, int index)
+        {
+            return text[index] == '_' || text[index] == '-' || text[index] == '.' || char.IsLetterOrDigit(text, index);
+        }
+
         private int ScanText()
         {
             do
@@ -112,9 +117,9 @@
                         return Token.Integer;
                     }
 
-                    if(char.IsLetter(c))
+                    if(char.IsLetter(c) || c == '_')
                     {
-                        ScanWhile(char.IsLetter);
+                        ScanWhile(IsValidIdentifierCharacter);
 
                         return textBuilder.ToString().Equals("else", StringComparison.OrdinalIgnoreCase)
                             ? Token.Else
