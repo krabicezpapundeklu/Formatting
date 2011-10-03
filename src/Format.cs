@@ -15,20 +15,43 @@
 
         public string Evaluate(params object[] arguments)
         {
+            return Evaluate(new ArgumentCollection(arguments));
+        }
+
+        public string Evaluate(ArgumentCollection arguments)
+        {
             return Evaluate((IFormatProvider)null, arguments);
         }
 
         public string Evaluate(IFormatProvider formatProvider, params object[] arguments)
         {
+            return Evaluate(formatProvider, new ArgumentCollection(arguments));
+        }
+
+        public string Evaluate(IFormatProvider formatProvider, ArgumentCollection arguments)
+        {
+            if(arguments == null)
+                throw new ArgumentNullException("arguments");
+
             return new Interpreter(formatProvider, arguments).Evaluate(ast);
         }
 
         public static string Evaluate(string format, params object[] arguments)
         {
+            return Evaluate(format, new ArgumentCollection(arguments));
+        }
+
+        public static string Evaluate(string format, ArgumentCollection arguments)
+        {
             return Evaluate(null, format, arguments);
         }
 
         public static string Evaluate(IFormatProvider formatProvider, string format, params object[] arguments)
+        {
+            return Evaluate(formatProvider, format, new ArgumentCollection(arguments));
+        }
+
+        public static string Evaluate(IFormatProvider formatProvider, string format, ArgumentCollection arguments)
         {
             return Parse(format).Evaluate(formatProvider, arguments);
         }

@@ -8,11 +8,11 @@
 
     public class Interpreter : AstVisitor
     {
-        private readonly object[] arguments;
+        private readonly ArgumentCollection arguments;
         private readonly IFormatProvider formatProvider;
         private readonly StringBuilder formatted = new StringBuilder();
 
-        public Interpreter(IFormatProvider formatProvider, object[] arguments)
+        public Interpreter(IFormatProvider formatProvider, ArgumentCollection arguments)
         {
             if(arguments == null)
                 throw new ArgumentNullException("arguments");
@@ -33,10 +33,10 @@
 
         protected override object DoVisit(ArgumentIndex argumentIndex)
         {
-            if(argumentIndex.Index >= arguments.Length)
+            if(argumentIndex.Index >= arguments.Count)
                 throw new FormattingException(argumentIndex.Location, "Argument index is out of range.");
 
-            return arguments[argumentIndex.Index];
+            return arguments[argumentIndex.Index].Value;
         }
 
         protected override object DoVisit(BinaryExpression binaryExpression)
