@@ -6,11 +6,11 @@
 
     public class Format
     {
-        private readonly AstNode parsed;
+        private readonly AstNode ast;
 
-        private Format(AstNode parsed)
+        private Format(AstNode ast)
         {
-            this.parsed = parsed;
+            this.ast = ast;
         }
 
         public string Evaluate(params object[] arguments)
@@ -20,7 +20,7 @@
 
         public string Evaluate(IFormatProvider formatProvider, params object[] arguments)
         {
-            return (string)parsed.Accept(new Interpreter(formatProvider, arguments));
+            return new Interpreter(formatProvider, arguments).Evaluate(ast);
         }
 
         public static string Evaluate(string format, params object[] arguments)

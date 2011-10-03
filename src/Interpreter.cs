@@ -21,6 +21,11 @@
             this.arguments = arguments;
         }
 
+        public string Evaluate(AstNode ast)
+        {
+            return Visit<string>(ast);
+        }
+
         protected override object Default(AstNode node)
         {
             return null;
@@ -86,10 +91,10 @@
         protected override object DoVisit(ConditionalFormat conditionalFormat)
         {
             // to throw exception if argument is out of range
-            conditionalFormat.ArgumentIndex.Accept(this);
+            Visit(conditionalFormat.ArgumentIndex);
 
-            foreach(Case @case in conditionalFormat.Cases.Where(x => (bool)x.Condition.Accept(this)))
-                return @case.FormatString.Accept(this);
+            foreach(Case @case in conditionalFormat.Cases.Where(x => Visit<bool>(x.Condition)))
+                return Visit(@case.FormatString);
 
             return string.Empty;
         }
@@ -104,7 +109,7 @@
             int originalLength = formatted.Length;
 
             foreach(FormatStringItem item in formatString.Items)
-                formatted.Append(item.Accept(this));
+                formatted.Append(Visit(item));
 
             string formattedString = formatted.ToString(originalLength, formatted.Length - originalLength);
 
@@ -120,8 +125,8 @@
 
         protected override object DoVisit(SimpleFormat simpleFormat)
         {
-            object argument = simpleFormat.ArgumentIndex.Accept(this);
-            var format = (string)simpleFormat.FormatString.Accept(this);
+            object argument = Visit(simpleFormat.ArgumentIndex);
+            var format = Visit<string>(simpleFormat.FormatString);
 
             string formattedArgument = Format(argument, format);
 
@@ -154,7 +159,7 @@
             switch(unaryExpression.Operator.Token)
             {
                 case '-':
-                    object operand = unaryExpression.Operand.Accept(this);
+                    object operand = Visit(unaryExpression.Operand);
 
                     if(operand is int)
                         return -(int)operand;
@@ -171,8 +176,8 @@
 
         private void CastOperands<T>(BinaryExpression binaryExpression, out T leftOperand, out T rightOperand)
         {
-            object left = binaryExpression.LeftExpression.Accept(this);
-            object right = binaryExpression.RightExpression.Accept(this);
+            object left = Visit(binaryExpression.LeftExpression);
+            object right = Visit(binaryExpression.RightExpression);
 
             if(left is T && right is T)
             {

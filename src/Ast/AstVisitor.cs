@@ -152,5 +152,18 @@
         {
             return Default(unaryExpression);
         }
+
+        protected object Visit(AstNode node)
+        {
+            if(node == null)
+                throw new ArgumentNullException("node");
+
+            return node.Accept(this);
+        }
+
+        protected T Visit<T>(AstNode node)
+        {
+            return (T)Visit(node);
+        }
     }
 }
