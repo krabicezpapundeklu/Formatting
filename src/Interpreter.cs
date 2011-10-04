@@ -1,11 +1,10 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
     using System;
+    using System.Linq;
     using System.Text;
 
     using Ast;
-
-    using Enumerable = System.Linq.Enumerable;
 
     public class Interpreter : AstVisitor
     {
@@ -51,50 +50,49 @@
 
         protected override object DoVisit(BinaryExpression binaryExpression)
         {
-            int leftIntegerOperand;
-            int rightIntegerOperand;
+            dynamic leftOperand = Visit(binaryExpression.LeftExpression);
+            dynamic rightOperand = Visit(binaryExpression.RightExpression);
 
-            bool leftBooleanOperand;
-            bool rightBooleanOperand;
-
-            // TODO: support more operand types... if need ;-)
-            switch(binaryExpression.Operator.Token)
+            try
             {
-                case '=':
-                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
-                    return leftIntegerOperand == rightIntegerOperand;
+                switch(binaryExpression.Operator.Token)
+                {
+                    case '=':
+                        return leftOperand == rightOperand;
 
-                case '!':
-                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
-                    return leftIntegerOperand != rightIntegerOperand;
+                    case '!':
+                        return leftOperand != rightOperand;
 
-                case '>':
-                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
-                    return leftIntegerOperand > rightIntegerOperand;
+                    case '>':
+                        return leftOperand > rightOperand;
 
-                case '<':
-                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
-                    return leftIntegerOperand < rightIntegerOperand;
+                    case '<':
+                        return leftOperand < rightOperand;
 
-                case ',':
-                    CastOperands(binaryExpression, out leftBooleanOperand, out rightBooleanOperand);
-                    return leftBooleanOperand || rightBooleanOperand;
+                    case ',':
+                        return leftOperand || rightOperand;
 
-                case Token.LessOrEqual:
-                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
-                    return leftIntegerOperand <= rightIntegerOperand;
+                    case Token.LessOrEqual:
+                        return leftOperand <= rightOperand;
 
-                case Token.GreaterOrEqual:
-                    CastOperands(binaryExpression, out leftIntegerOperand, out rightIntegerOperand);
-                    return leftIntegerOperand >= rightIntegerOperand;
+                    case Token.GreaterOrEqual:
+                        return leftOperand >= rightOperand;
 
-                case Token.And:
-                    CastOperands(binaryExpression, out leftBooleanOperand, out rightBooleanOperand);
-                    return leftBooleanOperand && rightBooleanOperand;
+                    case Token.And:
+                        return leftOperand && rightOperand;
 
-                default:
-                    throw new FormattingException(
-                        binaryExpression.Operator.Location, "Invalid operator \"{0}\".", binaryExpression.Operator.Text);
+                    default:
+                        throw new FormattingException(
+                            binaryExpression.Operator.Location, "Invalid operator \"{0}\".",
+                            binaryExpression.Operator.Text);
+                }
+            }
+            catch
+            {
+                throw new FormattingException(
+                    binaryExpression.Operator.Location,
+                    "Operator \"{0}\" cannot be applied to operands of type \"{1}\" and \"{2}\".",
+                    binaryExpression.Operator.Text, leftOperand.GetType(), rightOperand.GetType());
             }
         }
 
@@ -103,7 +101,7 @@
             // to throw exception if argument is out of range
             Visit(conditionalFormat.Argument);
 
-            foreach(Case @case in Enumerable.Where(conditionalFormat.Cases, x => Visit<bool>(x.Condition)))
+            foreach(Case @case in conditionalFormat.Cases.Where(x => Visit<bool>(x.Condition)))
                 return Visit(@case.FormatString);
 
             return string.Empty;
@@ -169,37 +167,23 @@
             switch(unaryExpression.Operator.Token)
             {
                 case '-':
-                    object operand = Visit(unaryExpression.Operand);
+                    dynamic operand = Visit(unaryExpression.Operand);
 
-                    if(operand is int)
-                        return -(int)operand;
-
-                    throw new FormattingException(
-                        unaryExpression.Operator.Location,
-                        "Operator \"-\" cannot be applied to operand of type \"{0}\".", operand.GetType());
+                    try
+                    {
+                        return -operand;
+                    }
+                    catch
+                    {
+                        throw new FormattingException(
+                            unaryExpression.Operator.Location,
+                            "Operator \"-\" cannot be applied to operand of type \"{0}\".", operand.GetType());
+                    }
 
                 default:
                     throw new FormattingException(
                         unaryExpression.Operator.Location, "Invalid operator \"{0}\".", unaryExpression.Operator.Text);
             }
-        }
-
-        private void CastOperands<T>(BinaryExpression binaryExpression, out T leftOperand, out T rightOperand)
-        {
-            object left = Visit(binaryExpression.LeftExpression);
-            object right = Visit(binaryExpression.RightExpression);
-
-            if(left is T && right is T)
-            {
-                leftOperand = (T)left;
-                rightOperand = (T)right;
-                return;
-            }
-
-            throw new FormattingException(
-                binaryExpression.Operator.Location,
-                "Operator \"{0}\" cannot be applied to operands of type \"{1}\" and \"{2}\".",
-                binaryExpression.Operator.Text, left.GetType(), right.GetType());
         }
 
         private string Format(object argument, string format)
