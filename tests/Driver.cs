@@ -29,7 +29,7 @@
             ConsoleColor originalConsoleColor = console.ForegroundColor;
 
             console.ForegroundColor = result.ResultCode == ResultCode.Success
-                ? ConsoleColor.Green
+                ? ConsoleColor.DarkGreen
                 : ConsoleColor.Red;
 
             console.WriteLine();
