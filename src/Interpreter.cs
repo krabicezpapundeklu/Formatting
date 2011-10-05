@@ -5,6 +5,8 @@
 
     using Ast;
 
+    using Errors;
+
     public class Interpreter : AstVisitor
     {
         private static readonly object Error = new object();

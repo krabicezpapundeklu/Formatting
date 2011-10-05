@@ -4,6 +4,8 @@
 
     using Ast;
 
+    using Errors;
+
     public class Format
     {
         private readonly AstNode ast;
