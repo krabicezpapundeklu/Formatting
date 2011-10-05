@@ -33,7 +33,13 @@
             if(arguments == null)
                 throw new ArgumentNullException("arguments");
 
-            return new Interpreter(formatProvider, arguments).Evaluate(ast);
+            var errorLogger = new ErrorLogger();
+            string result = new Interpreter(formatProvider, arguments, errorLogger).Evaluate(ast);
+
+            if(errorLogger.HasErrors)
+                throw new FormattingException(errorLogger.GetErrors());
+
+            return result;
         }
 
         public static string Evaluate(string format, params object[] arguments)

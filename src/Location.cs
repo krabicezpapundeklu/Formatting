@@ -30,6 +30,11 @@
             get { return this != Unknown; }
         }
 
+        public int Length
+        {
+            get { return End - Start; }
+        }
+
         public static Location FromRange(params ILocated[] items)
         {
             return FromRange((IEnumerable<ILocated>)items);

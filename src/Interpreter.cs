@@ -1,24 +1,30 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
     using System;
-    using System.Linq;
     using System.Text;
 
     using Ast;
 
     public class Interpreter : AstVisitor
     {
+        private static readonly object Error = new object();
+
         private readonly ArgumentCollection arguments;
+        private readonly IErrorLogger errorLogger;
         private readonly IFormatProvider formatProvider;
         private readonly StringBuilder formatted = new StringBuilder();
 
-        public Interpreter(IFormatProvider formatProvider, ArgumentCollection arguments)
+        public Interpreter(IFormatProvider formatProvider, ArgumentCollection arguments, IErrorLogger errorLogger)
         {
             if(arguments == null)
                 throw new ArgumentNullException("arguments");
 
+            if(errorLogger == null)
+                throw new ArgumentNullException("errorLogger");
+
             this.formatProvider = formatProvider;
             this.arguments = arguments;
+            this.errorLogger = errorLogger;
         }
 
         public string Evaluate(AstNode ast)
@@ -34,7 +40,10 @@
         protected override object DoVisit(ArgumentIndex argumentIndex)
         {
             if(argumentIndex.Index >= arguments.Count)
-                throw new FormattingException(argumentIndex.Location, "Argument index is out of range.");
+            {
+                errorLogger.LogError(argumentIndex.Location, "Argument index {0} is out of range.", argumentIndex.Index);
+                return Error;
+            }
 
             return arguments[argumentIndex.Index].Value;
         }
@@ -42,8 +51,12 @@
         protected override object DoVisit(ArgumentName argumentName)
         {
             if(!arguments.Contains(argumentName.Name))
-                throw new FormattingException(
+            {
+                errorLogger.LogError(
                     argumentName.Location, "Argument with name \"{0}\" doesn't exist.", argumentName.Name);
+
+                return Error;
+            }
 
             return arguments[argumentName.Name].Value;
         }
@@ -52,6 +65,9 @@
         {
             dynamic leftOperand = Visit(binaryExpression.LeftExpression);
             dynamic rightOperand = Visit(binaryExpression.RightExpression);
+
+            if((object)leftOperand == Error || (object)rightOperand == Error)
+                return Error;
 
             try
             {
@@ -82,27 +98,43 @@
                         return leftOperand && rightOperand;
 
                     default:
-                        throw new FormattingException(
+                        errorLogger.LogError(
                             binaryExpression.Operator.Location, "Invalid operator \"{0}\".",
                             binaryExpression.Operator.Text);
+
+                        return Error;
                 }
             }
             catch
             {
-                throw new FormattingException(
+                errorLogger.LogError(
                     binaryExpression.Operator.Location,
                     "Operator \"{0}\" cannot be applied to operands of type \"{1}\" and \"{2}\".",
                     binaryExpression.Operator.Text, leftOperand.GetType(), rightOperand.GetType());
+
+                return Error;
             }
         }
 
         protected override object DoVisit(ConditionalFormat conditionalFormat)
         {
-            // to throw exception if argument is out of range
+            // to catch errors, ignore result
             Visit(conditionalFormat.Argument);
 
-            foreach(Case @case in conditionalFormat.Cases.Where(x => Visit<bool>(x.Condition)))
-                return Visit(@case.FormatString);
+            foreach(Case @case in conditionalFormat.Cases)
+            {
+                object conditionResult = Visit(@case.Condition);
+
+                if(conditionResult == Error)
+                {
+                    // visit to catch errors, but ignore result
+                    Visit(@case.FormatString);
+                    continue;
+                }
+
+                if((bool)conditionResult)
+                    return Visit(@case.FormatString);
+            }
 
             return string.Empty;
         }
@@ -134,9 +166,12 @@
         protected override object DoVisit(SimpleFormat simpleFormat)
         {
             object argument = Visit(simpleFormat.Argument);
-            var format = Visit<string>(simpleFormat.FormatString);
+            object format = Visit(simpleFormat.FormatString);
 
-            string formattedArgument = Format(argument, format);
+            if(argument == Error || format == Error)
+                return null;
+
+            string formattedArgument = Format(argument, (string)format);
 
             int padding = simpleFormat.Width - formattedArgument.Length;
 
@@ -175,14 +210,17 @@
                     }
                     catch
                     {
-                        throw new FormattingException(
+                        errorLogger.LogError(
                             unaryExpression.Operator.Location,
                             "Operator \"-\" cannot be applied to operand of type \"{0}\".", operand.GetType());
+
+                        return Error;
                     }
 
                 default:
-                    throw new FormattingException(
+                    errorLogger.LogError(
                         unaryExpression.Operator.Location, "Invalid operator \"{0}\".", unaryExpression.Operator.Text);
+                    return Error;
             }
         }
 

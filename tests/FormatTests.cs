@@ -46,11 +46,11 @@
         }
 
         [Test]
-        [Row("{0}", new object[]{}, "Argument index is out of range.", 1, 2)]
+        [Row("{0}", new object[]{}, "Argument index 0 is out of range.", 1, 2)]
         [Row("{0 {={1}:}}", new object[] { 0, false }, "Operator \"=\" cannot be applied to operands of type \"System.Int32\" and \"System.Boolean\".", 4, 5)]
         [Row("{0 {=-{1}:}}", new object[] { 0, false }, "Operator \"-\" cannot be applied to operand of type \"System.Boolean\".", 5, 6)]
-        [Row("{0 {=0:}}", new object[] { }, "Argument index is out of range.", 1, 2)]
-        [Row("{0 {else:}}", new object[] { }, "Argument index is out of range.", 1, 2)]
+        [Row("{0 {=0:}}", new object[] { }, "Argument index 0 is out of range.", 1, 2)]
+        [Row("{0 {else:}}", new object[] { }, "Argument index 0 is out of range.", 1, 2)]
         public void Evaluate_WhenHavingError_ThrowsException(
             string input, object[] arguments, string errorMessage, int errorStart, int errorEnd)
         {
