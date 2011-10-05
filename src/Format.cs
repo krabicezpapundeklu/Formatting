@@ -38,8 +38,7 @@
             var errorLogger = new ErrorLogger();
             string result = new Interpreter(formatProvider, arguments, errorLogger).Evaluate(ast);
 
-            if(errorLogger.HasErrors)
-                throw new FormattingException(errorLogger.GetErrors());
+            errorLogger.ThrowOnErrors();
 
             return result;
         }
@@ -66,10 +65,23 @@
 
         public static Format Parse(string format)
         {
+            var errorLogger = new ErrorLogger();
+            Format parsedFormat = Parse(format, errorLogger);
+
+            errorLogger.ThrowOnErrors();
+
+            return parsedFormat;
+        }
+
+        public static Format Parse(string format, IErrorLogger errorLogger)
+        {
             if(format == null)
                 throw new ArgumentNullException("format");
 
-            return new Format(new Parser(new Scanner(format)).Parse());
+            if(errorLogger == null)
+                throw new ArgumentNullException("errorLogger");
+
+            return new Format(new Parser(new Scanner(format, errorLogger)).Parse());
         }
     }
 }
