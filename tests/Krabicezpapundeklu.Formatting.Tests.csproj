@@ -41,6 +41,7 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="ScannerTests.cs" />
+    <Compile Include="TokenInfoTests.cs" />
     <Compile Include="TokenTests.cs" />
   </ItemGroup>
   <ItemGroup>
