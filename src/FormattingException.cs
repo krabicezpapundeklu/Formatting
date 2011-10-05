@@ -1,25 +1,25 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
 
-    public class FormattingException : FormatException, ILocated
+    public class FormattingException : FormatException
     {
-        public FormattingException(string format, params object[] arguments)
-            : this(Location.Unknown, format, arguments) {}
+        // TODO: REMOVE!!!
+        public FormattingException(Location location, string descriptionFormat, params object[] arguments)
+            : this(Enumerable.Repeat(new Error(location, string.Format(descriptionFormat, arguments)), 1)) {}
 
-        public FormattingException(Location location, string format, params object[] arguments)
-            : base(string.Format(format, arguments))
+        public FormattingException(IEnumerable<Error> errors)
+            : base("Format is invalid.")
         {
-            if(location == null)
-                throw new ArgumentNullException("location");
+            if(errors == null)
+                throw new ArgumentNullException("errors");
 
-            Location = location;
+            Errors = new ReadOnlyCollection<Error>(new List<Error>(errors));
         }
 
-        #region ILocated Members
-
-        public Location Location { get; private set; }
-
-        #endregion
+        public ReadOnlyCollection<Error> Errors { get; private set; }
     }
 }
