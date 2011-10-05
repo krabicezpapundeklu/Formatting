@@ -28,7 +28,17 @@
             if(text == null)
                 throw new ArgumentNullException("text");
 
-            return new Scanner(text) {State = ScannerState.ScanningTokens}.Scan().Token == Token.Identifier;
+            if (text.Length == 0)
+                return false;
+
+            if (!IsValidIdentifierStartCharacter(text[0]))
+                return false;
+
+            for (int i = 1; i < text.Length; ++i)
+                if (!IsValidIdentifierCharacter(text, i))
+                    return false;
+
+            return true;
         }
 
         public TokenInfo Scan()
@@ -64,6 +74,11 @@
         private static bool IsValidIdentifierCharacter(string text, int index)
         {
             return text[index] == '_' || text[index] == '-' || text[index] == '.' || char.IsLetterOrDigit(text, index);
+        }
+
+        private static bool IsValidIdentifierStartCharacter(char character)
+        {
+            return char.IsLetter(character) || character == '_';
         }
 
         private int ScanText()
@@ -125,7 +140,7 @@
                         return Token.Integer;
                     }
 
-                    if(char.IsLetter(c) || c == '_')
+                    if(IsValidIdentifierStartCharacter(c))
                     {
                         ScanWhile(IsValidIdentifierCharacter);
 
