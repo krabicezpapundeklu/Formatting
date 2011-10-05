@@ -14,15 +14,17 @@
         {
             NativeConsole console = NativeConsole.Instance;
 
-            var launcher = new TestLauncher {RuntimeSetup = new RuntimeSetup()};
+            var launcher = new TestLauncher
+                           {
+                               EchoResults = true,
+                               Logger = new FilteredLogger(new RichConsoleLogger(console), Verbosity.Normal),
+                               ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(console),
+                               RuntimeSetup = new RuntimeSetup(),
+                               TestProject = {TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local}
+                           };
 
             launcher.AddFilePattern(typeof(Driver).Assembly.Location);
-            launcher.Logger = new FilteredLogger(new RichConsoleLogger(console), Verbosity.Normal);
             launcher.RuntimeSetup.AddPluginDirectory(InstallationConfiguration.LoadFromRegistry().InstallationFolder);
-            launcher.TestProject.TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local;
-            launcher.ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(console);
-
-            launcher.EchoResults = true;
 
             TestLauncherResult result = launcher.Run();
 
