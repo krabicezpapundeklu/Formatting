@@ -7,6 +7,8 @@
     {
         public static readonly LocationComparer Instance = new LocationComparer();
 
+        private LocationComparer() {}
+
         #region IComparer<ILocated> Members
 
         public int Compare(ILocated x, ILocated y)
