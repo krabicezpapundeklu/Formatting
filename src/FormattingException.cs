@@ -5,6 +5,8 @@
     using System.Collections.ObjectModel;
     using System.Linq;
 
+    using Errors;
+
     public class FormattingException : FormatException
     {
         // TODO: REMOVE!!!

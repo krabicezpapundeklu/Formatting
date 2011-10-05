@@ -1,4 +1,4 @@
-﻿namespace Krabicezpapundeklu.Formatting
+﻿namespace Krabicezpapundeklu.Formatting.Errors
 {
     using System.Collections.Generic;
 
