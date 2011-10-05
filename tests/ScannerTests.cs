@@ -2,6 +2,8 @@
 {
     using System;
 
+    using Errors;
+
     using MbUnit.Framework;
 
     using NHamcrest.Core;
@@ -11,7 +13,13 @@
         [Test]
         public void Constructor_WhenInputIsNull_ThrowsException()
         {
-            Assert.That(() => new Scanner(null), Throws.An<ArgumentNullException>());
+            Assert.That(() => new Scanner(null, null), Throws.An<ArgumentNullException>());
+        }
+
+        [Test]
+        public void Constructor_WhenErrorLoggerIsNull_ThrowsException()
+        {
+            Assert.That(() => new Scanner(string.Empty, null), Throws.An<ArgumentNullException>());
         }
 
         [Test]
@@ -21,8 +29,12 @@
         public void Scan_WhenHavingError_ThrowsException(
             string input, string errorMessage, int errorStart, int errorEnd)
         {
-            Helpers.RequireFormattingException(
-                () => Helpers.CreateTextScanner(input).Scan(), errorMessage, errorStart, errorEnd);
+            var errorLogger = new ErrorLogger();
+            var scanner = new Scanner(input, errorLogger);
+
+            scanner.Scan();
+
+            Helpers.RequireFormattingException(errorLogger.ThrowOnErrors, errorMessage, errorStart, errorEnd);
         }
 
         [Test]

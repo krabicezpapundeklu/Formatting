@@ -7,13 +7,12 @@
     {
         private readonly List<Error> errors = new List<Error>();
 
-        #region IErrorLogger Members
-
-        public IEnumerable<Error> GetErrors()
+        public int ErrorCount
         {
-            errors.Sort(LocationComparer.Instance);
-            return errors;
+            get { return errors.Count; }
         }
+
+        #region IErrorLogger Members
 
         public void LogError(Location location, string descriptionFormat, params object[] formatArguments)
         {
@@ -27,11 +26,18 @@
             errors.Add(new Error(location, description));
         }
 
-        public bool HasErrors
+        #endregion
+
+        public IEnumerable<Error> GetErrors()
         {
-            get { return errors.Count > 0; }
+            errors.Sort(LocationComparer.Instance);
+            return errors;
         }
 
-        #endregion
+        public void ThrowOnErrors()
+        {
+            if(ErrorCount > 0)
+                throw new FormattingException(GetErrors());
+        }
     }
 }

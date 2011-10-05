@@ -3,20 +3,27 @@
     using System;
     using System.Text;
 
+    using Errors;
+
     public class Scanner
     {
+        private readonly IErrorLogger errorLogger = new ErrorLogger();
         private readonly string input;
         private readonly StringBuilder textBuilder = new StringBuilder();
 
         private int positionInInput;
         private int tokenStart;
 
-        public Scanner(string input)
+        public Scanner(string input, IErrorLogger errorLogger)
         {
             if(input == null)
                 throw new ArgumentNullException("input");
 
+            if(errorLogger == null)
+                throw new ArgumentNullException("errorLogger");
+
             this.input = input;
+            this.errorLogger = errorLogger;
 
             State = ScannerState.ScanningText;
         }
@@ -28,14 +35,14 @@
             if(text == null)
                 throw new ArgumentNullException("text");
 
-            if (text.Length == 0)
+            if(text.Length == 0)
                 return false;
 
-            if (!IsValidIdentifierStartCharacter(text[0]))
+            if(!IsValidIdentifierStartCharacter(text[0]))
                 return false;
 
-            for (int i = 1; i < text.Length; ++i)
-                if (!IsValidIdentifierCharacter(text, i))
+            for(int i = 1; i < text.Length; ++i)
+                if(!IsValidIdentifierCharacter(text, i))
                     return false;
 
             return true;
@@ -102,11 +109,10 @@
 
                     case '\\':
                         if(positionInInput == input.Length)
-                            throw new FormattingException(
+                            errorLogger.LogError(
                                 new Location(positionInInput, positionInInput), "Unexpected end of input.");
-
-                        if(!EscapeHelpers.MustBeEscaped(c = input[positionInInput++]))
-                            throw new FormattingException(
+                        else if(!EscapeHelpers.MustBeEscaped(c = input[positionInInput++]))
+                            errorLogger.LogError(
                                 new Location(positionInInput - 2, positionInInput), "\"{0}\" cannot be escaped.", c);
 
                         break;

@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Errors;
+
     using MbUnit.Framework;
 
     using NHamcrest.Core;
@@ -12,12 +14,12 @@
     {
         public static Scanner CreateTextScanner(string input)
         {
-            return new Scanner(input) {State = ScannerState.ScanningText};
+            return new Scanner(input, new ErrorLogger()) {State = ScannerState.ScanningText};
         }
 
         public static Scanner CreateTokenScanner(string input)
         {
-            return new Scanner(input) {State = ScannerState.ScanningTokens};
+            return new Scanner(input, new ErrorLogger()) {State = ScannerState.ScanningTokens};
         }
 
         public static Parser CreateParser(string input)
