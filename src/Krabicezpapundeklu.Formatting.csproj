@@ -53,6 +53,8 @@
     <Compile Include="Ast\UnaryExpression.cs" />
     <Compile Include="Errors\Error.cs" />
     <Compile Include="Errors\ErrorLogger.cs" />
+    <Compile Include="Errors\MultipleErrorLogger.cs" />
+    <Compile Include="Errors\SimpleErrorLogger.cs" />
     <Compile Include="EscapeHelpers.cs" />
     <Compile Include="Format.cs" />
     <Compile Include="FormattingException.cs" />

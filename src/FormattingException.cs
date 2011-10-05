@@ -9,7 +9,6 @@
 
     public class FormattingException : FormatException
     {
-        // TODO: REMOVE!!!
         public FormattingException(Location location, string descriptionFormat, params object[] arguments)
             : this(Enumerable.Repeat(new Error(location, string.Format(descriptionFormat, arguments)), 1)) {}
 

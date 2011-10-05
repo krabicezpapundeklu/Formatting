@@ -7,7 +7,7 @@
 
     public class Scanner
     {
-        private readonly IErrorLogger errorLogger = new ErrorLogger();
+        private readonly IErrorLogger errorLogger;
         private readonly string input;
         private readonly StringBuilder textBuilder = new StringBuilder();
 

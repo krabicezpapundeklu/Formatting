@@ -35,12 +35,7 @@
             if(arguments == null)
                 throw new ArgumentNullException("arguments");
 
-            var errorLogger = new ErrorLogger();
-            string result = new Interpreter(formatProvider, arguments, errorLogger).Evaluate(ast);
-
-            errorLogger.ThrowOnErrors();
-
-            return result;
+            return new Interpreter(formatProvider, arguments, new SimpleErrorLogger()).Evaluate(ast);
         }
 
         public static string Evaluate(string format, params object[] arguments)
@@ -65,23 +60,10 @@
 
         public static Format Parse(string format)
         {
-            var errorLogger = new ErrorLogger();
-            Format parsedFormat = Parse(format, errorLogger);
-
-            errorLogger.ThrowOnErrors();
-
-            return parsedFormat;
-        }
-
-        public static Format Parse(string format, IErrorLogger errorLogger)
-        {
             if(format == null)
                 throw new ArgumentNullException("format");
 
-            if(errorLogger == null)
-                throw new ArgumentNullException("errorLogger");
-
-            return new Format(new Parser(new Scanner(format, errorLogger)).Parse());
+            return new Format(new Parser(new Scanner(format, new SimpleErrorLogger())).Parse());
         }
     }
 }
