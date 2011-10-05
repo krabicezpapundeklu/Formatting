@@ -34,9 +34,10 @@
         {
             var exception = Assert.Throws<FormattingException>(() => action());
 
-            Assert.That(exception.Message, Is.EqualTo(errorMessage), "Error message doesn't match.");
-            Assert.That(exception.Location.Start, Is.EqualTo(errorStart), "Error start doesn't match.");
-            Assert.That(exception.Location.End, Is.EqualTo(errorEnd), "Error end doesn't match.");
+            Assert.That(exception.Errors.Count, Is.EqualTo(1));
+            Assert.That(exception.Errors[0].Description, Is.EqualTo(errorMessage), "Error message doesn't match.");
+            Assert.That(exception.Errors[0].Location.Start, Is.EqualTo(errorStart), "Error start doesn't match.");
+            Assert.That(exception.Errors[0].Location.End, Is.EqualTo(errorEnd), "Error end doesn't match.");
         }
 
         public static List<string> Tokenize(Scanner scanner)
