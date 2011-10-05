@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public class Location
+    public class Location : IEquatable<Location>
     {
         public static readonly Location Unknown = new Location();
 
@@ -34,6 +34,21 @@
         {
             get { return End - Start; }
         }
+
+        #region IEquatable<Location> Members
+
+        public bool Equals(Location other)
+        {
+            if(other == null)
+                throw new ArgumentNullException("other");
+
+            if(!other.IsKnown)
+                return !IsKnown;
+
+            return other.Start == Start && other.End == End;
+        }
+
+        #endregion
 
         public static Location FromRange(params ILocated[] items)
         {

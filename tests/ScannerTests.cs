@@ -2,8 +2,6 @@
 {
     using System;
 
-    using Errors;
-
     using MbUnit.Framework;
 
     using NHamcrest.Core;
@@ -29,12 +27,8 @@
         public void Scan_WhenHavingError_ThrowsException(
             string input, string errorMessage, int errorStart, int errorEnd)
         {
-            var errorLogger = new ErrorLogger();
-            var scanner = new Scanner(input, errorLogger);
-
-            scanner.Scan();
-
-            Helpers.RequireFormattingException(errorLogger.ThrowOnErrors, errorMessage, errorStart, errorEnd);
+            Helpers.RequireFormattingException(
+                () => Helpers.CreateTextScanner(input).Scan(), errorMessage, errorStart, errorEnd);
         }
 
         [Test]

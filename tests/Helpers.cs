@@ -14,12 +14,12 @@
     {
         public static Scanner CreateTextScanner(string input)
         {
-            return new Scanner(input, new ErrorLogger()) {State = ScannerState.ScanningText};
+            return new Scanner(input, new SimpleErrorLogger()) {State = ScannerState.ScanningText};
         }
 
         public static Scanner CreateTokenScanner(string input)
         {
-            return new Scanner(input, new ErrorLogger()) {State = ScannerState.ScanningTokens};
+            return new Scanner(input, new SimpleErrorLogger()) { State = ScannerState.ScanningTokens };
         }
 
         public static Parser CreateParser(string input)
