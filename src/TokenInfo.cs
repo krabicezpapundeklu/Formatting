@@ -7,9 +7,6 @@
 
     public class TokenInfo : ILocated
     {
-        public TokenInfo(int token, string text)
-            : this(Location.Unknown, token, text) {}
-
         public TokenInfo(Location location, int token, string text)
         {
             if(location == null)
