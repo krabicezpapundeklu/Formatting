@@ -1,7 +1,6 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Errors
 {
     using System.Collections.Generic;
-    using System.Linq;
 
     public class MultipleErrorLogger : ErrorLogger
     {
@@ -24,12 +23,10 @@
                 throw new FormattingException(GetErrors());
         }
 
-        protected override void DoLogError(Location location, string description)
+        protected override void DoLogError(Error error)
         {
-            if(errors.Any(x => x.Description == description && x.Location.Equals(location)))
-                return;
-
-            errors.Add(new Error(location, description));
+            if(!errors.Contains(error))
+                errors.Add(error);
         }
     }
 }
