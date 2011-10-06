@@ -4,9 +4,6 @@
 
     public class BinaryExpression : Expression
     {
-        public BinaryExpression(Operator binaryOperator, Expression leftExpression, Expression rightExpression)
-            : this(Location.FromRange(leftExpression, rightExpression), binaryOperator, leftExpression, rightExpression) {}
-
         public BinaryExpression(
             Location location, Operator binaryOperator, Expression leftExpression, Expression rightExpression)
             : base(location)

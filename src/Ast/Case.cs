@@ -4,9 +4,6 @@
 
     public class Case : AstNode
     {
-        public Case(Expression condition, FormatString formatString)
-            : this(Location.Unknown, condition, formatString) {}
-
         public Case(Location location, Expression condition, FormatString formatString)
             : base(location)
         {

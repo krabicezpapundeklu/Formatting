@@ -2,9 +2,6 @@
 {
     public class ArgumentIndex : Expression
     {
-        public ArgumentIndex(int index)
-            : this(Location.Unknown, index) {}
-
         public ArgumentIndex(Location location, int index)
             : base(location)
         {

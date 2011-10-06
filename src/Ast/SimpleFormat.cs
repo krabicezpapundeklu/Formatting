@@ -5,9 +5,6 @@
 
     public class SimpleFormat : Format
     {
-        public SimpleFormat(Expression argument, bool leftAlign, int width, FormatString formatString)
-            : this(Location.Unknown, argument, leftAlign, width, formatString) {}
-
         public SimpleFormat(
             Location location, Expression argument, bool leftAlign, int width, FormatString formatString)
             : base(location, argument)

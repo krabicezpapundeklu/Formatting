@@ -106,7 +106,9 @@
 
                     andExpression = andExpression == null
                         ? expression
-                        : new BinaryExpression(new Operator(Token.And, string.Empty), andExpression, expression);
+                        : new BinaryExpression(
+                            Location.FromRange(andExpression, expression),
+                            new Operator(Location.Unknown, Token.And, string.Empty), andExpression, expression);
                 }
                 while(nextTokenInfo.Token != ':' && nextTokenInfo.Token != ',');
 
@@ -114,7 +116,9 @@
 
                 condition = condition == null
                     ? andExpression
-                    : new BinaryExpression(new Operator(currentTokenInfo.Location, ','), condition, andExpression);
+                    : new BinaryExpression(
+                        Location.FromRange(condition, andExpression), new Operator(currentTokenInfo.Location, ','),
+                        condition, andExpression);
             }
             while(nextTokenInfo.Token != ':');
 
@@ -143,7 +147,7 @@
             }
             while(nextTokenInfo.Token == '{');
 
-            return new ConditionalFormat(argument, cases);
+            return new ConditionalFormat(Location.Unknown, argument, cases);
         }
 
         private Ast.Format ParseFormat()
@@ -182,7 +186,7 @@
                     case Token.EndOfInput:
                         return items.Count == 0
                             ? new FormatString(new Location(0, 0), items)
-                            : new FormatString(items);
+                            : new FormatString(Location.FromRange(items), items);
 
                     case Token.Text:
                         items.Add(new Text(nextTokenInfo.Location, nextTokenInfo.Text));
@@ -247,16 +251,22 @@
             scanner.State = ScannerState.ScanningText;
 
             return new SimpleFormat(
-                argument, leftAlign, width, Accept(':')
+                Location.Unknown, argument, leftAlign, width, Accept(':')
                     ? ParseFormatString()
                     : FormatString.Empty);
         }
 
         private Expression ParseUnaryExpression()
         {
-            return Operator.IsUnaryOperator(nextTokenInfo.Token)
-                ? new UnaryExpression(ParseOperator(), ParsePrimaryExpression())
-                : ParsePrimaryExpression();
+            if(Operator.IsUnaryOperator(nextTokenInfo.Token))
+            {
+                Operator @operator = ParseOperator();
+                Expression expression = ParsePrimaryExpression();
+
+                return new UnaryExpression(Location.FromRange(@operator, expression), @operator, expression);
+            }
+
+            return ParsePrimaryExpression();
         }
 
         private static FormattingException SyntaxError(TokenInfo tokenInfo, string format, params object[] arguments)

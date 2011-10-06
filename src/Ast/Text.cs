@@ -4,9 +4,6 @@
 
     public class Text : FormatStringItem
     {
-        public Text(string value)
-            : this(Location.Unknown, value) {}
-
         public Text(Location location, string value)
             : base(location)
         {

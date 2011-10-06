@@ -4,9 +4,6 @@
 
     public abstract class Format : FormatStringItem
     {
-        protected Format(Expression argument)
-            : this(Location.Unknown, argument) {}
-
         protected Format(Location location, Expression argument)
             : base(location)
         {

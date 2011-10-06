@@ -6,12 +6,6 @@
 
     public class Operator : AstNode
     {
-        public Operator(int token)
-            : this(Location.Unknown, token) {}
-
-        public Operator(int token, string text)
-            : this(Location.Unknown, token, text) {}
-
         public Operator(Location location, int token)
             : this(location, token, T.ToString(token)) {}
 
