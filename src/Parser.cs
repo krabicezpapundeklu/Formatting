@@ -25,18 +25,7 @@
 
         public FormatString Parse()
         {
-            FormatString formatString = FormatString.Empty;
-
-            Utilities.ConvertExceptionsToLogs(
-                errorLogger, () =>
-                             {
-                                 formatString = ParseFormatString();
-
-                                 if(!Accept(Token.EndOfInput))
-                                     errorLogger.LogError(nextTokenInfo.Location, "Unescaped \"}\".");
-                             });
-
-            return formatString;
+            return ParseFormatString(true);
         }
 
         private bool Accept(int token)
@@ -145,7 +134,7 @@
 
                 Expect(':');
 
-                FormatString formatString = ParseFormatString();
+                FormatString formatString = ParseFormatString(false);
                 int end = Expect('}').Location.End;
 
                 scanner.State = ScannerState.ScanningTokens;
@@ -177,7 +166,7 @@
             return (Ast.Format)format.Clone(new Location(start, Expect('}').Location.End));
         }
 
-        private FormatString ParseFormatString()
+        private FormatString ParseFormatString(bool topLevel)
         {
             var items = new List<FormatStringItem>();
 
@@ -186,14 +175,31 @@
                 switch(nextTokenInfo.Token)
                 {
                     case '{':
-                        items.Add(ParseFormat());
+                        int errors = errorLogger.ErrorCount;
+
+                        Utilities.ConvertExceptionsToLogs(errorLogger, () => items.Add(ParseFormat()));
+
+                        if(errorLogger.ErrorCount > errors)
+                        {
+                            scanner.State = ScannerState.ScanningText;
+
+                            while(nextTokenInfo.Token != '}' && nextTokenInfo.Token != Token.EndOfInput)
+                                Consume();
+
+                            break;
+                        }
+
                         continue;
 
                     case '}':
+                        if(!topLevel)
+                            return new FormatString(Location.FromRange(items), items);
+                        
+                        errorLogger.LogError(nextTokenInfo.Location, "Unescaped \"}\".");
+                        break;
+
                     case Token.EndOfInput:
-                        return items.Count == 0
-                            ? new FormatString(new Location(0, 0), items)
-                            : new FormatString(Location.FromRange(items), items);
+                        return new FormatString(Location.FromRange(items), items);
 
                     case Token.Text:
                         items.Add(new Text(nextTokenInfo.Location, nextTokenInfo.Text));
@@ -259,7 +265,7 @@
 
             return new SimpleFormat(
                 Location.Unknown, argument, leftAlign, width, Accept(':')
-                    ? ParseFormatString()
+                    ? ParseFormatString(false)
                     : FormatString.Empty);
         }
 

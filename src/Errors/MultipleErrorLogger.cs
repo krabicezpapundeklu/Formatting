@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
 
     public class MultipleErrorLogger : ErrorLogger
     {
@@ -28,15 +29,20 @@
             }
         }
 
+        public override int ErrorCount
+        {
+            get { return Errors.Count; }
+        }
+
         public void ThrowOnErrors()
         {
-            if(Errors.Count > 0)
+            if(ErrorCount > 0)
                 throw new FormattingException(Errors);
         }
 
         protected override void DoLogError(Error error)
         {
-            if(!mutableErrors.Contains(error))
+            if(!mutableErrors.Any(x => x.Location.Equals(error.Location)))
             {
                 mutableErrors.Add(error);
                 sorted = false;
