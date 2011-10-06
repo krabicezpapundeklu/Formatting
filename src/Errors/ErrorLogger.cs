@@ -9,11 +9,9 @@
             DoLogError(Utilities.ThrowIfNull(error, "error"));
         }
 
-        public void LogError(Location location, string descriptionFormat, params object[] formatArguments)
+        public void LogError(Location location, string description)
         {
-            DoLogError(
-                Utilities.ThrowIfNull(location, "location"),
-                string.Format(Utilities.ThrowIfNull(descriptionFormat, "descriptionFormat"), formatArguments));
+            DoLogError(Utilities.ThrowIfNull(location, "location"), Utilities.ThrowIfNull(description, "description"));
         }
 
         #endregion

@@ -37,7 +37,8 @@
         {
             if(argumentIndex.Index >= arguments.Count)
             {
-                errorLogger.LogError(argumentIndex.Location, "Argument index {0} is out of range.", argumentIndex.Index);
+                errorLogger.LogError(
+                    argumentIndex.Location, string.Format("Argument index {0} is out of range.", argumentIndex.Index));
                 return Error;
             }
 
@@ -49,7 +50,7 @@
             if(!arguments.Contains(argumentName.Name))
             {
                 errorLogger.LogError(
-                    argumentName.Location, "Argument with name \"{0}\" doesn't exist.", argumentName.Name);
+                    argumentName.Location, string.Format("Argument with name \"{0}\" doesn't exist.", argumentName.Name));
 
                 return Error;
             }
@@ -95,8 +96,8 @@
 
                     default:
                         errorLogger.LogError(
-                            binaryExpression.Operator.Location, "Invalid operator \"{0}\".",
-                            binaryExpression.Operator.Text);
+                            binaryExpression.Operator.Location,
+                            string.Format("Invalid operator \"{0}\".", binaryExpression.Operator.Text));
 
                         return Error;
                 }
@@ -105,8 +106,9 @@
             {
                 errorLogger.LogError(
                     binaryExpression.Operator.Location,
-                    "Operator \"{0}\" cannot be applied to operands of type \"{1}\" and \"{2}\".",
-                    binaryExpression.Operator.Text, leftOperand.GetType(), rightOperand.GetType());
+                    string.Format(
+                        "Operator \"{0}\" cannot be applied to operands of type \"{1}\" and \"{2}\".",
+                        binaryExpression.Operator.Text, leftOperand.GetType(), rightOperand.GetType()));
 
                 return Error;
             }
@@ -208,14 +210,16 @@
                     {
                         errorLogger.LogError(
                             unaryExpression.Operator.Location,
-                            "Operator \"-\" cannot be applied to operand of type \"{0}\".", operand.GetType());
+                            string.Format(
+                                "Operator \"-\" cannot be applied to operand of type \"{0}\".", operand.GetType()));
 
                         return Error;
                     }
 
                 default:
                     errorLogger.LogError(
-                        unaryExpression.Operator.Location, "Invalid operator \"{0}\".", unaryExpression.Operator.Text);
+                        unaryExpression.Operator.Location,
+                        string.Format("Invalid operator \"{0}\".", unaryExpression.Operator.Text));
 
                     return Error;
             }
