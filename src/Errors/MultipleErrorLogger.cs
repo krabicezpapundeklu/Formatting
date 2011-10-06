@@ -1,32 +1,46 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Errors
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     public class MultipleErrorLogger : ErrorLogger
     {
-        private readonly List<Error> errors = new List<Error>();
+        private readonly ReadOnlyCollection<Error> errors;
+        private readonly List<Error> mutableErrors;
+        private bool sorted;
 
-        public int ErrorCount
+        public MultipleErrorLogger()
         {
-            get { return errors.Count; }
+            errors = new ReadOnlyCollection<Error>(mutableErrors = new List<Error>());
         }
 
-        public IEnumerable<Error> GetErrors()
+        public ReadOnlyCollection<Error> Errors
         {
-            errors.Sort(LocationComparer.Instance);
-            return errors;
+            get
+            {
+                if(!sorted)
+                {
+                    mutableErrors.Sort(LocationComparer.Instance);
+                    sorted = true;
+                }
+
+                return errors;
+            }
         }
 
         public void ThrowOnErrors()
         {
-            if(ErrorCount > 0)
-                throw new FormattingException(GetErrors());
+            if(Errors.Count > 0)
+                throw new FormattingException(Errors);
         }
 
         protected override void DoLogError(Error error)
         {
-            if(!errors.Contains(error))
-                errors.Add(error);
+            if(!mutableErrors.Contains(error))
+            {
+                mutableErrors.Add(error);
+                sorted = false;
+            }
         }
     }
 }
