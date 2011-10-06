@@ -5,16 +5,21 @@
 
     using Ast;
 
+    using Errors;
+
     public class Parser
     {
+        private readonly IErrorLogger errorLogger;
         private readonly Scanner scanner;
 
         private TokenInfo currentTokenInfo;
         private TokenInfo nextTokenInfo;
 
-        public Parser(Scanner scanner)
+        public Parser(Scanner scanner, IErrorLogger errorLogger)
         {
             this.scanner = Utilities.ThrowIfNull(scanner, "scanner");
+            this.errorLogger = Utilities.ThrowIfNull(errorLogger, "errorLogger");
+
             Consume();
         }
 

@@ -14,17 +14,17 @@
     {
         public static Scanner CreateTextScanner(string input)
         {
-            return new Scanner(input, new SimpleErrorLogger()) {State = ScannerState.ScanningText};
+            return new Scanner(input, SimpleErrorLogger.Instance) { State = ScannerState.ScanningText };
         }
 
         public static Scanner CreateTokenScanner(string input)
         {
-            return new Scanner(input, new SimpleErrorLogger()) { State = ScannerState.ScanningTokens };
+            return new Scanner(input, SimpleErrorLogger.Instance) { State = ScannerState.ScanningTokens };
         }
 
         public static Parser CreateParser(string input)
         {
-            return new Parser(CreateTextScanner(input));
+            return new Parser(CreateTextScanner(input), SimpleErrorLogger.Instance);
         }
 
         public static List<KeyValuePair<string, T>> GetFields<T>(Type type)

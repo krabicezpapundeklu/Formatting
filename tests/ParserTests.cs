@@ -9,9 +9,16 @@
     internal class ParserTests
     {
         [Test]
+        public void Constructor_WhenErrorLoggerIsNull_ThrowsException()
+        {
+            Assert.That(
+                () => new Parser(Helpers.CreateTextScanner(string.Empty), null), Throws.An<ArgumentNullException>());
+        }
+
+        [Test]
         public void Constructor_WhenScannerIsNull_ThrowsException()
         {
-            Assert.That(() => new Parser(null), Throws.An<ArgumentNullException>());
+            Assert.That(() => new Parser(null, null), Throws.An<ArgumentNullException>());
         }
 
         [Test]
