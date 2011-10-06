@@ -49,6 +49,11 @@
 
         #endregion
 
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Location);
+        }
+
         public static Location FromRange(params ILocated[] items)
         {
             return FromRange((IEnumerable<ILocated>)items);
@@ -73,6 +78,11 @@
             return hasSomeItem
                 ? new Location(start, end)
                 : Unknown;
+        }
+
+        public override int GetHashCode()
+        {
+            return 1 + Start ^ End;
         }
 
         public override string ToString()
