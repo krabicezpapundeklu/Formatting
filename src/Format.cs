@@ -33,8 +33,9 @@
         public string Evaluate(IFormatProvider formatProvider, ArgumentCollection arguments)
         {
             return
-                new Interpreter(formatProvider, Utilities.ThrowIfNull(arguments, "arguments"), new SimpleErrorLogger()).
-                    Evaluate(ast);
+                new Interpreter(
+                    formatProvider, Utilities.ThrowIfNull(arguments, "arguments"), SimpleErrorLogger.Instance).Evaluate(
+                        ast);
         }
 
         public static string Evaluate(string format, params object[] arguments)
@@ -61,7 +62,9 @@
         {
             return
                 new Format(
-                    new Parser(new Scanner(Utilities.ThrowIfNull(format, "format"), new SimpleErrorLogger())).Parse());
+                    new Parser(
+                        new Scanner(Utilities.ThrowIfNull(format, "format"), SimpleErrorLogger.Instance),
+                        SimpleErrorLogger.Instance).Parse());
         }
     }
 }
