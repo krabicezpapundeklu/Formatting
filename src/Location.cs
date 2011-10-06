@@ -39,7 +39,8 @@
 
         public bool Equals(Location other)
         {
-            Utilities.ThrowIfNull(other, "other");
+            if (other == null)
+                return false;
 
             if(!other.IsKnown)
                 return !IsKnown;
