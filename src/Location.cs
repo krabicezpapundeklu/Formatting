@@ -39,8 +39,7 @@
 
         public bool Equals(Location other)
         {
-            if(other == null)
-                throw new ArgumentNullException("other");
+            Utilities.ThrowIfNull(other, "other");
 
             if(!other.IsKnown)
                 return !IsKnown;
@@ -57,8 +56,7 @@
 
         public static Location FromRange(IEnumerable<ILocated> items)
         {
-            if(items == null)
-                throw new ArgumentNullException("items");
+            Utilities.ThrowIfNull(items, "items");
 
             bool hasSomeItem = false;
 

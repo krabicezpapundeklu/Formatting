@@ -1,6 +1,5 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
-    using System;
     using System.Collections.Generic;
 
     public class LocationComparer : IComparer<ILocated>, IComparer<Location>
@@ -13,13 +12,7 @@
 
         public int Compare(ILocated x, ILocated y)
         {
-            if(x == null)
-                throw new ArgumentNullException("x");
-
-            if(y == null)
-                throw new ArgumentNullException("y");
-
-            return Compare(x.Location, y.Location);
+            return Compare(Utilities.ThrowIfNull(x, "x").Location, Utilities.ThrowIfNull(y, "y").Location);
         }
 
         #endregion
@@ -28,11 +21,8 @@
 
         public int Compare(Location x, Location y)
         {
-            if(x == null)
-                throw new ArgumentNullException("x");
-
-            if(y == null)
-                throw new ArgumentNullException("y");
+            Utilities.ThrowIfNull(x, "x");
+            Utilities.ThrowIfNull(y, "y");
 
             if(x.Start < y.Start)
                 return -1;

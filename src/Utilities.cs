@@ -3,12 +3,11 @@
     using System;
     using System.Text;
 
-    public static class EscapeHelpers
+    public static class Utilities
     {
         public static string Escape(string text)
         {
-            if(text == null)
-                throw new ArgumentNullException("text");
+            ThrowIfNull(text, "text");
 
             var builder = new StringBuilder();
 
@@ -26,6 +25,17 @@
         public static bool MustBeEscaped(char c)
         {
             return c == '\\' || c == '{' || c == '}';
+        }
+
+        public static T ThrowIfNull<T>(T value, string name) where T : class
+        {
+            if(name == null)
+                throw new ArgumentNullException("name");
+
+            if(value == null)
+                throw new ArgumentNullException(name);
+
+            return value;
         }
     }
 }

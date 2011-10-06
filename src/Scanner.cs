@@ -16,14 +16,8 @@
 
         public Scanner(string input, IErrorLogger errorLogger)
         {
-            if(input == null)
-                throw new ArgumentNullException("input");
-
-            if(errorLogger == null)
-                throw new ArgumentNullException("errorLogger");
-
-            this.input = input;
-            this.errorLogger = errorLogger;
+            this.input = Utilities.ThrowIfNull(input, "input");
+            this.errorLogger = Utilities.ThrowIfNull(errorLogger, "errorLogger");
 
             State = ScannerState.ScanningText;
         }
@@ -32,8 +26,7 @@
 
         public static bool IsValidIdentifier(string text)
         {
-            if(text == null)
-                throw new ArgumentNullException("text");
+            Utilities.ThrowIfNull(text, "text");
 
             if(text.Length == 0)
                 return false;
@@ -111,7 +104,7 @@
                         if(positionInInput == input.Length)
                             errorLogger.LogError(
                                 new Location(positionInInput, positionInInput), "Unexpected end of input.");
-                        else if(!EscapeHelpers.MustBeEscaped(c = input[positionInInput++]))
+                        else if(!Utilities.MustBeEscaped(c = input[positionInInput++]))
                             errorLogger.LogError(
                                 new Location(positionInInput - 2, positionInInput), "\"{0}\" cannot be escaped.", c);
 

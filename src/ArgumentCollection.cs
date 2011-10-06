@@ -11,19 +11,13 @@
 
         public ArgumentCollection(IEnumerable<object> arguments)
         {
-            if(arguments == null)
-                throw new ArgumentNullException("arguments");
-
-            foreach(object argument in arguments)
+            foreach(object argument in Utilities.ThrowIfNull(arguments, "arguments"))
                 Add(argument);
         }
 
         public ArgumentCollection(IEnumerable<Argument> arguments)
         {
-            if(arguments == null)
-                throw new ArgumentNullException("arguments");
-
-            foreach(Argument argument in arguments)
+            foreach(Argument argument in Utilities.ThrowIfNull(arguments, "arguments"))
                 Add(argument);
         }
 
@@ -39,26 +33,17 @@
 
         public void Add(string name, object value)
         {
-            if(name == null)
-                throw new ArgumentNullException("name");
-
-            base.Add(new Argument(name, value));
+            base.Add(new Argument(Utilities.ThrowIfNull(name, "name"), value));
         }
 
         public bool Contains(string name)
         {
-            if(name == null)
-                throw new ArgumentNullException("name");
-
-            return this[name] != null;
+            return this[Utilities.ThrowIfNull(name, "name")] != null;
         }
 
         public bool Remove(string name)
         {
-            if(name == null)
-                throw new ArgumentNullException("name");
-
-            return Remove(this[name]);
+            return Remove(this[Utilities.ThrowIfNull(name, "name")]);
         }
 
         protected override void InsertItem(int index, Argument item)

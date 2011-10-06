@@ -1,7 +1,5 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
-
     public class ConstantExpression : Expression
     {
         public ConstantExpression(Location location, object constant)
@@ -12,11 +10,8 @@
         public ConstantExpression(Location location, object constant, string text)
             : base(location)
         {
-            if(text == null)
-                throw new ArgumentNullException("text");
-
             Value = constant;
-            Text = text;
+            Text = Utilities.ThrowIfNull(text, "text");
         }
 
         public object Value { get; private set; }

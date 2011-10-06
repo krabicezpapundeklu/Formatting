@@ -1,6 +1,5 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Text;
@@ -10,10 +9,7 @@
         public ConditionalFormat(Location location, Expression argument, IEnumerable<Case> cases)
             : base(location, argument)
         {
-            if(cases == null)
-                throw new ArgumentNullException("cases");
-
-            Cases = new ReadOnlyCollection<Case>(new List<Case>(cases));
+            Cases = new ReadOnlyCollection<Case>(new List<Case>(Utilities.ThrowIfNull(cases, "cases")));
         }
 
         public ReadOnlyCollection<Case> Cases { get; private set; }

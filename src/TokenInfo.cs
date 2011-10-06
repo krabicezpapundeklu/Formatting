@@ -1,6 +1,5 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
-    using System;
     using System.Text;
 
     using T = Token;
@@ -9,15 +8,9 @@
     {
         public TokenInfo(Location location, int token, string text)
         {
-            if(location == null)
-                throw new ArgumentNullException("location");
-
-            if(text == null)
-                throw new ArgumentNullException("text");
-
-            Location = location;
+            Location = Utilities.ThrowIfNull(location, "location");
             Token = token;
-            Text = text;
+            Text = Utilities.ThrowIfNull(text, "text");
         }
 
         public int Token { get; private set; }

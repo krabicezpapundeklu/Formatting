@@ -1,7 +1,5 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
-    using System;
-
     public class Argument
     {
         public Argument(object value)
@@ -9,10 +7,7 @@
 
         public Argument(string name, object value)
         {
-            if(name == null)
-                throw new ArgumentNullException("name");
-
-            Name = name;
+            Name = Utilities.ThrowIfNull(name, "name");
             Value = value;
         }
 

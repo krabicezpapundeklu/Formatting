@@ -8,22 +8,13 @@
             Location location, Operator binaryOperator, Expression leftExpression, Expression rightExpression)
             : base(location)
         {
-            if(binaryOperator == null)
-                throw new ArgumentNullException("binaryOperator");
+            Operator = Utilities.ThrowIfNull(binaryOperator, "binaryOperator");
+            LeftExpression = Utilities.ThrowIfNull(leftExpression, "leftExpression");
+            RightExpression = Utilities.ThrowIfNull(rightExpression, "rightExpression");
 
-            if(leftExpression == null)
-                throw new ArgumentNullException("leftExpression");
-
-            if(rightExpression == null)
-                throw new ArgumentNullException("rightExpression");
-
-            if(!Operator.IsBinaryOperator(binaryOperator.Token))
+            if(!Operator.IsBinaryOperator(Operator.Token))
                 throw new ArgumentException(
-                    string.Format("\"{0}\" is not binary operator.", binaryOperator), "binaryOperator");
-
-            Operator = binaryOperator;
-            LeftExpression = leftExpression;
-            RightExpression = rightExpression;
+                    string.Format("\"{0}\" is not binary operator.", Operator), "binaryOperator");
         }
 
         public Operator Operator { get; private set; }

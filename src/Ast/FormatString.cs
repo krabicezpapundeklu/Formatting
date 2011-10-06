@@ -1,6 +1,5 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -13,10 +12,9 @@
         public FormatString(Location location, IEnumerable<FormatStringItem> items)
             : base(location)
         {
-            if(items == null)
-                throw new ArgumentNullException("items");
-
-            Items = new ReadOnlyCollection<FormatStringItem>(new List<FormatStringItem>(items));
+            Items =
+                new ReadOnlyCollection<FormatStringItem>(
+                    new List<FormatStringItem>(Utilities.ThrowIfNull(items, "items")));
         }
 
         public ReadOnlyCollection<FormatStringItem> Items { get; private set; }

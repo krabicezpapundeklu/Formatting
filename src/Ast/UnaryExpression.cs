@@ -7,18 +7,11 @@
         public UnaryExpression(Location location, Operator unaryOperator, Expression operand)
             : base(location)
         {
-            if(unaryOperator == null)
-                throw new ArgumentNullException("unaryOperator");
+            Operator = Utilities.ThrowIfNull(unaryOperator, "unaryOperator");
+            Operand = Utilities.ThrowIfNull(operand, "operand");
 
-            if(operand == null)
-                throw new ArgumentNullException("operand");
-
-            if(unaryOperator.Token != '-')
-                throw new ArgumentException(
-                    string.Format("\"{0}\" is not unary operator.", unaryOperator), "unaryOperator");
-
-            Operator = unaryOperator;
-            Operand = operand;
+            if(Operator.Token != '-')
+                throw new ArgumentException(string.Format("\"{0}\" is not unary operator.", Operator), "unaryOperator");
         }
 
         public Operator Operator { get; private set; }

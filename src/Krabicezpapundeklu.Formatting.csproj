@@ -58,7 +58,7 @@
     <Compile Include="Errors\ErrorLogger.cs" />
     <Compile Include="Errors\MultipleErrorLogger.cs" />
     <Compile Include="Errors\SimpleErrorLogger.cs" />
-    <Compile Include="EscapeHelpers.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="Format.cs" />
     <Compile Include="FormattingException.cs" />
     <Compile Include="Errors\IErrorLogger.cs" />
