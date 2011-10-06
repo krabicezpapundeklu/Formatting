@@ -4,9 +4,6 @@
 
     public class ArgumentName : Expression
     {
-        public ArgumentName(string name)
-            : this(Location.Unknown, name) {}
-
         public ArgumentName(Location location, string name)
             : base(location)
         {

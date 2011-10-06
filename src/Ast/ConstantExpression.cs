@@ -4,9 +4,6 @@
 
     public class ConstantExpression : Expression
     {
-        public ConstantExpression(object constant, string text)
-            : this(Location.Unknown, constant, text) {}
-
         public ConstantExpression(Location location, object constant)
             : this(location, constant, constant == null
                 ? "null"

@@ -7,10 +7,8 @@
 
     public class FormatString : AstNode
     {
-        public static readonly FormatString Empty = new FormatString(Enumerable.Empty<FormatStringItem>());
-
-        public FormatString(IEnumerable<FormatStringItem> items)
-            : this(Location.FromRange(items), items) {}
+        public static readonly FormatString Empty = new FormatString(
+            Location.Unknown, Enumerable.Empty<FormatStringItem>());
 
         public FormatString(Location location, IEnumerable<FormatStringItem> items)
             : base(location)

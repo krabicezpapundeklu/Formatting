@@ -4,9 +4,6 @@
 
     public class UnaryExpression : Expression
     {
-        public UnaryExpression(Operator unaryOperator, Expression operand)
-            : this(Location.FromRange(unaryOperator, operand), unaryOperator, operand) {}
-
         public UnaryExpression(Location location, Operator unaryOperator, Expression operand)
             : base(location)
         {

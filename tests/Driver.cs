@@ -1,6 +1,7 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Tests
 {
     using System;
+    using System.Diagnostics;
 
     using Gallio.Runner;
     using Gallio.Runtime;
@@ -39,6 +40,9 @@
             console.WriteLine();
 
             console.ForegroundColor = originalConsoleColor;
+
+            if(result.ResultCode != ResultCode.Success && Debugger.IsAttached)
+                Debugger.Break();
 
             return result.ResultCode;
         }

@@ -4,9 +4,6 @@
 
     public abstract class AstNode : ILocated
     {
-        protected AstNode()
-            : this(Location.Unknown) {}
-
         protected AstNode(Location location)
         {
             if(location == null)

@@ -7,9 +7,6 @@
 
     public class ConditionalFormat : Format
     {
-        public ConditionalFormat(Expression argument, IEnumerable<Case> cases)
-            : this(Location.Unknown, argument, cases) {}
-
         public ConditionalFormat(Location location, Expression argument, IEnumerable<Case> cases)
             : base(location, argument)
         {
