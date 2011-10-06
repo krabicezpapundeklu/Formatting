@@ -1,20 +1,12 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
-
     public class Case : AstNode
     {
         public Case(Location location, Expression condition, FormatString formatString)
             : base(location)
         {
-            if(condition == null)
-                throw new ArgumentNullException("condition");
-
-            if(formatString == null)
-                throw new ArgumentNullException("formatString");
-
-            Condition = condition;
-            FormatString = formatString;
+            Condition = Utilities.ThrowIfNull(condition, "condition");
+            FormatString = Utilities.ThrowIfNull(formatString, "formatString");
         }
 
         public Expression Condition { get; private set; }

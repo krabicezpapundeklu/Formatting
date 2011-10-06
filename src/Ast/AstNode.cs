@@ -1,15 +1,10 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
-
     public abstract class AstNode : ILocated
     {
         protected AstNode(Location location)
         {
-            if(location == null)
-                throw new ArgumentNullException("location");
-
-            Location = location;
+            Location = Utilities.ThrowIfNull(location, "location");
         }
 
         #region ILocated Members
@@ -20,18 +15,12 @@
 
         public object Accept(IAstVisitor visitor)
         {
-            if(visitor == null)
-                throw new ArgumentNullException("visitor");
-
-            return DoAccept(visitor);
+            return DoAccept(Utilities.ThrowIfNull(visitor, "visitor"));
         }
 
         public AstNode Clone(Location newLocation)
         {
-            if(newLocation == null)
-                throw new ArgumentNullException("newLocation");
-
-            return DoClone(newLocation);
+            return DoClone(Utilities.ThrowIfNull(newLocation, "newLocation"));
         }
 
         protected abstract object DoAccept(IAstVisitor visitor);

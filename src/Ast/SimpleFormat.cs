@@ -1,6 +1,5 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
     using System.Text;
 
     public class SimpleFormat : Format
@@ -9,12 +8,9 @@
             Location location, Expression argument, bool leftAlign, int width, FormatString formatString)
             : base(location, argument)
         {
-            if(formatString == null)
-                throw new ArgumentNullException("formatString");
-
             LeftAlign = leftAlign;
             Width = width;
-            FormatString = formatString;
+            FormatString = Utilities.ThrowIfNull(formatString, "formatString");
         }
 
         public bool LeftAlign { get; private set; }

@@ -32,10 +32,9 @@
 
         public string Evaluate(IFormatProvider formatProvider, ArgumentCollection arguments)
         {
-            if(arguments == null)
-                throw new ArgumentNullException("arguments");
-
-            return new Interpreter(formatProvider, arguments, new SimpleErrorLogger()).Evaluate(ast);
+            return
+                new Interpreter(formatProvider, Utilities.ThrowIfNull(arguments, "arguments"), new SimpleErrorLogger()).
+                    Evaluate(ast);
         }
 
         public static string Evaluate(string format, params object[] arguments)
@@ -60,10 +59,9 @@
 
         public static Format Parse(string format)
         {
-            if(format == null)
-                throw new ArgumentNullException("format");
-
-            return new Format(new Parser(new Scanner(format, new SimpleErrorLogger())).Parse());
+            return
+                new Format(
+                    new Parser(new Scanner(Utilities.ThrowIfNull(format, "format"), new SimpleErrorLogger())).Parse());
         }
     }
 }

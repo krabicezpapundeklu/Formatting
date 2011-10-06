@@ -14,11 +14,7 @@
 
         public Parser(Scanner scanner)
         {
-            if(scanner == null)
-                throw new ArgumentNullException("scanner");
-
-            this.scanner = scanner;
-
+            this.scanner = Utilities.ThrowIfNull(scanner, "scanner");
             Consume();
         }
 
@@ -27,7 +23,7 @@
             FormatString formatString = ParseFormatString();
 
             if(!Accept(Token.EndOfInput))
-                throw new FormattingException(nextTokenInfo.Location, "Unescaped \"}}\".");
+                throw new FormattingException(nextTokenInfo.Location, "Unescaped \"}\".");
 
             return formatString;
         }
@@ -273,7 +269,7 @@
         {
             return tokenInfo.Token == Token.EndOfInput
                 ? new FormattingException(tokenInfo.Location, "Unexpected end of input.")
-                : new FormattingException(tokenInfo.Location, format, arguments);
+                : new FormattingException(tokenInfo.Location, string.Format(format, arguments));
         }
     }
 }

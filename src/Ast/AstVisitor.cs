@@ -1,105 +1,67 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
-
     public abstract class AstVisitor : IAstVisitor
     {
         #region IAstVisitor Members
 
         public object Visit(ArgumentIndex argumentIndex)
         {
-            if(argumentIndex == null)
-                throw new ArgumentNullException("argumentIndex");
-
-            return DoVisit(argumentIndex);
+            return DoVisit(Utilities.ThrowIfNull(argumentIndex, "argumentIndex"));
         }
 
         public object Visit(ArgumentName argumentName)
         {
-            if(argumentName == null)
-                throw new ArgumentNullException("argumentName");
-
-            return DoVisit(argumentName);
+            return DoVisit(Utilities.ThrowIfNull(argumentName, "argumentName"));
         }
 
         public object Visit(BinaryExpression binaryExpression)
         {
-            if(binaryExpression == null)
-                throw new ArgumentNullException("binaryExpression");
-
-            return DoVisit(binaryExpression);
+            return DoVisit(Utilities.ThrowIfNull(binaryExpression, "binaryExpression"));
         }
 
         public object Visit(Case @case)
         {
-            if(@case == null)
-                throw new ArgumentNullException("case");
-
-            return DoVisit(@case);
+            return DoVisit(Utilities.ThrowIfNull(@case, "case"));
         }
 
         public object Visit(ConditionalFormat conditionalFormat)
         {
-            if(conditionalFormat == null)
-                throw new ArgumentNullException("conditionalFormat");
-
-            return DoVisit(conditionalFormat);
+            return DoVisit(Utilities.ThrowIfNull(conditionalFormat, "conditionalFormat"));
         }
 
         public object Visit(ConstantExpression constantExpression)
         {
-            if(constantExpression == null)
-                throw new ArgumentNullException("constantExpression");
-
-            return DoVisit(constantExpression);
+            return DoVisit(Utilities.ThrowIfNull(constantExpression, "constantExpression"));
         }
 
         public object Visit(FormatString formatString)
         {
-            if(formatString == null)
-                throw new ArgumentNullException("formatString");
-
-            return DoVisit(formatString);
+            return DoVisit(Utilities.ThrowIfNull(formatString, "formatString"));
         }
 
         public object Visit(Integer integer)
         {
-            if(integer == null)
-                throw new ArgumentNullException("integer");
-
-            return DoVisit(integer);
+            return DoVisit(Utilities.ThrowIfNull(integer, "integer"));
         }
 
         public object Visit(Operator @operator)
         {
-            if(@operator == null)
-                throw new ArgumentNullException("operator");
-
-            return DoVisit(@operator);
+            return DoVisit(Utilities.ThrowIfNull(@operator, "operator"));
         }
 
         public object Visit(SimpleFormat simpleFormat)
         {
-            if(simpleFormat == null)
-                throw new ArgumentNullException("simpleFormat");
-
-            return DoVisit(simpleFormat);
+            return DoVisit(Utilities.ThrowIfNull(simpleFormat, "simpleFormat"));
         }
 
         public object Visit(Text text)
         {
-            if(text == null)
-                throw new ArgumentNullException("text");
-
-            return DoVisit(text);
+            return DoVisit(Utilities.ThrowIfNull(text, "text"));
         }
 
         public object Visit(UnaryExpression unaryExpression)
         {
-            if(unaryExpression == null)
-                throw new ArgumentNullException("unaryExpression");
-
-            return DoVisit(unaryExpression);
+            return DoVisit(Utilities.ThrowIfNull(unaryExpression, "unaryExpression"));
         }
 
         #endregion
@@ -168,10 +130,7 @@
 
         protected object Visit(AstNode node)
         {
-            if(node == null)
-                throw new ArgumentNullException("node");
-
-            return node.Accept(this);
+            return Utilities.ThrowIfNull(node, "node").Accept(this);
         }
 
         protected T Visit<T>(AstNode node)

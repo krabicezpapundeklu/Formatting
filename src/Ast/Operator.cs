@@ -12,14 +12,11 @@
         public Operator(Location location, int token, string text)
             : base(location)
         {
-            if(text == null)
-                throw new ArgumentNullException("text");
+            Token = token;
+            Text = Utilities.ThrowIfNull(text, "text");
 
             if(!IsOperator(token))
-                throw new ArgumentException(string.Format("\"{0}\" is not valid operator.", T.ToString(token)), "token");
-
-            Token = token;
-            Text = text;
+                throw new ArgumentException(string.Format("\"{0}\" is not valid operator.", Text), "token");
         }
 
         public int Token { get; private set; }

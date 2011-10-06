@@ -18,15 +18,9 @@
 
         public Interpreter(IFormatProvider formatProvider, ArgumentCollection arguments, IErrorLogger errorLogger)
         {
-            if(arguments == null)
-                throw new ArgumentNullException("arguments");
-
-            if(errorLogger == null)
-                throw new ArgumentNullException("errorLogger");
-
             this.formatProvider = formatProvider;
-            this.arguments = arguments;
-            this.errorLogger = errorLogger;
+            this.arguments = Utilities.ThrowIfNull(arguments, "arguments");
+            this.errorLogger = Utilities.ThrowIfNull(errorLogger, "errorLogger");
         }
 
         public string Evaluate(AstNode ast)
@@ -222,6 +216,7 @@
                 default:
                     errorLogger.LogError(
                         unaryExpression.Operator.Location, "Invalid operator \"{0}\".", unaryExpression.Operator.Text);
+
                     return Error;
             }
         }

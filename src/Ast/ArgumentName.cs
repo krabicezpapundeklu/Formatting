@@ -1,16 +1,11 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
-
     public class ArgumentName : Expression
     {
         public ArgumentName(Location location, string name)
             : base(location)
         {
-            if(name == null)
-                throw new ArgumentNullException("name");
-
-            Name = name;
+            Name = Utilities.ThrowIfNull(name, "name");
         }
 
         public string Name { get; private set; }

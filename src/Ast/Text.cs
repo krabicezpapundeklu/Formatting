@@ -1,23 +1,18 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
-
     public class Text : FormatStringItem
     {
         public Text(Location location, string value)
             : base(location)
         {
-            if(value == null)
-                throw new ArgumentNullException("value");
-
-            Value = value;
+            Value = Utilities.ThrowIfNull(value, "value");
         }
 
         public string Value { get; private set; }
 
         public override string ToString()
         {
-            return EscapeHelpers.Escape(Value);
+            return Utilities.Escape(Value);
         }
 
         protected override object DoAccept(IAstVisitor visitor)
