@@ -35,6 +35,7 @@
   <ItemGroup>
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentCollection.cs" />
+    <Compile Include="Ast\Enumerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ast\ArgumentIndex.cs" />
     <Compile Include="Ast\ArgumentName.cs" />

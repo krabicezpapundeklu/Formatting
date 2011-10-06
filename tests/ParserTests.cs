@@ -2,6 +2,8 @@
 {
     using System;
 
+    using Ast;
+
     using MbUnit.Framework;
 
     using NHamcrest.Core;
@@ -50,11 +52,23 @@
         }
 
         [Test]
+        [Row("{0:}", 2, 2)]
+        [Row("{0:abc}", 3, 6)]
+        public void Parse_StroresInnerFormatStringLocationCorrectly(string input, int expectedStart, int expectedEnd)
+        {
+            FormatString ast = Helpers.CreateParser(input).Parse();
+            Location location = ((SimpleFormat)ast.Items[0]).FormatString.Location;
+
+            Assert.That(location, Is.EqualTo(new Location(expectedStart, expectedEnd)));
+        }
+
+        [Test]
         [Row("", 0, 0)]
         [Row("abc", 0, 3)]
         public void Parse_StroresTopLevelFormatStringLocationCorrectly(string input, int expectedStart, int expectedEnd)
         {
-            Assert.That(Helpers.CreateParser(input).Parse().Location, Is.EqualTo(new Location(expectedStart, expectedEnd)));
+            Assert.That(
+                Helpers.CreateParser(input).Parse().Location, Is.EqualTo(new Location(expectedStart, expectedEnd)));
         }
 
         [Test]

@@ -25,7 +25,7 @@
 
         public FormatString Parse()
         {
-            return ParseFormatString(true);
+            return ParseFormatString(0);
         }
 
         private bool Accept(int token)
@@ -43,6 +43,13 @@
         {
             currentTokenInfo = nextTokenInfo;
             nextTokenInfo = scanner.Scan();
+        }
+
+        private static FormatString CreateFormatString(int start, ICollection<FormatStringItem> items)
+        {
+            return items.Count == 0
+                ? new FormatString(new Location(start, start), items) // to have "known" location
+                : new FormatString(Location.FromRange(items), items);
         }
 
         private TokenInfo Expect(int token)
@@ -134,7 +141,7 @@
 
                 Expect(':');
 
-                FormatString formatString = ParseFormatString(false);
+                FormatString formatString = ParseFormatString(nextTokenInfo.Location.Start);
                 int end = Expect('}').Location.End;
 
                 scanner.State = ScannerState.ScanningTokens;
@@ -166,7 +173,7 @@
             return (Ast.Format)format.Clone(new Location(start, Expect('}').Location.End));
         }
 
-        private FormatString ParseFormatString(bool topLevel)
+        private FormatString ParseFormatString(int start)
         {
             var items = new List<FormatStringItem>();
 
@@ -192,16 +199,14 @@
                         continue;
 
                     case '}':
-                        if(!topLevel)
-                            return new FormatString(Location.FromRange(items), items);
-                        
+                        if(start > 0)
+                            return CreateFormatString(start, items);
+
                         errorLogger.LogError(nextTokenInfo.Location, "Unescaped \"}\".");
                         break;
 
                     case Token.EndOfInput:
-                        return items.Count == 0
-                            ? new FormatString(new Location(0, 0), items) // to have "known" location
-                            : new FormatString(Location.FromRange(items), items);
+                        return CreateFormatString(start, items);
 
                     case Token.Text:
                         items.Add(new Text(nextTokenInfo.Location, nextTokenInfo.Text));
@@ -267,7 +272,7 @@
 
             return new SimpleFormat(
                 Location.Unknown, argument, leftAlign, width, Accept(':')
-                    ? ParseFormatString(false)
+                    ? ParseFormatString(currentTokenInfo.Location.Start)
                     : FormatString.Empty);
         }
 
