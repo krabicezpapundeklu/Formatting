@@ -25,10 +25,16 @@
 
         public FormatString Parse()
         {
-            FormatString formatString = ParseFormatString();
+            FormatString formatString = FormatString.Empty;
 
-            if(!Accept(Token.EndOfInput))
-                errorLogger.LogError(nextTokenInfo.Location, "Unescaped \"}\".");
+            Utilities.ConvertExceptionsToLogs(
+                errorLogger, () =>
+                             {
+                                 formatString = ParseFormatString();
+
+                                 if(!Accept(Token.EndOfInput))
+                                     errorLogger.LogError(nextTokenInfo.Location, "Unescaped \"}\".");
+                             });
 
             return formatString;
         }

@@ -3,8 +3,26 @@
     using System;
     using System.Text;
 
+    using Errors;
+
     public static class Utilities
     {
+        public static void ConvertExceptionsToLogs(IErrorLogger errorLogger, Action action)
+        {
+            ThrowIfNull(errorLogger, "errorLogger");
+            ThrowIfNull(action, "action");
+
+            try
+            {
+                action();
+            }
+            catch(FormattingException e)
+            {
+                foreach(Error error in e.Errors)
+                    errorLogger.LogError(error);
+            }
+        }
+
         public static string Escape(string text)
         {
             ThrowIfNull(text, "text");
