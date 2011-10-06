@@ -101,12 +101,13 @@
                         return Token.Text;
 
                     case '\\':
-                        if(positionInInput == input.Length)
+                        if (positionInInput == input.Length)
                             errorLogger.LogError(
                                 new Location(positionInInput, positionInInput), "Unexpected end of input.");
-                        else if(!Utilities.MustBeEscaped(c = input[positionInInput++]))
+                        else if (!Utilities.MustBeEscaped(c = input[positionInInput++]))
                             errorLogger.LogError(
-                                new Location(positionInInput - 2, positionInInput), "\"{0}\" cannot be escaped.", c);
+                                new Location(positionInInput - 2, positionInInput),
+                                string.Format("\"{0}\" cannot be escaped.", c));
 
                         break;
                 }

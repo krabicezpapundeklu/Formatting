@@ -28,7 +28,7 @@
             FormatString formatString = ParseFormatString();
 
             if(!Accept(Token.EndOfInput))
-                throw new FormattingException(nextTokenInfo.Location, "Unescaped \"}\".");
+                errorLogger.LogError(nextTokenInfo.Location, "Unescaped \"}\".");
 
             return formatString;
         }
