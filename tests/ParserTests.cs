@@ -50,6 +50,14 @@
         }
 
         [Test]
+        [Row("", 0, 0)]
+        [Row("abc", 0, 3)]
+        public void Parse_StroresTopLevelFormatStringLocationCorrectly(string input, int expectedStart, int expectedEnd)
+        {
+            Assert.That(Helpers.CreateParser(input).Parse().Location, Is.EqualTo(new Location(expectedStart, expectedEnd)));
+        }
+
+        [Test]
         [MultipleAsserts]
         [Row("xx}xx", "Unescaped \"}\".", 2, 3)]
         [Row("{0 {x", "Unknown operator \"x\".", 4, 5)]

@@ -199,7 +199,9 @@
                         break;
 
                     case Token.EndOfInput:
-                        return new FormatString(Location.FromRange(items), items);
+                        return items.Count == 0
+                            ? new FormatString(new Location(0, 0), items) // to have "known" location
+                            : new FormatString(Location.FromRange(items), items);
 
                     case Token.Text:
                         items.Add(new Text(nextTokenInfo.Location, nextTokenInfo.Text));
