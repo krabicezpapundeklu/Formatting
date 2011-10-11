@@ -29,15 +29,9 @@
             }
         }
 
-        public override int ErrorCount
+        public int ErrorCount
         {
             get { return Errors.Count; }
-        }
-
-        public void ThrowOnErrors()
-        {
-            if(ErrorCount > 0)
-                throw new FormattingException(Errors);
         }
 
         protected override void DoLogError(Error error)

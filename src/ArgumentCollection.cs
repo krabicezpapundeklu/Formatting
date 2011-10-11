@@ -48,18 +48,20 @@
 
         protected override void InsertItem(int index, Argument item)
         {
-            if(!string.IsNullOrEmpty(item.Name) && Contains(item.Name))
-                throw new ArgumentException(string.Format("Argument with name \"{0}\" already exists.", item.Name));
-
+            Validate(item);
             base.InsertItem(index, item);
         }
 
         protected override void SetItem(int index, Argument item)
         {
+            Validate(item);
+            base.SetItem(index, item);
+        }
+
+        private void Validate(Argument item)
+        {
             if(!string.IsNullOrEmpty(item.Name) && Contains(item.Name))
                 throw new ArgumentException(string.Format("Argument with name \"{0}\" already exists.", item.Name));
-
-            base.SetItem(index, item);
         }
     }
 }
