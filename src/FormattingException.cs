@@ -10,11 +10,12 @@
     public class FormattingException : FormatException
     {
         public FormattingException(Location location, string description)
-            : this(
-                Enumerable.Repeat(
-                    new Error(
-                        Utilities.ThrowIfNull(location, "location"), Utilities.ThrowIfNull(description, "description")),
-                    1)) {}
+            : this(new Error(Utilities.ThrowIfNull(location, "location"), Utilities.ThrowIfNull(description, "description"))) {}
+
+        public FormattingException(Error error)
+            : this(Enumerable.Repeat(Utilities.ThrowIfNull(error, "error"), 1))
+        {
+        }
 
         public FormattingException(IEnumerable<Error> errors)
             : base("Format is invalid.")
