@@ -46,7 +46,7 @@
             textBuilder.Clear();
 
             if(State == ScannerState.ScanningTokens)
-                SkipWhiteSpace();
+                this.SkipWhile(char.IsWhiteSpace);
 
             int token;
 
@@ -155,8 +155,7 @@
 
         private void ScanWhile(Func<string, int, bool> predicate)
         {
-            while(positionInInput < input.Length && predicate(input, positionInInput))
-                positionInInput++;
+            this.SkipWhile(predicate);
 
             textBuilder.Append(input, tokenStart + 1, positionInInput - tokenStart - 1);
         }
@@ -173,10 +172,10 @@
             return ifDoesNotFollow;
         }
 
-        private void SkipWhiteSpace()
+        private void SkipWhile(Func<string, int, bool> predicate)
         {
-            while(positionInInput < input.Length && char.IsWhiteSpace(input, positionInInput))
-                ++positionInInput;
+            while (positionInInput < input.Length && predicate(input, positionInInput))
+                positionInInput++;
         }
     }
 }
