@@ -83,7 +83,7 @@
 
         public override int GetHashCode()
         {
-            return 1 + Start ^ End;
+            return IsKnown ? 1 + Start ^ End : 0;
         }
 
         public override string ToString()
