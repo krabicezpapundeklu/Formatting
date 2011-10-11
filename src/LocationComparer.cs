@@ -4,38 +4,48 @@
 
     public class LocationComparer : IComparer<ILocated>, IComparer<Location>
     {
+        #region Constants and Fields
+
         public static readonly LocationComparer Instance = new LocationComparer();
 
-        private LocationComparer() {}
+        #endregion
 
-        #region IComparer<ILocated> Members
+        #region Constructors and Destructors
+
+        private LocationComparer()
+        {
+        }
+
+        #endregion
+
+        #region Public Methods
 
         public int Compare(ILocated x, ILocated y)
         {
             return Compare(Utilities.ThrowIfNull(x, "x").Location, Utilities.ThrowIfNull(y, "y").Location);
         }
 
-        #endregion
-
-        #region IComparer<Location> Members
-
         public int Compare(Location x, Location y)
         {
             Utilities.ThrowIfNull(x, "x");
             Utilities.ThrowIfNull(y, "y");
 
-            if(x.Start < y.Start)
+            if (x.Start < y.Start)
+            {
                 return -1;
+            }
 
-            if(x.Start > y.Start)
+            if (x.Start > y.Start)
+            {
                 return 1;
+            }
 
-            if(x.End < y.End)
+            if (x.End < y.End)
+            {
                 return -1;
+            }
 
-            return x.End > y.End
-                ? 1
-                : 0;
+            return x.End > y.End ? 1 : 0;
         }
 
         #endregion

@@ -6,41 +6,62 @@
 
     public class MultipleErrorLogger : ErrorLogger
     {
+        #region Constants and Fields
+
         private readonly ReadOnlyCollection<Error> errors;
+
         private readonly List<Error> mutableErrors;
+
         private bool sorted;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public MultipleErrorLogger()
         {
-            errors = new ReadOnlyCollection<Error>(mutableErrors = new List<Error>());
+            this.errors = new ReadOnlyCollection<Error>(this.mutableErrors = new List<Error>());
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        public int ErrorCount
+        {
+            get
+            {
+                return this.Errors.Count;
+            }
         }
 
         public ReadOnlyCollection<Error> Errors
         {
             get
             {
-                if(!sorted)
+                if (!this.sorted)
                 {
-                    mutableErrors.Sort(LocationComparer.Instance);
-                    sorted = true;
+                    this.mutableErrors.Sort(LocationComparer.Instance);
+                    this.sorted = true;
                 }
 
-                return errors;
+                return this.errors;
             }
         }
 
-        public int ErrorCount
-        {
-            get { return Errors.Count; }
-        }
+        #endregion
+
+        #region Methods
 
         protected override void DoLogError(Error error)
         {
-            if(!mutableErrors.Any(x => x.Location.Equals(error.Location)))
+            if (!this.mutableErrors.Any(x => x.Location.Equals(error.Location)))
             {
-                mutableErrors.Add(error);
-                sorted = false;
+                this.mutableErrors.Add(error);
+                this.sorted = false;
             }
         }
+
+        #endregion
     }
 }

@@ -9,6 +9,8 @@
 
     internal class FormatTests
     {
+        #region Public Methods
+
         [Test]
         [Row("", new object[] { }, "")]
         [Row("xxx", new object[] { }, "xxx")]
@@ -29,10 +31,10 @@
         }
 
         [Test]
-        [Row("cs", "{0:C}", new object[] {123}, "123,00 Kč")]
-        [Row("en", "{0:C}", new object[] {123}, "$123.00")]
-        [Row("cs", "{0,10:C}", new object[] {123}, " 123,00 Kč")]
-        [Row("cs", "{0,-10:C}", new object[] {123}, "123,00 Kč ")]
+        [Row("cs", "{0:C}", new object[] { 123 }, "123,00 Kč")]
+        [Row("en", "{0:C}", new object[] { 123 }, "$123.00")]
+        [Row("cs", "{0,10:C}", new object[] { 123 }, " 123,00 Kč")]
+        [Row("cs", "{0,-10:C}", new object[] { 123 }, "123,00 Kč ")]
         public void Evaluate_EvaluatesFormatCorrectly(
             string cultureName, string format, object[] arguments, string expectedResult)
         {
@@ -46,9 +48,11 @@
         }
 
         [Test]
-        [Row("{0}", new object[]{}, "Argument index 0 is out of range.", 1, 2)]
-        [Row("{0 {={1}:}}", new object[] { 0, false }, "Operator \"=\" cannot be applied to operands of type \"System.Int32\" and \"System.Boolean\".", 4, 5)]
-        [Row("{0 {=-{1}:}}", new object[] { 0, false }, "Operator \"-\" cannot be applied to operand of type \"System.Boolean\".", 5, 6)]
+        [Row("{0}", new object[] { }, "Argument index 0 is out of range.", 1, 2)]
+        [Row("{0 {={1}:}}", new object[] { 0, false },
+            "Operator \"=\" cannot be applied to operands of type \"System.Int32\" and \"System.Boolean\".", 4, 5)]
+        [Row("{0 {=-{1}:}}", new object[] { 0, false },
+            "Operator \"-\" cannot be applied to operand of type \"System.Boolean\".", 5, 6)]
         [Row("{0 {=0:}}", new object[] { }, "Argument index 0 is out of range.", 1, 2)]
         [Row("{0 {else:}}", new object[] { }, "Argument index 0 is out of range.", 1, 2)]
         public void Evaluate_WhenHavingError_ThrowsException(
@@ -63,5 +67,7 @@
         {
             Assert.That(() => Format.Parse(null), Throws.An<ArgumentNullException>());
         }
+
+        #endregion
     }
 }

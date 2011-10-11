@@ -2,14 +2,16 @@
 {
     using System;
 
-    using Ast;
-
     using MbUnit.Framework;
+
+    using Krabicezpapundeklu.Formatting.Ast;
 
     using NHamcrest.Core;
 
     internal class ParserTests
     {
+        #region Public Methods
+
         [Test]
         public void Constructor_WhenErrorLoggerIsNull_ThrowsException()
         {
@@ -89,5 +91,7 @@
             Helpers.RequireFormattingException(
                 () => Helpers.CreateParser(input).Parse(), errorMessage, errorStart, errorEnd);
         }
+
+        #endregion
     }
 }

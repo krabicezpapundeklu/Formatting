@@ -2,28 +2,41 @@
 {
     public abstract class AstNode : ILocated
     {
+        #region Constructors and Destructors
+
         protected AstNode(Location location)
         {
-            Location = Utilities.ThrowIfNull(location, "location");
+            this.Location = Utilities.ThrowIfNull(location, "location");
         }
 
-        #region ILocated Members
+        #endregion
+
+        #region Public Properties
 
         public Location Location { get; private set; }
 
         #endregion
 
+        #region Public Methods
+
         public object Accept(IAstVisitor visitor)
         {
-            return DoAccept(Utilities.ThrowIfNull(visitor, "visitor"));
+            return this.DoAccept(Utilities.ThrowIfNull(visitor, "visitor"));
         }
 
         public AstNode Clone(Location newLocation)
         {
-            return DoClone(Utilities.ThrowIfNull(newLocation, "newLocation"));
+            return this.DoClone(Utilities.ThrowIfNull(newLocation, "newLocation"));
         }
 
+        #endregion
+
+        #region Methods
+
         protected abstract object DoAccept(IAstVisitor visitor);
+
         protected abstract AstNode DoClone(Location newLocation);
+
+        #endregion
     }
 }

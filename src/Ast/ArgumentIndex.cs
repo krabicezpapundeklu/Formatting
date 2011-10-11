@@ -2,18 +2,32 @@
 {
     public class ArgumentIndex : Expression
     {
+        #region Constructors and Destructors
+
         public ArgumentIndex(Location location, int index)
             : base(location)
         {
-            Index = index;
+            this.Index = index;
         }
+
+        #endregion
+
+        #region Public Properties
 
         public int Index { get; private set; }
 
+        #endregion
+
+        #region Public Methods
+
         public override string ToString()
         {
-            return string.Format("{{{0}}}", Index);
+            return string.Format("{{{0}}}", this.Index);
         }
+
+        #endregion
+
+        #region Methods
 
         protected override object DoAccept(IAstVisitor visitor)
         {
@@ -22,7 +36,9 @@
 
         protected override AstNode DoClone(Location newLocation)
         {
-            return new ArgumentIndex(newLocation, Index);
+            return new ArgumentIndex(newLocation, this.Index);
         }
+
+        #endregion
     }
 }

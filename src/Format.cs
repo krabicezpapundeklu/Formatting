@@ -2,41 +2,27 @@
 {
     using System;
 
-    using Ast;
-
-    using Errors;
+    using Krabicezpapundeklu.Formatting.Ast;
+    using Krabicezpapundeklu.Formatting.Errors;
 
     public class Format
     {
+        #region Constants and Fields
+
         private readonly AstNode ast;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         private Format(AstNode ast)
         {
             this.ast = ast;
         }
 
-        public string Evaluate(params object[] arguments)
-        {
-            return Evaluate(new ArgumentCollection(arguments));
-        }
+        #endregion
 
-        public string Evaluate(ArgumentCollection arguments)
-        {
-            return Evaluate((IFormatProvider)null, arguments);
-        }
-
-        public string Evaluate(IFormatProvider formatProvider, params object[] arguments)
-        {
-            return Evaluate(formatProvider, new ArgumentCollection(arguments));
-        }
-
-        public string Evaluate(IFormatProvider formatProvider, ArgumentCollection arguments)
-        {
-            return
-                new Interpreter(
-                    formatProvider, Utilities.ThrowIfNull(arguments, "arguments"), SimpleErrorLogger.Instance).Evaluate(
-                        ast);
-        }
+        #region Public Methods
 
         public static string Evaluate(string format, params object[] arguments)
         {
@@ -66,5 +52,30 @@
                         new Scanner(Utilities.ThrowIfNull(format, "format"), SimpleErrorLogger.Instance),
                         SimpleErrorLogger.Instance).Parse());
         }
+
+        public string Evaluate(params object[] arguments)
+        {
+            return this.Evaluate(new ArgumentCollection(arguments));
+        }
+
+        public string Evaluate(ArgumentCollection arguments)
+        {
+            return Evaluate((IFormatProvider)null, arguments);
+        }
+
+        public string Evaluate(IFormatProvider formatProvider, params object[] arguments)
+        {
+            return Evaluate(formatProvider, new ArgumentCollection(arguments));
+        }
+
+        public string Evaluate(IFormatProvider formatProvider, ArgumentCollection arguments)
+        {
+            return
+                new Interpreter(
+                    formatProvider, Utilities.ThrowIfNull(arguments, "arguments"), SimpleErrorLogger.Instance).Evaluate(
+                        this.ast);
+        }
+
+        #endregion
     }
 }

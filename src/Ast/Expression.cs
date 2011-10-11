@@ -2,7 +2,13 @@
 {
     public abstract class Expression : AstNode
     {
+        #region Constructors and Destructors
+
         protected Expression(Location location)
-            : base(location) {}
+            : base(location)
+        {
+        }
+
+        #endregion
     }
 }

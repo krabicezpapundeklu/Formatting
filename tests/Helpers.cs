@@ -4,14 +4,21 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Errors;
-
     using MbUnit.Framework;
+
+    using Krabicezpapundeklu.Formatting.Errors;
 
     using NHamcrest.Core;
 
     internal static class Helpers
     {
+        #region Public Methods
+
+        public static Parser CreateParser(string input)
+        {
+            return new Parser(CreateTextScanner(input), SimpleErrorLogger.Instance);
+        }
+
         public static Scanner CreateTextScanner(string input)
         {
             return new Scanner(input, SimpleErrorLogger.Instance) { State = ScannerState.ScanningText };
@@ -20,11 +27,6 @@
         public static Scanner CreateTokenScanner(string input)
         {
             return new Scanner(input, SimpleErrorLogger.Instance) { State = ScannerState.ScanningTokens };
-        }
-
-        public static Parser CreateParser(string input)
-        {
-            return new Parser(CreateTextScanner(input), SimpleErrorLogger.Instance);
         }
 
         public static List<KeyValuePair<string, T>> GetFields<T>(Type type)
@@ -46,15 +48,19 @@
         {
             var tokens = new List<string>();
 
-            while(true)
+            while (true)
             {
                 TokenInfo tokenInfo = scanner.Scan();
 
                 tokens.Add(tokenInfo.ToString());
 
-                if(tokenInfo.Token == Token.EndOfInput)
+                if (tokenInfo.Token == Token.EndOfInput)
+                {
                     return tokens;
+                }
             }
         }
+
+        #endregion
     }
 }

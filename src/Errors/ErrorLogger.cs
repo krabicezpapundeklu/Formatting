@@ -2,25 +2,30 @@
 {
     public abstract class ErrorLogger : IErrorLogger
     {
-        #region IErrorLogger Members
+        #region Public Methods
 
         public void LogError(Error error)
         {
-            DoLogError(Utilities.ThrowIfNull(error, "error"));
+            this.DoLogError(Utilities.ThrowIfNull(error, "error"));
         }
 
         public void LogError(Location location, string description)
         {
-            DoLogError(Utilities.ThrowIfNull(location, "location"), Utilities.ThrowIfNull(description, "description"));
+            this.DoLogError(
+                Utilities.ThrowIfNull(location, "location"), Utilities.ThrowIfNull(description, "description"));
         }
 
         #endregion
+
+        #region Methods
 
         protected abstract void DoLogError(Error error);
 
         protected virtual void DoLogError(Location location, string description)
         {
-            DoLogError(new Error(location, description));
+            this.DoLogError(new Error(location, description));
         }
+
+        #endregion
     }
 }
