@@ -16,7 +16,8 @@
 
         public bool Equals(Error other)
         {
-            Utilities.ThrowIfNull(other, "other");
+            if(other == null)
+                return false;
 
             return other.Description == Description && LocationComparer.Instance.Compare(other.Location, Location) == 0;
         }
