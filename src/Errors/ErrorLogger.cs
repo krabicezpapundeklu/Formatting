@@ -4,8 +4,6 @@
     {
         #region IErrorLogger Members
 
-        public abstract int ErrorCount { get; }
-
         public void LogError(Error error)
         {
             DoLogError(Utilities.ThrowIfNull(error, "error"));

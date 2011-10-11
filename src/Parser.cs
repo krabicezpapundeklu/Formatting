@@ -182,12 +182,15 @@
                 switch(nextTokenInfo.Token)
                 {
                     case '{':
-                        int errors = errorLogger.ErrorCount;
-
-                        Utilities.ConvertExceptionsToLogs(errorLogger, () => items.Add(ParseFormat()));
-
-                        if(errorLogger.ErrorCount > errors)
+                        try
                         {
+                            items.Add(ParseFormat());
+                        }
+                        catch(FormattingException e)
+                        {
+                            foreach(Error error in e.Errors)
+                                errorLogger.LogError(error);
+
                             scanner.State = ScannerState.ScanningText;
 
                             while(nextTokenInfo.Token != '}' && nextTokenInfo.Token != Token.EndOfInput)
