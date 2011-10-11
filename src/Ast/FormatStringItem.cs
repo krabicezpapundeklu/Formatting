@@ -2,7 +2,13 @@
 {
     public abstract class FormatStringItem : AstNode
     {
+        #region Constructors and Destructors
+
         protected FormatStringItem(Location location)
-            : base(location) {}
+            : base(location)
+        {
+        }
+
+        #endregion
     }
 }

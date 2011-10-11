@@ -3,36 +3,65 @@
     using System;
     using System.Collections.Generic;
 
-    using Ast;
-
-    using Errors;
+    using Krabicezpapundeklu.Formatting.Ast;
+    using Krabicezpapundeklu.Formatting.Errors;
 
     public class Parser
     {
+        #region Constants and Fields
+
         private readonly IErrorLogger errorLogger;
+
         private readonly Scanner scanner;
 
         private TokenInfo currentTokenInfo;
+
         private TokenInfo nextTokenInfo;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public Parser(Scanner scanner, IErrorLogger errorLogger)
         {
             this.scanner = Utilities.ThrowIfNull(scanner, "scanner");
             this.errorLogger = Utilities.ThrowIfNull(errorLogger, "errorLogger");
 
-            Consume();
+            this.Consume();
         }
+
+        #endregion
+
+        #region Public Methods
 
         public FormatString Parse()
         {
-            return ParseFormatString(0);
+            return this.ParseFormatString(0);
+        }
+
+        #endregion
+
+        #region Methods
+
+        private static FormatString CreateFormatString(int start, ICollection<FormatStringItem> items)
+        {
+            return items.Count == 0
+                       ? new FormatString(new Location(start, start), items) // to have "known" location
+                       : new FormatString(Location.FromRange(items), items);
+        }
+
+        private static FormattingException SyntaxError(TokenInfo tokenInfo, string format, params object[] arguments)
+        {
+            return tokenInfo.Token == Token.EndOfInput
+                       ? new FormattingException(tokenInfo.Location, "Unexpected end of input.")
+                       : new FormattingException(tokenInfo.Location, string.Format(format, arguments));
         }
 
         private bool Accept(int token)
         {
-            if(nextTokenInfo.Token == token)
+            if (this.nextTokenInfo.Token == token)
             {
-                Consume();
+                this.Consume();
                 return true;
             }
 
@@ -41,49 +70,44 @@
 
         private void Consume()
         {
-            currentTokenInfo = nextTokenInfo;
-            nextTokenInfo = scanner.Scan();
-        }
-
-        private static FormatString CreateFormatString(int start, ICollection<FormatStringItem> items)
-        {
-            return items.Count == 0
-                ? new FormatString(new Location(start, start), items) // to have "known" location
-                : new FormatString(Location.FromRange(items), items);
+            this.currentTokenInfo = this.nextTokenInfo;
+            this.nextTokenInfo = this.scanner.Scan();
         }
 
         private TokenInfo Expect(int token)
         {
-            if(!Accept(token))
-                throw SyntaxError(nextTokenInfo, "Unexpected \"{0}\".", nextTokenInfo.Text);
+            if (!this.Accept(token))
+            {
+                throw SyntaxError(this.nextTokenInfo, "Unexpected \"{0}\".", this.nextTokenInfo.Text);
+            }
 
-            return currentTokenInfo;
+            return this.currentTokenInfo;
         }
 
         private Expression ParseArgumentReference()
         {
-            switch(nextTokenInfo.Token)
+            switch (this.nextTokenInfo.Token)
             {
                 case Token.Identifier:
-                    Consume();
-                    return new ArgumentName(currentTokenInfo.Location, currentTokenInfo.Text);
+                    this.Consume();
+                    return new ArgumentName(this.currentTokenInfo.Location, this.currentTokenInfo.Text);
 
                 case Token.Integer:
-                    Consume();
-                    return new ArgumentIndex(currentTokenInfo.Location, int.Parse(currentTokenInfo.Text));
+                    this.Consume();
+                    return new ArgumentIndex(this.currentTokenInfo.Location, int.Parse(this.currentTokenInfo.Text));
 
                 default:
                     throw SyntaxError(
-                        nextTokenInfo, "Expected argument index or name, but got \"{0}\".", nextTokenInfo.Text);
+                        this.nextTokenInfo, "Expected argument index or name, but got \"{0}\".", this.nextTokenInfo.Text);
             }
         }
 
         private Expression ParseCondition(Expression implicitOperand)
         {
-            if(nextTokenInfo.Token == Token.Else)
+            if (this.nextTokenInfo.Token == Token.Else)
             {
-                Consume();
-                return new ConstantExpression(currentTokenInfo.Location, true, "else");
+                this.Consume();
+                return new ConstantExpression(this.currentTokenInfo.Location, true, "else");
             }
 
             Expression condition = null;
@@ -94,36 +118,44 @@
 
                 do
                 {
-                    if(nextTokenInfo.Token == Token.Else)
-                        throw new FormattingException(nextTokenInfo.Location, "\"else\" must be used alone.");
+                    if (this.nextTokenInfo.Token == Token.Else)
+                    {
+                        throw new FormattingException(this.nextTokenInfo.Location, "\"else\" must be used alone.");
+                    }
 
-                    Operator @operator = ParseOperator();
+                    Operator @operator = this.ParseOperator();
 
-                    if(!@operator.IsBinary)
+                    if (!@operator.IsBinary)
+                    {
                         throw new FormattingException(@operator.Location, "Expected binary operator.");
+                    }
 
-                    Expression rightOperand = ParseUnaryExpression();
+                    Expression rightOperand = this.ParseUnaryExpression();
 
                     var expression = new BinaryExpression(
                         Location.FromRange(@operator, rightOperand), @operator, implicitOperand, rightOperand);
 
                     andExpression = andExpression == null
-                        ? expression
-                        : new BinaryExpression(
-                            Location.FromRange(andExpression, expression),
-                            new Operator(Location.Unknown, Token.And, string.Empty), andExpression, expression);
+                                        ? expression
+                                        : new BinaryExpression(
+                                              Location.FromRange(andExpression, expression),
+                                              new Operator(Location.Unknown, Token.And, string.Empty),
+                                              andExpression,
+                                              expression);
                 }
-                while(nextTokenInfo.Token != ':' && nextTokenInfo.Token != ',');
+                while (this.nextTokenInfo.Token != ':' && this.nextTokenInfo.Token != ',');
 
-                Accept(',');
+                this.Accept(',');
 
                 condition = condition == null
-                    ? andExpression
-                    : new BinaryExpression(
-                        Location.FromRange(condition, andExpression), new Operator(currentTokenInfo.Location, ','),
-                        condition, andExpression);
+                                ? andExpression
+                                : new BinaryExpression(
+                                      Location.FromRange(condition, andExpression),
+                                      new Operator(this.currentTokenInfo.Location, ','),
+                                      condition,
+                                      andExpression);
             }
-            while(nextTokenInfo.Token != ':');
+            while (this.nextTokenInfo.Token != ':');
 
             return condition;
         }
@@ -134,67 +166,75 @@
 
             do
             {
-                int start = Expect('{').Location.Start;
-                Expression condition = ParseCondition(argument);
+                int start = this.Expect('{').Location.Start;
+                Expression condition = this.ParseCondition(argument);
 
-                scanner.State = ScannerState.ScanningText;
+                this.scanner.State = ScannerState.ScanningText;
 
-                Expect(':');
+                this.Expect(':');
 
-                FormatString formatString = ParseFormatString(nextTokenInfo.Location.Start);
-                int end = Expect('}').Location.End;
+                FormatString formatString = this.ParseFormatString(this.nextTokenInfo.Location.Start);
+                int end = this.Expect('}').Location.End;
 
-                scanner.State = ScannerState.ScanningTokens;
+                this.scanner.State = ScannerState.ScanningTokens;
 
                 cases.Add(new Case(new Location(start, end), condition, formatString));
             }
-            while(nextTokenInfo.Token == '{');
+            while (this.nextTokenInfo.Token == '{');
 
             return new ConditionalFormat(Location.Unknown, argument, cases);
         }
 
         private Ast.Format ParseFormat()
         {
-            scanner.State = ScannerState.ScanningTokens;
+            this.scanner.State = ScannerState.ScanningTokens;
 
-            int start = Expect('{').Location.Start;
+            int start = this.Expect('{').Location.Start;
 
-            Expression argument = ParseArgumentReference();
+            Expression argument = this.ParseArgumentReference();
 
             Ast.Format format;
 
-            if(nextTokenInfo.Token == '{')
-                format = ParseConditionalFormat(argument);
+            if (this.nextTokenInfo.Token == '{')
+            {
+                format = this.ParseConditionalFormat(argument);
+            }
             else
-                format = ParseSimpleFormat(argument);
+            {
+                format = this.ParseSimpleFormat(argument);
+            }
 
-            scanner.State = ScannerState.ScanningText;
+            this.scanner.State = ScannerState.ScanningText;
 
-            return (Ast.Format)format.Clone(new Location(start, Expect('}').Location.End));
+            return (Ast.Format)format.Clone(new Location(start, this.Expect('}').Location.End));
         }
 
         private FormatString ParseFormatString(int start)
         {
             var items = new List<FormatStringItem>();
 
-            while(true)
+            while (true)
             {
-                switch(nextTokenInfo.Token)
+                switch (this.nextTokenInfo.Token)
                 {
                     case '{':
                         try
                         {
-                            items.Add(ParseFormat());
+                            items.Add(this.ParseFormat());
                         }
-                        catch(FormattingException e)
+                        catch (FormattingException e)
                         {
-                            foreach(Error error in e.Errors)
-                                errorLogger.LogError(error);
+                            foreach (Error error in e.Errors)
+                            {
+                                this.errorLogger.LogError(error);
+                            }
 
-                            scanner.State = ScannerState.ScanningText;
+                            this.scanner.State = ScannerState.ScanningText;
 
-                            while(nextTokenInfo.Token != '}' && nextTokenInfo.Token != Token.EndOfInput)
-                                Consume();
+                            while (this.nextTokenInfo.Token != '}' && this.nextTokenInfo.Token != Token.EndOfInput)
+                            {
+                                this.Consume();
+                            }
 
                             break;
                         }
@@ -202,56 +242,61 @@
                         continue;
 
                     case '}':
-                        if(start > 0)
+                        if (start > 0)
+                        {
                             return CreateFormatString(start, items);
+                        }
 
-                        errorLogger.LogError(nextTokenInfo.Location, "Unescaped \"}\".");
+                        this.errorLogger.LogError(this.nextTokenInfo.Location, "Unescaped \"}\".");
                         break;
 
                     case Token.EndOfInput:
                         return CreateFormatString(start, items);
 
                     case Token.Text:
-                        items.Add(new Text(nextTokenInfo.Location, nextTokenInfo.Text));
+                        items.Add(new Text(this.nextTokenInfo.Location, this.nextTokenInfo.Text));
                         break;
 
                     default:
                         // this should not happen
                         throw new InvalidOperationException(
-                            string.Format("Token {0} is not valid here.", Token.ToString(nextTokenInfo.Token)));
+                            string.Format("Token {0} is not valid here.", Token.ToString(this.nextTokenInfo.Token)));
                 }
 
-                Consume();
+                this.Consume();
             }
         }
 
         private Operator ParseOperator()
         {
-            if(Operator.IsOperator(nextTokenInfo.Token))
+            if (Operator.IsOperator(this.nextTokenInfo.Token))
             {
-                Consume();
-                return new Operator(currentTokenInfo.Location, currentTokenInfo.Token, currentTokenInfo.Text);
+                this.Consume();
+
+                return new Operator(
+                    this.currentTokenInfo.Location, this.currentTokenInfo.Token, this.currentTokenInfo.Text);
             }
 
-            throw SyntaxError(nextTokenInfo, "Unknown operator \"{0}\".", nextTokenInfo.Text);
+            throw SyntaxError(this.nextTokenInfo, "Unknown operator \"{0}\".", this.nextTokenInfo.Text);
         }
 
         private Expression ParsePrimaryExpression()
         {
-            Consume();
+            this.Consume();
 
-            switch(currentTokenInfo.Token)
+            switch (this.currentTokenInfo.Token)
             {
                 case '{':
-                    Expression argument = ParseArgumentReference();
-                    Expect('}');
+                    Expression argument = this.ParseArgumentReference();
+                    this.Expect('}');
                     return argument;
 
                 case Token.Integer:
-                    return new Integer(currentTokenInfo.Location, int.Parse(currentTokenInfo.Text));
+                    return new Integer(this.currentTokenInfo.Location, int.Parse(this.currentTokenInfo.Text));
 
                 default:
-                    throw SyntaxError(currentTokenInfo, "Expected argument, but got \"{0}\".", currentTokenInfo.Text);
+                    throw SyntaxError(
+                        this.currentTokenInfo, "Expected argument, but got \"{0}\".", this.currentTokenInfo.Text);
             }
         }
 
@@ -260,10 +305,10 @@
             bool leftAlign;
             int width;
 
-            if(Accept(','))
+            if (this.Accept(','))
             {
-                leftAlign = Accept('-');
-                width = int.Parse(Expect(Token.Integer).Text);
+                leftAlign = this.Accept('-');
+                width = int.Parse(this.Expect(Token.Integer).Text);
             }
             else
             {
@@ -271,32 +316,29 @@
                 width = 0;
             }
 
-            scanner.State = ScannerState.ScanningText;
+            this.scanner.State = ScannerState.ScanningText;
 
             return new SimpleFormat(
-                Location.Unknown, argument, leftAlign, width, Accept(':')
-                    ? ParseFormatString(currentTokenInfo.Location.Start)
-                    : FormatString.Empty);
+                Location.Unknown,
+                argument,
+                leftAlign,
+                width,
+                this.Accept(':') ? this.ParseFormatString(this.currentTokenInfo.Location.Start) : FormatString.Empty);
         }
 
         private Expression ParseUnaryExpression()
         {
-            if(Operator.IsUnaryOperator(nextTokenInfo.Token))
+            if (Operator.IsUnaryOperator(this.nextTokenInfo.Token))
             {
-                Operator @operator = ParseOperator();
-                Expression expression = ParsePrimaryExpression();
+                Operator @operator = this.ParseOperator();
+                Expression expression = this.ParsePrimaryExpression();
 
                 return new UnaryExpression(Location.FromRange(@operator, expression), @operator, expression);
             }
 
-            return ParsePrimaryExpression();
+            return this.ParsePrimaryExpression();
         }
 
-        private static FormattingException SyntaxError(TokenInfo tokenInfo, string format, params object[] arguments)
-        {
-            return tokenInfo.Token == Token.EndOfInput
-                ? new FormattingException(tokenInfo.Location, "Unexpected end of input.")
-                : new FormattingException(tokenInfo.Location, string.Format(format, arguments));
-        }
+        #endregion
     }
 }

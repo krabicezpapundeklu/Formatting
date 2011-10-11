@@ -6,37 +6,46 @@
 
     public class TokenInfo : ILocated
     {
+        #region Constructors and Destructors
+
         public TokenInfo(Location location, int token, string text)
         {
-            Location = Utilities.ThrowIfNull(location, "location");
-            Token = token;
-            Text = Utilities.ThrowIfNull(text, "text");
+            this.Location = Utilities.ThrowIfNull(location, "location");
+            this.Token = token;
+            this.Text = Utilities.ThrowIfNull(text, "text");
         }
 
-        public int Token { get; private set; }
-        public string Text { get; private set; }
+        #endregion
 
-        #region ILocated Members
+        #region Public Properties
 
         public Location Location { get; private set; }
 
+        public string Text { get; private set; }
+
+        public int Token { get; private set; }
+
         #endregion
+
+        #region Public Methods
 
         public override string ToString()
         {
             var builder = new StringBuilder();
 
-            builder.AppendFormat("<{0}, {1}", T.ToString(Token), Location);
+            builder.AppendFormat("<{0}, {1}", T.ToString(this.Token), this.Location);
 
-            if(Text.Length > 0)
+            if (this.Text.Length > 0)
             {
                 builder.Append(": ");
-                builder.Append(Text);
+                builder.Append(this.Text);
             }
 
             builder.Append('>');
 
             return builder.ToString();
         }
+
+        #endregion
     }
 }

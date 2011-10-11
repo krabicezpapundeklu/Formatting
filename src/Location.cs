@@ -6,54 +6,61 @@
 
     public class Location : IEquatable<Location>
     {
+        #region Constants and Fields
+
         public static readonly Location Unknown = new Location();
 
-        private Location() {}
+        #endregion
+
+        #region Constructors and Destructors
 
         public Location(int start, int end)
         {
-            if(start < 0)
+            if (start < 0)
+            {
                 throw new ArgumentOutOfRangeException("start");
+            }
 
-            if(end < 0)
+            if (end < 0)
+            {
                 throw new ArgumentOutOfRangeException("end");
+            }
 
-            Start = start;
-            End = end;
+            this.Start = start;
+            this.End = end;
         }
 
-        public int Start { get; private set; }
-        public int End { get; private set; }
-
-        public bool IsKnown
+        private Location()
         {
-            get { return this != Unknown; }
-        }
-
-        public int Length
-        {
-            get { return End - Start; }
-        }
-
-        #region IEquatable<Location> Members
-
-        public bool Equals(Location other)
-        {
-            if (other == null)
-                return false;
-
-            if(!other.IsKnown)
-                return !IsKnown;
-
-            return other.Start == Start && other.End == End;
         }
 
         #endregion
 
-        public override bool Equals(object obj)
+        #region Public Properties
+
+        public int End { get; private set; }
+
+        public bool IsKnown
         {
-            return Equals(obj as Location);
+            get
+            {
+                return this != Unknown;
+            }
         }
+
+        public int Length
+        {
+            get
+            {
+                return this.End - this.Start;
+            }
+        }
+
+        public int Start { get; private set; }
+
+        #endregion
+
+        #region Public Methods
 
         public static Location FromRange(params ILocated[] items)
         {
@@ -69,28 +76,46 @@
             int start = int.MaxValue;
             int end = int.MinValue;
 
-            foreach(ILocated item in items.Where(x => x != null && x.Location != Unknown))
+            foreach (ILocated item in items.Where(x => x != null && x.Location != Unknown))
             {
                 hasSomeItem = true;
                 start = Math.Min(start, item.Location.Start);
                 end = Math.Max(end, item.Location.End);
             }
 
-            return hasSomeItem
-                ? new Location(start, end)
-                : Unknown;
+            return hasSomeItem ? new Location(start, end) : Unknown;
+        }
+
+        public bool Equals(Location other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            if (!other.IsKnown)
+            {
+                return !this.IsKnown;
+            }
+
+            return other.Start == this.Start && other.End == this.End;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Location);
         }
 
         public override int GetHashCode()
         {
-            return IsKnown ? 1 + Start ^ End : 0;
+            return this.IsKnown ? 1 + this.Start ^ this.End : 0;
         }
 
         public override string ToString()
         {
-            return this == Unknown
-                ? "Unknown"
-                : string.Format("{0}, {1}", Start, End);
+            return this == Unknown ? "Unknown" : string.Format("{0}, {1}", this.Start, this.End);
         }
+
+        #endregion
     }
 }

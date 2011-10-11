@@ -3,18 +3,26 @@
     using System;
     using System.Text;
 
-    using Ast;
-
-    using Errors;
+    using Krabicezpapundeklu.Formatting.Ast;
+    using Krabicezpapundeklu.Formatting.Errors;
 
     public class Interpreter : AstVisitor
     {
+        #region Constants and Fields
+
         private static readonly object Error = new object();
 
         private readonly ArgumentCollection arguments;
+
         private readonly IErrorLogger errorLogger;
+
         private readonly IFormatProvider formatProvider;
+
         private readonly StringBuilder formatted = new StringBuilder();
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public Interpreter(IFormatProvider formatProvider, ArgumentCollection arguments, IErrorLogger errorLogger)
         {
@@ -23,10 +31,18 @@
             this.errorLogger = Utilities.ThrowIfNull(errorLogger, "errorLogger");
         }
 
+        #endregion
+
+        #region Public Methods
+
         public string Evaluate(AstNode ast)
         {
-            return Visit<string>(ast);
+            return this.Visit<string>(ast);
         }
+
+        #endregion
+
+        #region Methods
 
         protected override object Default(AstNode node)
         {
@@ -35,27 +51,27 @@
 
         protected override object DoVisit(ArgumentIndex argumentIndex)
         {
-            if(argumentIndex.Index >= arguments.Count)
+            if (argumentIndex.Index >= this.arguments.Count)
             {
-                errorLogger.LogError(
+                this.errorLogger.LogError(
                     argumentIndex.Location, string.Format("Argument index {0} is out of range.", argumentIndex.Index));
                 return Error;
             }
 
-            return arguments[argumentIndex.Index].Value;
+            return this.arguments[argumentIndex.Index].Value;
         }
 
         protected override object DoVisit(ArgumentName argumentName)
         {
-            if(!arguments.Contains(argumentName.Name))
+            if (!this.arguments.Contains(argumentName.Name))
             {
-                errorLogger.LogError(
+                this.errorLogger.LogError(
                     argumentName.Location, string.Format("Argument with name \"{0}\" doesn't exist.", argumentName.Name));
 
                 return Error;
             }
 
-            return arguments[argumentName.Name].Value;
+            return this.arguments[argumentName.Name].Value;
         }
 
         protected override object DoVisit(BinaryExpression binaryExpression)
@@ -63,12 +79,14 @@
             dynamic leftOperand = Visit(binaryExpression.LeftExpression);
             dynamic rightOperand = Visit(binaryExpression.RightExpression);
 
-            if((object)leftOperand == Error || (object)rightOperand == Error)
+            if ((object)leftOperand == Error || (object)rightOperand == Error)
+            {
                 return Error;
+            }
 
             try
             {
-                switch(binaryExpression.Operator.Token)
+                switch (binaryExpression.Operator.Token)
                 {
                     case '=':
                         return leftOperand == rightOperand;
@@ -95,7 +113,7 @@
                         return leftOperand && rightOperand;
 
                     default:
-                        errorLogger.LogError(
+                        this.errorLogger.LogError(
                             binaryExpression.Operator.Location,
                             string.Format("Invalid operator \"{0}\".", binaryExpression.Operator.Text));
 
@@ -104,11 +122,13 @@
             }
             catch
             {
-                errorLogger.LogError(
+                this.errorLogger.LogError(
                     binaryExpression.Operator.Location,
                     string.Format(
                         "Operator \"{0}\" cannot be applied to operands of type \"{1}\" and \"{2}\".",
-                        binaryExpression.Operator.Text, leftOperand.GetType(), rightOperand.GetType()));
+                        binaryExpression.Operator.Text,
+                        leftOperand.GetType(),
+                        rightOperand.GetType()));
 
                 return Error;
             }
@@ -119,19 +139,21 @@
             // to catch errors, ignore result
             Visit(conditionalFormat.Argument);
 
-            foreach(Case @case in conditionalFormat.Cases)
+            foreach (Case @case in conditionalFormat.Cases)
             {
                 object conditionResult = Visit(@case.Condition);
 
-                if(conditionResult == Error)
+                if (conditionResult == Error)
                 {
                     // visit to catch errors, but ignore result
                     Visit(@case.FormatString);
                     continue;
                 }
 
-                if((bool)conditionResult)
+                if ((bool)conditionResult)
+                {
                     return Visit(@case.FormatString);
+                }
             }
 
             return string.Empty;
@@ -144,14 +166,16 @@
 
         protected override object DoVisit(FormatString formatString)
         {
-            int originalLength = formatted.Length;
+            int originalLength = this.formatted.Length;
 
-            foreach(FormatStringItem item in formatString.Items)
-                formatted.Append(Visit(item));
+            foreach (FormatStringItem item in formatString.Items)
+            {
+                this.formatted.Append(Visit(item));
+            }
 
-            string formattedString = formatted.ToString(originalLength, formatted.Length - originalLength);
+            string formattedString = this.formatted.ToString(originalLength, this.formatted.Length - originalLength);
 
-            formatted.Length = originalLength;
+            this.formatted.Length = originalLength;
 
             return formattedString;
         }
@@ -166,26 +190,32 @@
             object argument = Visit(simpleFormat.Argument);
             object format = Visit(simpleFormat.FormatString);
 
-            if(argument == Error || format == Error)
+            if (argument == Error || format == Error)
+            {
                 return null;
+            }
 
-            string formattedArgument = Format(argument, (string)format);
+            string formattedArgument = this.Format(argument, (string)format);
 
             int padding = simpleFormat.Width - formattedArgument.Length;
 
-            if(padding > 0)
-                if(simpleFormat.LeftAlign)
+            if (padding > 0)
+            {
+                if (simpleFormat.LeftAlign)
                 {
-                    formatted.Append(formattedArgument);
-                    formatted.Append(' ', padding);
+                    this.formatted.Append(formattedArgument);
+                    this.formatted.Append(' ', padding);
                 }
                 else
                 {
-                    formatted.Append(' ', padding);
-                    formatted.Append(formattedArgument);
+                    this.formatted.Append(' ', padding);
+                    this.formatted.Append(formattedArgument);
                 }
+            }
             else
-                formatted.Append(formattedArgument);
+            {
+                this.formatted.Append(formattedArgument);
+            }
 
             return null;
         }
@@ -197,7 +227,7 @@
 
         protected override object DoVisit(UnaryExpression unaryExpression)
         {
-            switch(unaryExpression.Operator.Token)
+            switch (unaryExpression.Operator.Token)
             {
                 case '-':
                     dynamic operand = Visit(unaryExpression.Operand);
@@ -208,7 +238,7 @@
                     }
                     catch
                     {
-                        errorLogger.LogError(
+                        this.errorLogger.LogError(
                             unaryExpression.Operator.Location,
                             string.Format(
                                 "Operator \"-\" cannot be applied to operand of type \"{0}\".", operand.GetType()));
@@ -217,7 +247,7 @@
                     }
 
                 default:
-                    errorLogger.LogError(
+                    this.errorLogger.LogError(
                         unaryExpression.Operator.Location,
                         string.Format("Invalid operator \"{0}\".", unaryExpression.Operator.Text));
 
@@ -227,20 +257,29 @@
 
         private string Format(object argument, string format)
         {
-            if(argument == null)
+            if (argument == null)
+            {
                 return string.Empty;
+            }
 
-            ICustomFormatter formatter = formatProvider == null
-                ? null
-                : formatProvider.GetFormat(typeof(ICustomFormatter)) as ICustomFormatter;
+            ICustomFormatter formatter = this.formatProvider == null
+                                             ? null
+                                             : this.formatProvider.GetFormat(typeof(ICustomFormatter)) as
+                                               ICustomFormatter;
 
-            if(formatter != null)
-                return formatter.Format(format, argument, formatProvider);
+            if (formatter != null)
+            {
+                return formatter.Format(format, argument, this.formatProvider);
+            }
 
-            if(argument is IFormattable)
-                return ((IFormattable)argument).ToString(format, formatProvider);
+            if (argument is IFormattable)
+            {
+                return ((IFormattable)argument).ToString(format, this.formatProvider);
+            }
 
             return argument.ToString();
         }
+
+        #endregion
     }
 }

@@ -2,18 +2,32 @@
 {
     public class ArgumentName : Expression
     {
+        #region Constructors and Destructors
+
         public ArgumentName(Location location, string name)
             : base(location)
         {
-            Name = Utilities.ThrowIfNull(name, "name");
+            this.Name = Utilities.ThrowIfNull(name, "name");
         }
+
+        #endregion
+
+        #region Public Properties
 
         public string Name { get; private set; }
 
+        #endregion
+
+        #region Public Methods
+
         public override string ToString()
         {
-            return string.Format("{{{0}}}", Name);
+            return string.Format("{{{0}}}", this.Name);
         }
+
+        #endregion
+
+        #region Methods
 
         protected override object DoAccept(IAstVisitor visitor)
         {
@@ -22,7 +36,9 @@
 
         protected override AstNode DoClone(Location newLocation)
         {
-            return new ArgumentName(newLocation, Name);
+            return new ArgumentName(newLocation, this.Name);
         }
+
+        #endregion
     }
 }

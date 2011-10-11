@@ -3,73 +3,110 @@
     using System;
     using System.Text;
 
-    using Errors;
+    using Krabicezpapundeklu.Formatting.Errors;
 
     public class Scanner
     {
+        #region Constants and Fields
+
         private readonly IErrorLogger errorLogger;
+
         private readonly string input;
+
         private readonly StringBuilder textBuilder = new StringBuilder();
 
         private int positionInInput;
+
         private int tokenStart;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public Scanner(string input, IErrorLogger errorLogger)
         {
             this.input = Utilities.ThrowIfNull(input, "input");
             this.errorLogger = Utilities.ThrowIfNull(errorLogger, "errorLogger");
 
-            State = ScannerState.ScanningText;
+            this.State = ScannerState.ScanningText;
         }
 
+        #endregion
+
+        #region Public Properties
+
         public ScannerState State { get; set; }
+
+        #endregion
+
+        #region Public Methods
 
         public static bool IsValidIdentifier(string text)
         {
             Utilities.ThrowIfNull(text, "text");
 
-            if(text.Length == 0)
+            if (text.Length == 0)
+            {
                 return false;
+            }
 
-            if(!IsValidIdentifierStartCharacter(text[0]))
+            if (!IsValidIdentifierStartCharacter(text[0]))
+            {
                 return false;
+            }
 
-            for(int i = 1; i < text.Length; ++i)
-                if(!IsValidIdentifierCharacter(text, i))
+            for (int i = 1; i < text.Length; ++i)
+            {
+                if (!IsValidIdentifierCharacter(text, i))
+                {
                     return false;
+                }
+            }
 
             return true;
         }
 
         public TokenInfo Scan()
         {
-            textBuilder.Clear();
+            this.textBuilder.Clear();
 
-            if(State == ScannerState.ScanningTokens)
+            if (this.State == ScannerState.ScanningTokens)
+            {
                 this.SkipWhile(char.IsWhiteSpace);
+            }
 
             int token;
 
-            if((tokenStart = positionInInput) < input.Length)
-                switch(State)
+            if ((this.tokenStart = this.positionInInput) < this.input.Length)
+            {
+                switch (this.State)
                 {
                     case ScannerState.ScanningText:
-                        token = ScanText();
+                        token = this.ScanText();
                         break;
 
                     case ScannerState.ScanningTokens:
-                        token = ScanTokens();
+                        token = this.ScanTokens();
                         break;
 
                     default:
                         // this should not happen
-                        throw new InvalidOperationException(string.Format("State \"{0}\" is not supported.", State));
+                        throw new InvalidOperationException(
+                            string.Format("State \"{0}\" is not supported.", this.State));
                 }
+            }
             else
+            {
                 token = Token.EndOfInput;
+            }
 
-            return new TokenInfo(new Location(tokenStart, positionInInput), token, textBuilder.ToString());
+            return new TokenInfo(
+                new Location(this.tokenStart, this.positionInInput), token, this.textBuilder.ToString());
         }
+
+        #endregion
+
+        #region Methods
 
         private static bool IsValidIdentifierCharacter(string text, int index)
         {
@@ -85,68 +122,72 @@
         {
             do
             {
-                char c = input[positionInInput++];
+                char c = this.input[this.positionInInput++];
 
-                switch(c)
+                switch (c)
                 {
                     case '{':
                     case '}':
-                        if(textBuilder.Length == 0)
+                        if (this.textBuilder.Length == 0)
                         {
-                            textBuilder.Append(c);
+                            this.textBuilder.Append(c);
                             return c;
                         }
 
-                        positionInInput--;
+                        this.positionInInput--;
                         return Token.Text;
 
                     case '\\':
-                        if (positionInInput == input.Length)
-                            errorLogger.LogError(
-                                new Location(positionInInput, positionInInput), "Unexpected end of input.");
-                        else if (!Utilities.MustBeEscaped(c = input[positionInInput++]))
-                            errorLogger.LogError(
-                                new Location(positionInInput - 2, positionInInput),
+                        if (this.positionInInput == this.input.Length)
+                        {
+                            this.errorLogger.LogError(
+                                new Location(this.positionInInput, this.positionInInput), "Unexpected end of input.");
+                        }
+                        else if (!Utilities.MustBeEscaped(c = this.input[this.positionInInput++]))
+                        {
+                            this.errorLogger.LogError(
+                                new Location(this.positionInInput - 2, this.positionInInput),
                                 string.Format("\"{0}\" cannot be escaped.", c));
+                        }
 
                         break;
                 }
 
-                textBuilder.Append(c);
+                this.textBuilder.Append(c);
             }
-            while(positionInInput < input.Length);
+            while (this.positionInInput < this.input.Length);
 
             return Token.Text;
         }
 
         private int ScanTokens()
         {
-            char c = input[positionInInput++];
+            char c = this.input[this.positionInInput++];
 
-            textBuilder.Append(c);
+            this.textBuilder.Append(c);
 
-            switch(c)
+            switch (c)
             {
                 case '<':
-                    return Select('=', Token.LessOrEqual, '<');
+                    return this.Select('=', Token.LessOrEqual, '<');
 
                 case '>':
-                    return Select('=', Token.GreaterOrEqual, '>');
+                    return this.Select('=', Token.GreaterOrEqual, '>');
 
                 default:
-                    if(char.IsDigit(c))
+                    if (char.IsDigit(c))
                     {
-                        ScanWhile(char.IsDigit);
+                        this.ScanWhile(char.IsDigit);
                         return Token.Integer;
                     }
 
-                    if(IsValidIdentifierStartCharacter(c))
+                    if (IsValidIdentifierStartCharacter(c))
                     {
-                        ScanWhile(IsValidIdentifierCharacter);
+                        this.ScanWhile(IsValidIdentifierCharacter);
 
-                        return textBuilder.ToString().Equals("else", StringComparison.OrdinalIgnoreCase)
-                            ? Token.Else
-                            : Token.Identifier;
+                        return this.textBuilder.ToString().Equals("else", StringComparison.OrdinalIgnoreCase)
+                                   ? Token.Else
+                                   : Token.Identifier;
                     }
 
                     return c;
@@ -157,15 +198,15 @@
         {
             this.SkipWhile(predicate);
 
-            textBuilder.Append(input, tokenStart + 1, positionInInput - tokenStart - 1);
+            this.textBuilder.Append(this.input, this.tokenStart + 1, this.positionInInput - this.tokenStart - 1);
         }
 
         private int Select(char following, int ifFollows, int ifDoesNotFollow)
         {
-            if(positionInInput < input.Length && input[positionInInput] == following)
+            if (this.positionInInput < this.input.Length && this.input[this.positionInInput] == following)
             {
-                textBuilder.Append(following);
-                positionInInput++;
+                this.textBuilder.Append(following);
+                this.positionInInput++;
                 return ifFollows;
             }
 
@@ -174,8 +215,12 @@
 
         private void SkipWhile(Func<string, int, bool> predicate)
         {
-            while (positionInInput < input.Length && predicate(input, positionInInput))
-                positionInInput++;
+            while (this.positionInInput < this.input.Length && predicate(this.input, this.positionInInput))
+            {
+                this.positionInInput++;
+            }
         }
+
+        #endregion
     }
 }

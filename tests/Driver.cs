@@ -11,18 +11,20 @@
 
     public static class Driver
     {
+        #region Public Methods
+
         public static int Main()
         {
             NativeConsole console = NativeConsole.Instance;
 
             var launcher = new TestLauncher
-                           {
-                               EchoResults = true,
-                               Logger = new FilteredLogger(new RichConsoleLogger(console), Verbosity.Normal),
-                               ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(console),
-                               RuntimeSetup = new RuntimeSetup(),
-                               TestProject = {TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local}
-                           };
+                {
+                    EchoResults = true,
+                    Logger = new FilteredLogger(new RichConsoleLogger(console), Verbosity.Normal),
+                    ProgressMonitorProvider = new RichConsoleProgressMonitorProvider(console),
+                    RuntimeSetup = new RuntimeSetup(),
+                    TestProject = { TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local }
+                };
 
             launcher.AddFilePattern(typeof(Driver).Assembly.Location);
             launcher.RuntimeSetup.AddPluginDirectory(InstallationConfiguration.LoadFromRegistry().InstallationFolder);
@@ -32,8 +34,8 @@
             ConsoleColor originalConsoleColor = console.ForegroundColor;
 
             console.ForegroundColor = result.ResultCode == ResultCode.Success
-                ? ConsoleColor.DarkGreen
-                : ConsoleColor.Red;
+                                          ? ConsoleColor.DarkGreen
+                                          : ConsoleColor.Red;
 
             console.WriteLine();
             console.WriteLine(result.ResultSummary);
@@ -41,10 +43,14 @@
 
             console.ForegroundColor = originalConsoleColor;
 
-            if(result.ResultCode != ResultCode.Success && Debugger.IsAttached)
+            if (result.ResultCode != ResultCode.Success && Debugger.IsAttached)
+            {
                 Debugger.Break();
+            }
 
             return result.ResultCode;
         }
+
+        #endregion
     }
 }

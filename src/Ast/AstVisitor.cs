@@ -2,7 +2,7 @@
 {
     public abstract class AstVisitor : IAstVisitor
     {
-        #region IAstVisitor Members
+        #region Public Methods
 
         public object Visit(ArgumentIndex argumentIndex)
         {
@@ -66,66 +66,68 @@
 
         #endregion
 
+        #region Methods
+
         protected abstract object Default(AstNode node);
 
         protected virtual object DoVisit(ArgumentIndex argumentIndex)
         {
-            return Default(argumentIndex);
+            return this.Default(argumentIndex);
         }
 
         protected virtual object DoVisit(ArgumentName argumentName)
         {
-            return Default(argumentName);
+            return this.Default(argumentName);
         }
 
         protected virtual object DoVisit(BinaryExpression binaryExpression)
         {
-            return Default(binaryExpression);
+            return this.Default(binaryExpression);
         }
 
         protected virtual object DoVisit(Case @case)
         {
-            return Default(@case);
+            return this.Default(@case);
         }
 
         protected virtual object DoVisit(ConditionalFormat conditionalFormat)
         {
-            return Default(conditionalFormat);
+            return this.Default(conditionalFormat);
         }
 
         protected virtual object DoVisit(ConstantExpression constantExpression)
         {
-            return Default(constantExpression);
+            return this.Default(constantExpression);
         }
 
         protected virtual object DoVisit(FormatString formatString)
         {
-            return Default(formatString);
+            return this.Default(formatString);
         }
 
         protected virtual object DoVisit(Integer integer)
         {
-            return Default(integer);
+            return this.Default(integer);
         }
 
         protected virtual object DoVisit(Operator @operator)
         {
-            return Default(@operator);
+            return this.Default(@operator);
         }
 
         protected virtual object DoVisit(SimpleFormat simpleFormat)
         {
-            return Default(simpleFormat);
+            return this.Default(simpleFormat);
         }
 
         protected virtual object DoVisit(Text text)
         {
-            return Default(text);
+            return this.Default(text);
         }
 
         protected virtual object DoVisit(UnaryExpression unaryExpression)
         {
-            return Default(unaryExpression);
+            return this.Default(unaryExpression);
         }
 
         protected object Visit(AstNode node)
@@ -137,5 +139,7 @@
         {
             return (T)Visit(node);
         }
+
+        #endregion
     }
 }

@@ -8,6 +8,8 @@
 
     internal class TokenInfoTests
     {
+        #region Public Methods
+
         [Test]
         public void Constructor_WhenLocationIsNull_ThrowsException()
         {
@@ -19,5 +21,7 @@
         {
             Assert.That(() => new TokenInfo(Location.Unknown, Token.Invalid, null), Throws.An<ArgumentNullException>());
         }
+
+        #endregion
     }
 }

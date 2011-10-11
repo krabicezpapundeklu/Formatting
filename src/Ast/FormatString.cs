@@ -6,23 +6,41 @@
 
     public class FormatString : AstNode
     {
+        #region Constants and Fields
+
         public static readonly FormatString Empty = new FormatString(
             Location.Unknown, Enumerable.Empty<FormatStringItem>());
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public FormatString(Location location, IEnumerable<FormatStringItem> items)
             : base(location)
         {
-            Items =
+            this.Items =
                 new ReadOnlyCollection<FormatStringItem>(
                     new List<FormatStringItem>(Utilities.ThrowIfNull(items, "items")));
         }
 
+        #endregion
+
+        #region Public Properties
+
         public ReadOnlyCollection<FormatStringItem> Items { get; private set; }
+
+        #endregion
+
+        #region Public Methods
 
         public override string ToString()
         {
-            return string.Concat(Items.Select(x => x.ToString()));
+            return string.Concat(this.Items.Select(x => x.ToString()));
         }
+
+        #endregion
+
+        #region Methods
 
         protected override object DoAccept(IAstVisitor visitor)
         {
@@ -31,7 +49,9 @@
 
         protected override AstNode DoClone(Location newLocation)
         {
-            return new FormatString(newLocation, Items);
+            return new FormatString(newLocation, this.Items);
         }
+
+        #endregion
     }
 }

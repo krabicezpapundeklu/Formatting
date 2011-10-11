@@ -6,35 +6,56 @@
 
     public class Operator : AstNode
     {
+        #region Constructors and Destructors
+
         public Operator(Location location, int token)
-            : this(location, token, T.ToString(token)) {}
+            : this(location, token, T.ToString(token))
+        {
+        }
 
         public Operator(Location location, int token, string text)
             : base(location)
         {
-            Token = token;
-            Text = Utilities.ThrowIfNull(text, "text");
+            this.Token = token;
+            this.Text = Utilities.ThrowIfNull(text, "text");
 
-            if(!IsOperator(token))
-                throw new ArgumentException(string.Format("\"{0}\" is not valid operator.", Text), "token");
+            if (!IsOperator(token))
+            {
+                throw new ArgumentException(string.Format("\"{0}\" is not valid operator.", this.Text), "token");
+            }
         }
 
-        public int Token { get; private set; }
-        public string Text { get; private set; }
+        #endregion
+
+        #region Public Properties
 
         public bool IsBinary
         {
-            get { return IsBinaryOperator(Token); }
+            get
+            {
+                return IsBinaryOperator(this.Token);
+            }
         }
 
         public bool IsUnary
         {
-            get { return IsUnaryOperator(Token); }
+            get
+            {
+                return IsUnaryOperator(this.Token);
+            }
         }
+
+        public string Text { get; private set; }
+
+        public int Token { get; private set; }
+
+        #endregion
+
+        #region Public Methods
 
         public static bool IsBinaryOperator(int token)
         {
-            switch(token)
+            switch (token)
             {
                 case '=':
                 case '!':
@@ -63,8 +84,12 @@
 
         public override string ToString()
         {
-            return Text;
+            return this.Text;
         }
+
+        #endregion
+
+        #region Methods
 
         protected override object DoAccept(IAstVisitor visitor)
         {
@@ -73,7 +98,9 @@
 
         protected override AstNode DoClone(Location newLocation)
         {
-            return new Operator(newLocation, Token, Text);
+            return new Operator(newLocation, this.Token, this.Text);
         }
+
+        #endregion
     }
 }

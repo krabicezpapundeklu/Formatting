@@ -2,12 +2,20 @@
 {
     public abstract class Format : FormatStringItem
     {
+        #region Constructors and Destructors
+
         protected Format(Location location, Expression argument)
             : base(location)
         {
-            Argument = Utilities.ThrowIfNull(argument, "argument");
+            this.Argument = Utilities.ThrowIfNull(argument, "argument");
         }
 
+        #endregion
+
+        #region Public Properties
+
         public Expression Argument { get; private set; }
+
+        #endregion
     }
 }
