@@ -11,6 +11,12 @@
 
     public static class Driver
     {
+		#region Constants and Fields
+
+		private const string GallioBinEnvironmentVariable = "GALLIO_BIN";
+
+		#endregion
+
         #region Public Methods
 
         public static int Main()
@@ -26,8 +32,19 @@
                     TestProject = { TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local }
                 };
 
+			string gallioBin =
+				Environment.GetEnvironmentVariable(GallioBinEnvironmentVariable) ??
+				InstallationConfiguration.LoadFromRegistry().InstallationFolder;
+
+			if(string.IsNullOrEmpty(gallioBin))
+			{
+				Console.Error.WriteLine("Cannot find Gallio installation directory.");
+				Console.Error.WriteLine("Specify it with \"{0}\" environment variable.", GallioBinEnvironmentVariable);
+				return 1;
+			}
+
             launcher.AddFilePattern(typeof(Driver).Assembly.Location);
-            launcher.RuntimeSetup.AddPluginDirectory(InstallationConfiguration.LoadFromRegistry().InstallationFolder);
+            launcher.RuntimeSetup.AddPluginDirectory(gallioBin);
 
             TestLauncherResult result = launcher.Run();
 
