@@ -31,10 +31,10 @@
         }
 
         [Test]
-        [Row("cs", "{0:C}", new object[] { 123 }, "123,00 Kč")]
-        [Row("en", "{0:C}", new object[] { 123 }, "$123.00")]
-        [Row("cs", "{0,10:C}", new object[] { 123 }, " 123,00 Kč")]
-        [Row("cs", "{0,-10:C}", new object[] { 123 }, "123,00 Kč ")]
+        [Row("cs-cz", "{0:C}", new object[] { 123 }, "123,00 Kč")]
+        [Row("en-us", "{0:C}", new object[] { 123 }, "$123.00")]
+        [Row("cs-cz", "{0,10:C}", new object[] { 123 }, " 123,00 Kč")]
+        [Row("cs-cz", "{0,-10:C}", new object[] { 123 }, "123,00 Kč ")]
         public void Evaluate_EvaluatesFormatCorrectly(
             string cultureName, string format, object[] arguments, string expectedResult)
         {
