@@ -1,0 +1,138 @@
+KRABICEZPAPUNDEKLU.FORMATTING
+=============================
+
+What is it?
+-----------
+
+	"String.Format" on steroids:
+
+		−Supports everything what "String.Format" does (http://msdn.microsoft.com/en-us/library/txafckwd.aspx)
+		−Supports expressions in format strings - useful for plural forms
+		−Supports named arguments
+
+Why should I use it?
+--------------------
+
+	You want to display number of messages to the user. How?
+
+		... string.Format("You have {0} messages.", count); ...
+		=======================================================
+		It gives you "You have 1 messages." (see the plural). This is not correct, right?
+
+		... if(count == 1) return "You have 1 message." else return string.Format("You have {0} messages.", count); ...
+		===============================================================================================================
+		This seems to work, ...but what about other languages?
+
+		... /* CZ */ if(language == "cz") return ... else /* US */ if(count == 1) return ...
+		====================================================================================
+		Just add one "if", ...and then another one, and then another one ...?
+
+	And what about this?
+
+		... Format.Evaluate(GetFormatForLanguage(language), count) ...
+		=====================================================================
+		Where "US" format is "You have {0 {=0:no message}{=1:1 message}{else:{0} messages}}.".
+
+			- You get "You have no message.", "You have 1 message.", "You have 2 messages." etc.
+
+		Where "CZ" format is "{0 {=0:Nemáte žádnou zprávu}{else:Máte{0} {0 {=1:zprávu}{>1<5:zprávy}{else:zpráv}}}}.".
+
+			- You get "Nemáte žádnou zprávu.", "Máte 1 zprávu.", "Máte 2 zprávy.", "Máte 5 zpráv." etc. These are correct, trust me ;-)
+
+What do these expressions mean?!?!
+----------------------------------
+
+	{0 {=0:no message}{=1:1 message}{else:{0} messages}}
+	====================================================
+	Take value of first argument (message count in our case)
+		if its value is 0
+			display "no message"
+		if its value is 1
+			display "1 message"
+		else
+			evaluate "{0} messages" (yes, you can nest expressions!)
+
+	{0} messages
+	============
+	Display value of first argument
+	Display "messages"
+
+	{0 {=0:Nemáte žádnou zprávu}{else:Máte {0} {0 {=1:zprávu}{>1<5:zprávy}{else:zpráv}}}}
+	=====================================================================================
+	Take value of first argument
+		if its value is 0
+			display "Nemáte žádnou zprávu"
+		else
+			evaluate "Máte {0} {0 {=1:zprávu}{>1<5:zprávy}{else:zpráv}}"
+
+	Máte {0} {0 {=1:zprávu}{>1<5:zprávy}{else:zpráv}}
+	=================================================
+	Display "Máte"
+	Display value of first argument
+	Take value of first argument
+		if its value is 1
+			display "zprávu"
+		if its value is greater than 1 and less than 5
+			display "zprávy"
+		else
+			display "zpráv"
+
+	{0 {=1:...}
+	===========
+	If value of first argument is 1 then...
+
+	{0 {=-1:...}
+	============
+	If value of first argument is -1 then...
+
+	{0 {={1}:...}
+	=============
+	If value of first argument is equal to value of second argument then...
+
+	{0 {>=1<5:...}
+	==============
+	If value of first argument is greater or equal to 1 and less than 5 then...
+
+	{0 {=1,=5:...}
+	==============
+	If value of first argument is 1 or 5 then...
+
+Comparison with "String.Format"
+-------------------------------
+
+	Usage:
+
+		String.Format(IFormatProviderprovider, string format, params object[] arguments)
+		String.Format(string format, params object[] arguments)
+
+			vs.
+
+		Format.Evaluate(IFormatProviderprovider, string format, params object[] arguments)
+		Format.Evaluate(string format, params object[] arguments)
+
+			Yes, it’s pretty same (but see "Named Arguments").
+
+	Escaping:
+
+		In String.Format you need to double "{" and "}" to escape them
+		==============================================================
+		"{{escaped}}" gives "{escaped}"
+
+		In Krabicezpapundeklu.Formatting you need to add backslash
+		==========================================================
+		"\{escaped\}" gives "{escaped}"
+
+			This change was required for correct nesting.
+
+Named Arguments
+---------------
+
+	You don’t need to remember what "{0}" or "{1}" mean.
+	Just use overload taking "ArgumentCollection" as its input:
+
+		var arguments = new ArgumentCollection();
+
+		arguments.Add(1); // argument without name - accessible as {0}
+		arguments.Add("MESSAGE_COUNT", 10) // argument with name, accessible both as {1} and {MESSAGE_COUNT}
+
+		Format.Evaluate("You have {MESSAGE_COUNT {=0:no message}...", arguments);
