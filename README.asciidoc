@@ -1,0 +1,105 @@
+Krabicezpapundeklu.Formatting
+=============================
+
+What is it?
+-----------
+
+."String.Format" on steroids
+
+* Supports everything what "String.Format" does (http://msdn.microsoft.com/en-us/library/txafckwd.aspx)
+* Supports expressions in format strings - useful for plural forms
+* Supports named arguments
+
+Why should I use it?
+--------------------
+
+TODO
+
+What do these expressions mean?
+-------------------------------
+
+----
+{0 {=0:no message}{=1:1 message}{else:{0} messages}}
+----
+
+* Take value of first argument (message count in our case)
+** if its value is 0
+*** display "no message"
+** if its value is 1
+*** display "1 message"
+** else
+*** evaluate "\{0\} messages" (yes, you can nest expressions!)
+
+----
+{0} messages
+----
+* Display value of first argument (message count)
+* Display "messages"
+
+----
+{0 {=0:Nemáte žádnou zprávu}{else:Máte {0} {0 {=1:zprávu}{>1<5:zprávy}{else:zpráv}}}}
+----
+* Take value of first argument
+** if its value is 0
+*** display "Nemáte žádnou zprávu"
+** else
+*** evaluate "Máte \{0\} \{0 \{=1:zprávu\}\{>1<5:zprávy\}\{else:zpráv\}\}"
+
+----
+Máte {0} {0 {=1:zprávu}{>1<5:zprávy}{else:zpráv}}
+----
+* Display "Máte"
+* Display value of first argument
+** Take value of first argument
+*** if its value is 1
+**** display "zprávu"
+*** if its value is greater than 1 and less than 5
+**** display "zprávy"
+*** else
+**** display "zpráv"
+
+----
+{0 {=1:...}}
+----
+If value of first argument is 1 then...
+
+----
+{0 {=-1:...}}
+----
+If value of first argument is -1 then...
+
+----
+{0 {={1}:...}}
+----
+If value of first argument is equal to value of second argument then...
+
+----
+{0 {>=1<5:...}}
+----
+If value of first argument is greater or equal to 1 and less than 5 then...
+
+----
+{0 {=1,=5:...}}
+----
+If value of first argument is 1 or 5 then...
+
+Comparison with "String.Format"
+-------------------------------
+
+TODO
+
+Named Arguments
+---------------
+
+You don’t need to remember what "{0}" or "{1}" mean.
+Just use overload taking "ArgumentCollection" as its input:
+
+[source,csharp]
+----
+var arguments = new ArgumentCollection();
+
+arguments.Add(1); // argument without name - accessible as {0}
+arguments.Add("MESSAGE_COUNT", 10); // argument with name, accessible both as {1} and {MESSAGE_COUNT}
+
+Format.Evaluate("You have {MESSAGE_COUNT {=0:no message}...", arguments);
+----
