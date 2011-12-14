@@ -94,7 +94,6 @@ Named Arguments
 You don’t need to remember what "{0}" or "{1}" mean.
 Just use overload taking "ArgumentCollection" as its input:
 
-[source,csharp]
 ----
 var arguments = new ArgumentCollection();
 
