@@ -15,7 +15,6 @@ Why should I use it?
 
 You want to display number of messages. How?
 
-[source,c]
 ----
 Display(string.Format("You have {0} messages.", messageCount));
 ----
@@ -25,7 +24,6 @@ Wait... ``1 messages''? Is it plural???
 
 So you change your code to:
 
-[source,c]
 ----
 if(messageCount == 1)
 {
@@ -41,7 +39,6 @@ If you have to support only one language you are done.
 
 However, if you have to support multiple languages then you may have something like this:
 
-[source,c]
 ----
 if(messageCount == 1)
 {
@@ -76,7 +73,6 @@ So you add new resource:
 
 And change code to:
 
-[source,c]
 ----
 if(messageCount == 1)
 {
@@ -96,7 +92,6 @@ It works, but imagine adding more languages, each having it's own rules... crazy
 
 And what about this?
 
-[source,c]
 ----
 Display(Format.Evaluate(Resources.YouHaveMessages, messageCount));
 ----
@@ -190,7 +185,6 @@ Named Arguments
 You don’t have to remember what ``\{0\}'' or ``\{1\}'' mean.
 Just use overload taking ``ArgumentCollection'' as its input:
 
-[source,c]
 ----
 var arguments = new ArgumentCollection();
 
