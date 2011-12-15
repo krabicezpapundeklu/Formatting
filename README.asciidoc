@@ -4,16 +4,112 @@ Krabicezpapundeklu.Formatting
 What is it?
 -----------
 
-."String.Format" on steroids
+.``String.Format'' on steroids
 
-* Supports everything what "String.Format" does (http://msdn.microsoft.com/en-us/library/txafckwd.aspx)
+* Supports everything what ``String.Format'' does (http://msdn.microsoft.com/en-us/library/txafckwd.aspx)
 * Supports expressions in format strings - useful for plural forms
 * Supports named arguments
 
 Why should I use it?
 --------------------
 
-TODO
+You want to display number of messages. How?
+
+[source,c]
+----
+Display(string.Format("You have {0} messages.", messageCount));
+----
+
+It will display ``You have 0 messages.'', ``You have 2 messages.''..., but also ``You have 1 messages.''.
+Wait... ``1 messages''? Is it plural???
+
+So you change your code to:
+
+[source,c]
+----
+if(messageCount == 1)
+{
+    Display("You have 1 message.");
+}
+else
+{
+    Display(string.Format("You have {0} messages.", messageCount));
+}
+----
+
+If you have to support only one language you are done.
+
+However, if you have to support multiple languages then you may have something like this:
+
+[source,c]
+----
+if(messageCount == 1)
+{
+    Display(Resources.YouHaveOneMessage);
+}
+else
+{
+    Display(string.Format(Resources.YouHaveXMessages, messageCount));
+}
+----
+
+Where resources are resolved based on current culture and for our example they are defined as follows:
+
+[options="header"]
+|========================
+|Resource|English|Czech
+|YouHaveOneMessage|You have 1 message.|Máte 1 zprávu.
+|YouHaveXMessages|You have \{0\} messages.|Máte \{0\} zpráv.
+|========================
+
+English version works, but for Czech, you get for example ``Máte 2 zpráv.'' and this is not correct.
+
+So you add new resource:
+
+[options="header"]
+|========================
+|Resource|English|Czech
+|YouHaveOneMessage|You have 1 message.|Máte 1 zprávu.
+|YouHaveXMessages|You have \{0\} messages.|Máte \{0\} zpráv.
+|*YouHave2To4Messages*|*You have \{0\} messages.*|*Máte \{0\} zprávy.*
+|========================
+
+And change code to:
+
+[source,c]
+----
+if(messageCount == 1)
+{
+    Display(Resources.YouHaveOneMessage);
+}
+else if(messageCount > 1 && messageCount < 5)
+{
+    Display(string.Format(Resources.YouHave2To4Messages, messageCount));
+}
+else
+{
+    Display(string.Format(Resources.YouHaveXMessages, messageCount));
+}
+----
+
+It works, but imagine adding more languages, each having it's own rules... crazy, heh?
+
+And what about this?
+
+[source,c]
+----
+Display(Format.Evaluate(Resources.YouHaveMessages, messageCount));
+----
+
+Where resources are defined as:
+
+[options="header"]
+|========================
+|Resource|English|Czech
+|YouHaveMessages|\{0 \{=0:no message\}\{=1:1 message\}\{else:\{0\} messages\}\}|\{0 \{=0:Nemáte žádnou zprávu\}\{else:Máte \{0\} \{0 \{=1:zprávu\}\{>1<5:zprávy\}\{else:zpráv\}\}\}\}
+|========================
+
+Now you get ``You have no message.'', ``You have 1 message.'', ``You have 5 messages.'', ``Nemáte žádnou zprávu.'' etc. Mission accomplished!
 
 What do these expressions mean?
 -------------------------------
@@ -24,39 +120,39 @@ What do these expressions mean?
 
 * Take value of first argument (message count in our case)
 ** if its value is 0
-*** display "no message"
+*** display ``no message''
 ** if its value is 1
-*** display "1 message"
+*** display ``1 message''
 ** else
-*** evaluate "\{0\} messages" (yes, you can nest expressions!)
+*** evaluate ``\{0\} messages'' (yes, you can nest expressions!)
 
 ----
 {0} messages
 ----
 * Display value of first argument (message count)
-* Display "messages"
+* Display ``messages''
 
 ----
 {0 {=0:Nemáte žádnou zprávu}{else:Máte {0} {0 {=1:zprávu}{>1<5:zprávy}{else:zpráv}}}}
 ----
 * Take value of first argument
 ** if its value is 0
-*** display "Nemáte žádnou zprávu"
+*** display ``Nemáte žádnou zpráv''
 ** else
-*** evaluate "Máte \{0\} \{0 \{=1:zprávu\}\{>1<5:zprávy\}\{else:zpráv\}\}"
+*** evaluate ``Máte \{0\} \{0 \{=1:zprávu\}\{>1<5:zprávy\}\{else:zpráv\}\}''
 
 ----
 Máte {0} {0 {=1:zprávu}{>1<5:zprávy}{else:zpráv}}
 ----
-* Display "Máte"
+* Display ``Máte''
 * Display value of first argument
 ** Take value of first argument
 *** if its value is 1
-**** display "zprávu"
+**** display ``zpráv''
 *** if its value is greater than 1 and less than 5
-**** display "zprávy"
+**** display ``zprávy''
 *** else
-**** display "zpráv"
+**** display ``zpráv''
 
 ----
 {0 {=1:...}}
@@ -91,9 +187,10 @@ TODO
 Named Arguments
 ---------------
 
-You don’t need to remember what "{0}" or "{1}" mean.
-Just use overload taking "ArgumentCollection" as its input:
+You don’t have to remember what ``\{0\}'' or ``\{1\}'' mean.
+Just use overload taking ``ArgumentCollection'' as its input:
 
+[source,c]
 ----
 var arguments = new ArgumentCollection();
 
