@@ -85,7 +85,7 @@
         {
             if (!string.IsNullOrEmpty(item.Name) && this.Contains(item.Name))
             {
-                throw new ArgumentException(string.Format("Argument with name \"{0}\" already exists.", item.Name));
+                throw new ArgumentException(Utilities.InvariantFormat("Argument with name \"{0}\" already exists.", item.Name));
             }
         }
 

@@ -29,7 +29,7 @@
 
         public override string ToString()
         {
-            return string.Format("Name = {0}, Value = {1}", this.Name, this.Value);
+            return Utilities.InvariantFormat("Name = {0}, Value = {1}", this.Name, this.Value);
         }
 
         #endregion

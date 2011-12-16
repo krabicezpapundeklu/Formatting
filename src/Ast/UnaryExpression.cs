@@ -15,7 +15,7 @@
             if (this.Operator.Token != '-')
             {
                 throw new ArgumentException(
-                    string.Format("\"{0}\" is not unary operator.", this.Operator), "unaryOperator");
+                    Utilities.InvariantFormat("\"{0}\" is not unary operator.", this.Operator), "unaryOperator");
             }
         }
 

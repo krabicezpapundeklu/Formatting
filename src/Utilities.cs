@@ -1,6 +1,7 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
     using System;
+    using System.Globalization;
     using System.Text;
 
     public static class Utilities
@@ -24,6 +25,11 @@
             }
 
             return builder.ToString();
+        }
+
+        public static string InvariantFormat(string formatString, params object[] arguments)
+        {
+            return string.Format(CultureInfo.InvariantCulture, formatString, arguments);
         }
 
         public static bool MustBeEscaped(char character)

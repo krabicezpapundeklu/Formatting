@@ -21,7 +21,7 @@
 
             if (!IsOperator(token))
             {
-                throw new ArgumentException(string.Format("\"{0}\" is not valid operator.", this.Text), "token");
+                throw new ArgumentException(Utilities.InvariantFormat("\"{0}\" is not valid operator.", this.Text), "token");
             }
         }
 

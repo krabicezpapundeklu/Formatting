@@ -17,7 +17,7 @@
             if (!Operator.IsBinaryOperator(this.Operator.Token))
             {
                 throw new ArgumentException(
-                    string.Format("\"{0}\" is not binary operator.", this.Operator), "binaryOperator");
+                    Utilities.InvariantFormat("\"{0}\" is not binary operator.", this.Operator), "binaryOperator");
             }
         }
 

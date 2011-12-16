@@ -54,7 +54,7 @@
         {
             return tokenInfo.Token == Token.EndOfInput
                        ? new FormattingException(tokenInfo.Location, "Unexpected end of input.")
-                       : new FormattingException(tokenInfo.Location, string.Format(format, arguments));
+                       : new FormattingException(tokenInfo.Location, Utilities.InvariantFormat(format, arguments));
         }
 
         private bool Accept(int token)
@@ -260,7 +260,7 @@
                     default:
                         // this should not happen
                         throw new InvalidOperationException(
-                            string.Format("Token {0} is not valid here.", Token.ToString(this.nextTokenInfo.Token)));
+                            Utilities.InvariantFormat("Token {0} is not valid here.", Token.ToString(this.nextTokenInfo.Token)));
                 }
 
                 this.Consume();

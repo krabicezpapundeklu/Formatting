@@ -25,7 +25,7 @@
 
         public override string ToString()
         {
-            return string.Format("{{{0}:{1}}}", this.Condition, this.FormatString);
+            return Utilities.InvariantFormat("{{{0}:{1}}}", this.Condition, this.FormatString);
         }
 
         #endregion
