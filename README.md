@@ -178,9 +178,43 @@ If value of first argument is 1 or 5 then...
 
 ## Comparison with "String.Format" ##
 
-TODO
+### Compatibility ###
 
-## Named Arguments ##
+Most ``String.Format`` format strings are compatible with ``Format``.
+Padding, format providers etc. are supported.
+
+There is howevever one difference - escapes:
+
+* In ``String.Format`` you have to double ``{`` and ``}`` to escape them - ``{{escaped}}`` gives "{escaped}".
+* In ``Format`` you have to add backslash - ``\{escaped\}`` gives "{escaped}".
+
+This change was necessary to support nesting.
+
+### Usage ###
+
+Method calls are pretty same as of ``String.Format``, so it is possible to do simple find & replace:
+
+	String.Format(IFormatProvider provider, string format, params object[] arguments)
+	String.Format(string format, params object[] arguments)
+
+vs.
+
+	Format.Evaluate(IFormatProvider provider, string format, params object[] arguments)
+	Format.Evaluate(string format, params object[] arguments)
+
+### Performance ###
+
+``Format`` does more than ``String.Format``, so yes, it is slower.
+
+If you plan to reuse format expression you can "pre-compile" it, so it doesn't need to be parsed again:
+
+	var format = Format.Parse("...");
+
+	...
+	format.Evaluate(...);
+	...
+
+### Named Arguments ###
 
 You do not have to remember what `{0}` or `{1}` mean.
 Just use overload taking `ArgumentCollection` as its input:
