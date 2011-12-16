@@ -22,7 +22,7 @@
 
         public override string ToString()
         {
-            return string.Format("{{{0}}}", this.Name);
+            return Utilities.InvariantFormat("{{{0}}}", this.Name);
         }
 
         #endregion

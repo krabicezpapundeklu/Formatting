@@ -47,7 +47,7 @@
                 return name;
             }
 
-            throw new ArgumentException(string.Format("{0} is not valid token.", token));
+            throw new ArgumentException(Utilities.InvariantFormat("{0} is not valid token.", token));
         }
 
         #endregion

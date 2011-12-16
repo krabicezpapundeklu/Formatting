@@ -92,7 +92,7 @@
                     default:
                         // this should not happen
                         throw new InvalidOperationException(
-                            string.Format("State \"{0}\" is not supported.", this.State));
+                            Utilities.InvariantFormat("State \"{0}\" is not supported.", this.State));
                 }
             }
             else
@@ -147,7 +147,7 @@
                         {
                             this.errorLogger.LogError(
                                 new Location(this.positionInInput - 2, this.positionInInput),
-                                string.Format("\"{0}\" cannot be escaped.", c));
+                                Utilities.InvariantFormat("\"{0}\" cannot be escaped.", c));
                         }
 
                         break;

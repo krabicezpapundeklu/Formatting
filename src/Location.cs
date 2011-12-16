@@ -113,7 +113,7 @@
 
         public override string ToString()
         {
-            return this == Unknown ? "Unknown" : string.Format("{0}, {1}", this.Start, this.End);
+            return this == Unknown ? "Unknown" : Utilities.InvariantFormat("{0}, {1}", this.Start, this.End);
         }
 
         #endregion

@@ -54,7 +54,8 @@
             if (argumentIndex.Index >= this.arguments.Count)
             {
                 this.errorLogger.LogError(
-                    argumentIndex.Location, string.Format("Argument index {0} is out of range.", argumentIndex.Index));
+                    argumentIndex.Location, Utilities.InvariantFormat("Argument index {0} is out of range.", argumentIndex.Index));
+
                 return Error;
             }
 
@@ -66,7 +67,7 @@
             if (!this.arguments.Contains(argumentName.Name))
             {
                 this.errorLogger.LogError(
-                    argumentName.Location, string.Format("Argument with name \"{0}\" doesn't exist.", argumentName.Name));
+                    argumentName.Location, Utilities.InvariantFormat("Argument with name \"{0}\" doesn't exist.", argumentName.Name));
 
                 return Error;
             }
@@ -115,7 +116,7 @@
                     default:
                         this.errorLogger.LogError(
                             binaryExpression.Operator.Location,
-                            string.Format("Invalid operator \"{0}\".", binaryExpression.Operator.Text));
+                            Utilities.InvariantFormat("Invalid operator \"{0}\".", binaryExpression.Operator.Text));
 
                         return Error;
                 }
@@ -249,7 +250,7 @@
                 default:
                     this.errorLogger.LogError(
                         unaryExpression.Operator.Location,
-                        string.Format("Invalid operator \"{0}\".", unaryExpression.Operator.Text));
+                        Utilities.InvariantFormat("Invalid operator \"{0}\".", unaryExpression.Operator.Text));
 
                     return Error;
             }
