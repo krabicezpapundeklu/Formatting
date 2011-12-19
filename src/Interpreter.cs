@@ -5,6 +5,7 @@
 
     using Krabicezpapundeklu.Formatting.Ast;
     using Krabicezpapundeklu.Formatting.Errors;
+    using Microsoft.CSharp.RuntimeBinder;
 
     public class Interpreter : AstVisitor
     {
@@ -121,7 +122,7 @@
                         return Error;
                 }
             }
-            catch
+            catch(RuntimeBinderException)
             {
                 this.errorLogger.LogError(
                     binaryExpression.Operator.Location,
@@ -237,7 +238,7 @@
                     {
                         return -operand;
                     }
-                    catch
+                    catch(RuntimeBinderException)
                     {
                         this.errorLogger.LogError(
                             unaryExpression.Operator.Location,
