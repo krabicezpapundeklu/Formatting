@@ -5,6 +5,7 @@
 
     using Krabicezpapundeklu.Formatting.Ast;
     using Krabicezpapundeklu.Formatting.Errors;
+    using System.Diagnostics.CodeAnalysis;
 
     public class Parser
     {
@@ -102,6 +103,7 @@
             }
         }
 
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Krabicezpapundeklu.Formatting.Ast.ConstantExpression.#ctor(Krabicezpapundeklu.Formatting.Location,System.Object,System.String)")]
         private Expression ParseCondition(Expression implicitOperand)
         {
             if (this.nextTokenInfo.Token == Token.Else)

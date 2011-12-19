@@ -1,9 +1,12 @@
 ﻿namespace Krabicezpapundeklu.Formatting.Ast
 {
+    using System.Diagnostics.CodeAnalysis;
+
     public class ConstantExpression : Expression
     {
         #region Constructors and Destructors
 
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Krabicezpapundeklu.Formatting.Ast.ConstantExpression.#ctor(Krabicezpapundeklu.Formatting.Location,System.Object,System.String)")]
         public ConstantExpression(Location location, object constant)
             : this(location, constant, constant == null ? "null" : constant.ToString())
         {
