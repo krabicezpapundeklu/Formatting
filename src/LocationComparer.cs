@@ -1,11 +1,13 @@
 ﻿namespace Krabicezpapundeklu.Formatting
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     public class LocationComparer : IComparer<ILocated>, IComparer<Location>
     {
         #region Constants and Fields
 
+        [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         public static readonly LocationComparer Instance = new LocationComparer();
 
         #endregion

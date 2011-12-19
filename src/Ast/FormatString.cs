@@ -2,12 +2,14 @@
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     public class FormatString : AstNode
     {
         #region Constants and Fields
 
+        [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         public static readonly FormatString Empty = new FormatString(
             Location.Unknown, Enumerable.Empty<FormatStringItem>());
 
