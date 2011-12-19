@@ -29,9 +29,9 @@
             return builder.ToString();
         }
 
-        public static string InvariantFormat(string formatString, params object[] arguments)
+        public static string InvariantFormat(string format, params object[] arguments)
         {
-            return string.Format(CultureInfo.InvariantCulture, formatString, arguments);
+            return string.Format(CultureInfo.InvariantCulture, format, arguments);
         }
 
         public static bool MustBeEscaped(char character)
