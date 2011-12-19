@@ -273,9 +273,11 @@
                 return formatter.Format(format, argument, this.formatProvider);
             }
 
-            if (argument is IFormattable)
+            var formattable = argument as IFormattable;
+
+            if (formattable != null)
             {
-                return ((IFormattable)argument).ToString(format, this.formatProvider);
+                return formattable.ToString(format, this.formatProvider);
             }
 
             return argument.ToString();
