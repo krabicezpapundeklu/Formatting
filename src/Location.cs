@@ -25,126 +25,121 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Linq;
 
-    public class Location : IEquatable<Location>
-    {
-        #region Constants and Fields
+	public class Location : IEquatable<Location>
+	{
+		#region Constants and Fields
 
-        [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
-        public static readonly Location Unknown = new Location();
+		[SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
+		public static readonly Location Unknown = new Location();
 
-        #endregion
+		#endregion
 
-        #region Constructors and Destructors
+		#region Constructors and Destructors
 
-        public Location(int start, int end)
-        {
-            if (start < 0)
-            {
-                throw new ArgumentOutOfRangeException("start");
-            }
+		public Location(int start, int end)
+		{
+			if(start < 0)
+				throw new ArgumentOutOfRangeException("start");
 
-            if (end < 0)
-            {
-                throw new ArgumentOutOfRangeException("end");
-            }
+			if(end < 0)
+				throw new ArgumentOutOfRangeException("end");
 
-            this.Start = start;
-            this.End = end;
-        }
+			Start = start;
+			End = end;
+		}
 
-        private Location()
-        {
-        }
+		private Location() {}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public int End { get; private set; }
+		public int End { get; private set; }
 
-        public bool IsKnown
-        {
-            get
-            {
-                return this != Unknown;
-            }
-        }
+		public bool IsKnown
+		{
+			// ReSharper disable PossibleUnintendedReferenceComparison
+			get { return this != Unknown; }
+			// ReSharper restore PossibleUnintendedReferenceComparison
+		}
 
-        public int Length
-        {
-            get
-            {
-                return this.End - this.Start;
-            }
-        }
+		public int Length
+		{
+			get { return End - Start; }
+		}
 
-        public int Start { get; private set; }
+		public int Start { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public static Location FromRange(params ILocated[] items)
-        {
-            return FromRange((IEnumerable<ILocated>)items);
-        }
+		public static Location FromRange(params ILocated[] items)
+		{
+			return FromRange((IEnumerable<ILocated>) items);
+		}
 
-        public static Location FromRange(IEnumerable<ILocated> items)
-        {
-            Utilities.ThrowIfNull(items, "items");
+		public static Location FromRange(IEnumerable<ILocated> items)
+		{
+			// ReSharper disable PossibleMultipleEnumeration
+			Utilities.ThrowIfNull(items, "items");
+			// ReSharper restore PossibleMultipleEnumeration
 
-            bool hasSomeItem = false;
+			bool hasSomeItem = false;
 
-            int start = int.MaxValue;
-            int end = int.MinValue;
+			int start = int.MaxValue;
+			int end = int.MinValue;
 
-            foreach (ILocated item in items.Where(x => x != null && x.Location != Unknown))
-            {
-                hasSomeItem = true;
-                start = Math.Min(start, item.Location.Start);
-                end = Math.Max(end, item.Location.End);
-            }
+			// ReSharper disable PossibleMultipleEnumeration
+			// ReSharper disable PossibleUnintendedReferenceComparison
+			foreach(ILocated item in items.Where(x => x != null && x.Location != Unknown))
+			{
+				hasSomeItem = true;
+				start = Math.Min(start, item.Location.Start);
+				end = Math.Max(end, item.Location.End);
+			}
+			// ReSharper restore PossibleUnintendedReferenceComparison
+			// ReSharper restore PossibleMultipleEnumeration
 
-            return hasSomeItem ? new Location(start, end) : Unknown;
-        }
+			return hasSomeItem ? new Location(start, end) : Unknown;
+		}
 
-        public bool Equals(Location other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
+		public bool Equals(Location other)
+		{
+			if(other == null)
+				return false;
 
-            if (!other.IsKnown)
-            {
-                return !this.IsKnown;
-            }
+			if(!other.IsKnown)
+				return !IsKnown;
 
-            return other.Start == this.Start && other.End == this.End;
-        }
+			return other.Start == Start && other.End == End;
+		}
 
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as Location);
-        }
+		public override bool Equals(object obj)
+		{
+			return Equals(obj as Location);
+		}
 
-        public override int GetHashCode()
-        {
-            return this.IsKnown ? 1 + this.Start ^ this.End : 0;
-        }
+		public override int GetHashCode()
+		{
+			return IsKnown ? 1 + Start ^ End : 0;
+		}
 
-        public override string ToString()
-        {
-            return this == Unknown ? "Unknown" : Utilities.InvariantFormat("{0}, {1}", this.Start, this.End);
-        }
+		public override string ToString()
+		{
+			// ReSharper disable PossibleUnintendedReferenceComparison
+			return this == Unknown ? "Unknown" : Utilities.InvariantFormat("{0}, {1}", Start, End);
+			// ReSharper restore PossibleUnintendedReferenceComparison
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -25,17 +25,16 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public abstract class FormatStringItem : AstNode
-    {
-        #region Constructors and Destructors
+	public abstract class FormatStringItem : AstNode
+	{
+		#region Constructors and Destructors
 
-        protected FormatStringItem(Location location)
-            : base(location)
-        {
-        }
+		protected FormatStringItem(Location location)
+			: base(location) {}
 
-        #endregion
-    }
+		#endregion
+	}
 }

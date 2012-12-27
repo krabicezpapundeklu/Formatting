@@ -25,62 +25,63 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Linq;
 
-    public class FormatString : AstNode
-    {
-        #region Constants and Fields
+	public class FormatString : AstNode
+	{
+		#region Constants and Fields
 
-        [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
-        public static readonly FormatString Empty = new FormatString(
-            Location.Unknown, Enumerable.Empty<FormatStringItem>());
+		[SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
+		public static readonly FormatString Empty = new FormatString(
+			Location.Unknown, Enumerable.Empty<FormatStringItem>());
 
-        #endregion
+		#endregion
 
-        #region Constructors and Destructors
+		#region Constructors and Destructors
 
-        public FormatString(Location location, IEnumerable<FormatStringItem> items)
-            : base(location)
-        {
-            this.Items =
-                new ReadOnlyCollection<FormatStringItem>(
-                    new List<FormatStringItem>(Utilities.ThrowIfNull(items, "items")));
-        }
+		public FormatString(Location location, IEnumerable<FormatStringItem> items)
+			: base(location)
+		{
+			Items =
+				new ReadOnlyCollection<FormatStringItem>(
+					new List<FormatStringItem>(Utilities.ThrowIfNull(items, "items")));
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public ReadOnlyCollection<FormatStringItem> Items { get; private set; }
+		public ReadOnlyCollection<FormatStringItem> Items { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public override string ToString()
-        {
-            return string.Concat(this.Items.Select(x => x.ToString()));
-        }
+		public override string ToString()
+		{
+			return string.Concat(Items.Select(x => x.ToString()));
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override object DoAccept(IAstVisitor visitor)
-        {
-            return visitor.Visit(this);
-        }
+		protected override object DoAccept(IAstVisitor visitor)
+		{
+			return visitor.Visit(this);
+		}
 
-        protected override AstNode DoClone(Location newLocation)
-        {
-            return new FormatString(newLocation, this.Items);
-        }
+		protected override AstNode DoClone(Location newLocation)
+		{
+			return new FormatString(newLocation, Items);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

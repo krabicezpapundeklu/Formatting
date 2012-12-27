@@ -25,40 +25,39 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting
 {
-    public class Argument
-    {
-        #region Constructors and Destructors
+	public class Argument
+	{
+		#region Constructors and Destructors
 
-        public Argument(object value)
-            : this(string.Empty, value)
-        {
-        }
+		public Argument(object value)
+			: this(string.Empty, value) {}
 
-        public Argument(string name, object value)
-        {
-            this.Name = Utilities.ThrowIfNull(name, "name");
-            this.Value = value;
-        }
+		public Argument(string name, object value)
+		{
+			Name = Utilities.ThrowIfNull(name, "name");
+			Value = value;
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public string Name { get; private set; }
+		public string Name { get; private set; }
 
-        public object Value { get; private set; }
+		public object Value { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public override string ToString()
-        {
-            return Utilities.InvariantFormat("Name = {0}, Value = {1}", this.Name, this.Value);
-        }
+		public override string ToString()
+		{
+			return Utilities.InvariantFormat("Name = {0}, Value = {1}", Name, Value);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

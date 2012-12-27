@@ -25,58 +25,60 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.CodeAnalysis;
 
-    public class ConstantExpression : Expression
-    {
-        #region Constructors and Destructors
+	public class ConstantExpression : Expression
+	{
+		#region Constructors and Destructors
 
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Krabicezpapundeklu.Formatting.Ast.ConstantExpression.#ctor(Krabicezpapundeklu.Formatting.Location,System.Object,System.String)")]
-        public ConstantExpression(Location location, object constant)
-            : this(location, constant, constant == null ? "null" : constant.ToString())
-        {
-        }
+		[SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
+			MessageId =
+				"Krabicezpapundeklu.Formatting.Ast.ConstantExpression.#ctor(Krabicezpapundeklu.Formatting.Location,System.Object,System.String)"
+			)]
+		public ConstantExpression(Location location, object constant)
+			: this(location, constant, constant == null ? "null" : constant.ToString()) {}
 
-        public ConstantExpression(Location location, object constant, string text)
-            : base(location)
-        {
-            this.Value = constant;
-            this.Text = Utilities.ThrowIfNull(text, "text");
-        }
+		public ConstantExpression(Location location, object constant, string text)
+			: base(location)
+		{
+			Value = constant;
+			Text = Utilities.ThrowIfNull(text, "text");
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public string Text { get; private set; }
+		public string Text { get; private set; }
 
-        public object Value { get; private set; }
+		public object Value { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public override string ToString()
-        {
-            return this.Text;
-        }
+		public override string ToString()
+		{
+			return Text;
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override object DoAccept(IAstVisitor visitor)
-        {
-            return visitor.Visit(this);
-        }
+		protected override object DoAccept(IAstVisitor visitor)
+		{
+			return visitor.Visit(this);
+		}
 
-        protected override AstNode DoClone(Location newLocation)
-        {
-            return new ConstantExpression(newLocation, this.Value, this.Text);
-        }
+		protected override AstNode DoClone(Location newLocation)
+		{
+			return new ConstantExpression(newLocation, Value, Text);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

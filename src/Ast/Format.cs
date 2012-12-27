@@ -25,24 +25,25 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public abstract class Format : FormatStringItem
-    {
-        #region Constructors and Destructors
+	public abstract class Format : FormatStringItem
+	{
+		#region Constructors and Destructors
 
-        protected Format(Location location, Expression argument)
-            : base(location)
-        {
-            this.Argument = Utilities.ThrowIfNull(argument, "argument");
-        }
+		protected Format(Location location, Expression argument)
+			: base(location)
+		{
+			Argument = Utilities.ThrowIfNull(argument, "argument");
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public Expression Argument { get; private set; }
+		public Expression Argument { get; private set; }
 
-        #endregion
-    }
+		#endregion
+	}
 }

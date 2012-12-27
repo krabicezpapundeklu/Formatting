@@ -25,34 +25,33 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Errors
 {
-    using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.CodeAnalysis;
 
-    public class SimpleErrorLogger : ErrorLogger
-    {
-        #region Constants and Fields
+	public class SimpleErrorLogger : ErrorLogger
+	{
+		#region Constants and Fields
 
-        [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
-        public static readonly SimpleErrorLogger Instance = new SimpleErrorLogger();
+		[SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
+		public static readonly SimpleErrorLogger Instance = new SimpleErrorLogger();
 
-        #endregion
+		#endregion
 
-        #region Constructors and Destructors
+		#region Constructors and Destructors
 
-        private SimpleErrorLogger()
-        {
-        }
+		private SimpleErrorLogger() {}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override void DoLogError(Error error)
-        {
-            throw new FormattingException(error);
-        }
+		protected override void DoLogError(Error error)
+		{
+			throw new FormattingException(error);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

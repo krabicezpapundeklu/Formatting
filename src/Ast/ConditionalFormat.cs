@@ -25,65 +25,64 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Text;
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
+	using System.Text;
 
-    public class ConditionalFormat : Format
-    {
-        #region Constructors and Destructors
+	public class ConditionalFormat : Format
+	{
+		#region Constructors and Destructors
 
-        public ConditionalFormat(Location location, Expression argument, IEnumerable<Case> cases)
-            : base(location, argument)
-        {
-            this.Cases = new ReadOnlyCollection<Case>(new List<Case>(Utilities.ThrowIfNull(cases, "cases")));
-        }
+		public ConditionalFormat(Location location, Expression argument, IEnumerable<Case> cases)
+			: base(location, argument)
+		{
+			Cases = new ReadOnlyCollection<Case>(new List<Case>(Utilities.ThrowIfNull(cases, "cases")));
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public ReadOnlyCollection<Case> Cases { get; private set; }
+		public ReadOnlyCollection<Case> Cases { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
+		public override string ToString()
+		{
+			var builder = new StringBuilder();
 
-            builder.Append(this.Argument);
-            builder.Length--;
+			builder.Append(Argument);
+			builder.Length--;
 
-            builder.Append(' ');
+			builder.Append(' ');
 
-            foreach (Case @case in this.Cases)
-            {
-                builder.Append(@case);
-            }
+			foreach(Case @case in Cases)
+				builder.Append(@case);
 
-            builder.Append('}');
+			builder.Append('}');
 
-            return builder.ToString();
-        }
+			return builder.ToString();
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override object DoAccept(IAstVisitor visitor)
-        {
-            return visitor.Visit(this);
-        }
+		protected override object DoAccept(IAstVisitor visitor)
+		{
+			return visitor.Visit(this);
+		}
 
-        protected override AstNode DoClone(Location newLocation)
-        {
-            return new ConditionalFormat(newLocation, this.Argument, this.Cases);
-        }
+		protected override AstNode DoClone(Location newLocation)
+		{
+			return new ConditionalFormat(newLocation, Argument, Cases);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

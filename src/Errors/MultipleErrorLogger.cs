@@ -25,70 +25,68 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Errors
 {
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
+	using System.Linq;
 
-    public class MultipleErrorLogger : ErrorLogger
-    {
-        #region Constants and Fields
+	public class MultipleErrorLogger : ErrorLogger
+	{
+		#region Constants and Fields
 
-        private readonly ReadOnlyCollection<Error> errors;
+		private readonly ReadOnlyCollection<Error> errors;
 
-        private readonly List<Error> mutableErrors;
+		private readonly List<Error> mutableErrors;
 
-        private bool sorted;
+		private bool sorted;
 
-        #endregion
+		#endregion
 
-        #region Constructors and Destructors
+		#region Constructors and Destructors
 
-        public MultipleErrorLogger()
-        {
-            this.errors = new ReadOnlyCollection<Error>(this.mutableErrors = new List<Error>());
-        }
+		public MultipleErrorLogger()
+		{
+			errors = new ReadOnlyCollection<Error>(mutableErrors = new List<Error>());
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public int ErrorCount
-        {
-            get
-            {
-                return this.Errors.Count;
-            }
-        }
+		public int ErrorCount
+		{
+			get { return Errors.Count; }
+		}
 
-        public ReadOnlyCollection<Error> Errors
-        {
-            get
-            {
-                if (!this.sorted)
-                {
-                    this.mutableErrors.Sort(LocationComparer.Instance);
-                    this.sorted = true;
-                }
+		public ReadOnlyCollection<Error> Errors
+		{
+			get
+			{
+				if(!sorted)
+				{
+					mutableErrors.Sort(LocationComparer.Instance);
+					sorted = true;
+				}
 
-                return this.errors;
-            }
-        }
+				return errors;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override void DoLogError(Error error)
-        {
-            if (!this.mutableErrors.Any(x => x.Location.Equals(error.Location)))
-            {
-                this.mutableErrors.Add(error);
-                this.sorted = false;
-            }
-        }
+		protected override void DoLogError(Error error)
+		{
+			if(!mutableErrors.Any(x => x.Location.Equals(error.Location)))
+			{
+				mutableErrors.Add(error);
+				sorted = false;
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

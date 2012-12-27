@@ -25,9 +25,17 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Krabicezpapundeklu", Scope = "namespace", Target = "Krabicezpapundeklu.Formatting.Errors")]
-[assembly: SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Krabicezpapundeklu", Scope = "namespace", Target = "Krabicezpapundeklu.Formatting.Ast")]
-[assembly: SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Krabicezpapundeklu", Scope = "namespace", Target = "Krabicezpapundeklu.Formatting")]
-[assembly: SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Krabicezpapundeklu")]
+[assembly:
+	SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Krabicezpapundeklu",
+		Scope = "namespace", Target = "Krabicezpapundeklu.Formatting.Errors")]
+[assembly:
+	SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Krabicezpapundeklu",
+		Scope = "namespace", Target = "Krabicezpapundeklu.Formatting.Ast")]
+[assembly:
+	SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Krabicezpapundeklu",
+		Scope = "namespace", Target = "Krabicezpapundeklu.Formatting")]
+[assembly:
+	SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Krabicezpapundeklu")]

@@ -25,34 +25,35 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Errors
 {
-    public abstract class ErrorLogger : IErrorLogger
-    {
-        #region Public Methods
+	public abstract class ErrorLogger : IErrorLogger
+	{
+		#region Public Methods
 
-        public void LogError(Error error)
-        {
-            this.DoLogError(Utilities.ThrowIfNull(error, "error"));
-        }
+		public void LogError(Error error)
+		{
+			DoLogError(Utilities.ThrowIfNull(error, "error"));
+		}
 
-        public void LogError(Location location, string description)
-        {
-            this.DoLogError(
-                Utilities.ThrowIfNull(location, "location"), Utilities.ThrowIfNull(description, "description"));
-        }
+		public void LogError(Location location, string description)
+		{
+			DoLogError(
+				Utilities.ThrowIfNull(location, "location"), Utilities.ThrowIfNull(description, "description"));
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected abstract void DoLogError(Error error);
+		protected abstract void DoLogError(Error error);
 
-        protected virtual void DoLogError(Location location, string description)
-        {
-            this.DoLogError(new Error(location, description));
-        }
+		protected virtual void DoLogError(Location location, string description)
+		{
+			DoLogError(new Error(location, description));
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

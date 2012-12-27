@@ -25,45 +25,46 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public abstract class AstNode : ILocated
-    {
-        #region Constructors and Destructors
+	public abstract class AstNode : ILocated
+	{
+		#region Constructors and Destructors
 
-        protected AstNode(Location location)
-        {
-            this.Location = Utilities.ThrowIfNull(location, "location");
-        }
+		protected AstNode(Location location)
+		{
+			Location = Utilities.ThrowIfNull(location, "location");
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public Location Location { get; private set; }
+		public Location Location { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public object Accept(IAstVisitor visitor)
-        {
-            return this.DoAccept(Utilities.ThrowIfNull(visitor, "visitor"));
-        }
+		public object Accept(IAstVisitor visitor)
+		{
+			return DoAccept(Utilities.ThrowIfNull(visitor, "visitor"));
+		}
 
-        public AstNode Clone(Location newLocation)
-        {
-            return this.DoClone(Utilities.ThrowIfNull(newLocation, "newLocation"));
-        }
+		public AstNode Clone(Location newLocation)
+		{
+			return DoClone(Utilities.ThrowIfNull(newLocation, "newLocation"));
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected abstract object DoAccept(IAstVisitor visitor);
+		protected abstract object DoAccept(IAstVisitor visitor);
 
-        protected abstract AstNode DoClone(Location newLocation);
+		protected abstract AstNode DoClone(Location newLocation);
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -25,54 +25,55 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting
 {
-    using System.Text;
+	using System.Text;
 
-    using T = Token;
+	using T = Token;
 
-    public class TokenInfo : ILocated
-    {
-        #region Constructors and Destructors
+	public class TokenInfo : ILocated
+	{
+		#region Constructors and Destructors
 
-        public TokenInfo(Location location, int token, string text)
-        {
-            this.Location = Utilities.ThrowIfNull(location, "location");
-            this.Token = token;
-            this.Text = Utilities.ThrowIfNull(text, "text");
-        }
+		public TokenInfo(Location location, int token, string text)
+		{
+			Location = Utilities.ThrowIfNull(location, "location");
+			Token = token;
+			Text = Utilities.ThrowIfNull(text, "text");
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public Location Location { get; private set; }
+		public Location Location { get; private set; }
 
-        public string Text { get; private set; }
+		public string Text { get; private set; }
 
-        public int Token { get; private set; }
+		public int Token { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
+		public override string ToString()
+		{
+			var builder = new StringBuilder();
 
-            builder.AppendFormat("<{0}, {1}", T.ToString(this.Token), this.Location);
+			builder.AppendFormat("<{0}, {1}", T.ToString(Token), Location);
 
-            if (this.Text.Length > 0)
-            {
-                builder.Append(": ");
-                builder.Append(this.Text);
-            }
+			if(Text.Length > 0)
+			{
+				builder.Append(": ");
+				builder.Append(Text);
+			}
 
-            builder.Append('>');
+			builder.Append('>');
 
-            return builder.ToString();
-        }
+			return builder.ToString();
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -25,109 +25,100 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
+	using System;
 
-    using T = Token;
+	using T = Token;
 
-    public class Operator : AstNode
-    {
-        #region Constructors and Destructors
+	public class Operator : AstNode
+	{
+		#region Constructors and Destructors
 
-        public Operator(Location location, int token)
-            : this(location, token, T.ToString(token))
-        {
-        }
+		public Operator(Location location, int token)
+			: this(location, token, T.ToString(token)) {}
 
-        public Operator(Location location, int token, string text)
-            : base(location)
-        {
-            this.Token = token;
-            this.Text = Utilities.ThrowIfNull(text, "text");
+		public Operator(Location location, int token, string text)
+			: base(location)
+		{
+			Token = token;
+			Text = Utilities.ThrowIfNull(text, "text");
 
-            if (!IsOperator(token))
-            {
-                throw new ArgumentException(Utilities.InvariantFormat("\"{0}\" is not valid operator.", this.Text), "token");
-            }
-        }
+			if(!IsOperator(token))
+				throw new ArgumentException(Utilities.InvariantFormat("\"{0}\" is not valid operator.", Text), "token");
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public bool IsBinary
-        {
-            get
-            {
-                return IsBinaryOperator(this.Token);
-            }
-        }
+		public bool IsBinary
+		{
+			get { return IsBinaryOperator(Token); }
+		}
 
-        public bool IsUnary
-        {
-            get
-            {
-                return IsUnaryOperator(this.Token);
-            }
-        }
+		public bool IsUnary
+		{
+			get { return IsUnaryOperator(Token); }
+		}
 
-        public string Text { get; private set; }
+		public string Text { get; private set; }
 
-        public int Token { get; private set; }
+		public int Token { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public static bool IsBinaryOperator(int token)
-        {
-            switch (token)
-            {
-                case '=':
-                case '!':
-                case '>':
-                case '<':
-                case ',':
-                case T.LessOrEqual:
-                case T.GreaterOrEqual:
-                case T.And:
-                    return true;
+		public static bool IsBinaryOperator(int token)
+		{
+			switch(token)
+			{
+			case '=':
+			case '!':
+			case '>':
+			case '<':
+			case ',':
+			case T.LessOrEqual:
+			case T.GreaterOrEqual:
+			case T.And:
+				return true;
 
-                default:
-                    return false;
-            }
-        }
+			default:
+				return false;
+			}
+		}
 
-        public static bool IsOperator(int token)
-        {
-            return IsBinaryOperator(token) || IsUnaryOperator(token);
-        }
+		public static bool IsOperator(int token)
+		{
+			return IsBinaryOperator(token) || IsUnaryOperator(token);
+		}
 
-        public static bool IsUnaryOperator(int token)
-        {
-            return token == '-';
-        }
+		public static bool IsUnaryOperator(int token)
+		{
+			return token == '-';
+		}
 
-        public override string ToString()
-        {
-            return this.Text;
-        }
+		public override string ToString()
+		{
+			return Text;
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override object DoAccept(IAstVisitor visitor)
-        {
-            return visitor.Visit(this);
-        }
+		protected override object DoAccept(IAstVisitor visitor)
+		{
+			return visitor.Visit(this);
+		}
 
-        protected override AstNode DoClone(Location newLocation)
-        {
-            return new Operator(newLocation, this.Token, this.Text);
-        }
+		protected override AstNode DoClone(Location newLocation)
+		{
+			return new Operator(newLocation, Token, Text);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

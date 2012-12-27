@@ -25,83 +25,82 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System.Text;
+	using System.Text;
 
-    public class SimpleFormat : Format
-    {
-        #region Constructors and Destructors
+	public class SimpleFormat : Format
+	{
+		#region Constructors and Destructors
 
-        public SimpleFormat(
-            Location location, Expression argument, bool leftAlign, int width, FormatString formatString)
-            : base(location, argument)
-        {
-            this.LeftAlign = leftAlign;
-            this.Width = width;
-            this.FormatString = Utilities.ThrowIfNull(formatString, "formatString");
-        }
+		public SimpleFormat(
+			Location location, Expression argument, bool leftAlign, int width, FormatString formatString)
+			: base(location, argument)
+		{
+			LeftAlign = leftAlign;
+			Width = width;
+			FormatString = Utilities.ThrowIfNull(formatString, "formatString");
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public FormatString FormatString { get; private set; }
+		public FormatString FormatString { get; private set; }
 
-        public bool LeftAlign { get; private set; }
+		public bool LeftAlign { get; private set; }
 
-        public int Width { get; private set; }
+		public int Width { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public override string ToString()
-        {
-            var builder = new StringBuilder();
+		public override string ToString()
+		{
+			var builder = new StringBuilder();
 
-            builder.Append(this.Argument);
-            builder.Length--;
+			builder.Append(Argument);
+			builder.Length--;
 
-            if (this.Width > 0)
-            {
-                builder.Append(',');
+			if(Width > 0)
+			{
+				builder.Append(',');
 
-                if (this.LeftAlign)
-                {
-                    builder.Append('-');
-                }
+				if(LeftAlign)
+					builder.Append('-');
 
-                builder.Append(this.Width);
-            }
+				builder.Append(Width);
+			}
 
-            string formatString = this.FormatString.ToString();
+			string formatString = FormatString.ToString();
 
-            if (formatString.Length > 0)
-            {
-                builder.Append(':');
-                builder.Append(formatString);
-            }
+			if(formatString.Length > 0)
+			{
+				builder.Append(':');
+				builder.Append(formatString);
+			}
 
-            builder.Append('}');
+			builder.Append('}');
 
-            return builder.ToString();
-        }
+			return builder.ToString();
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override object DoAccept(IAstVisitor visitor)
-        {
-            return visitor.Visit(this);
-        }
+		protected override object DoAccept(IAstVisitor visitor)
+		{
+			return visitor.Visit(this);
+		}
 
-        protected override AstNode DoClone(Location newLocation)
-        {
-            return new SimpleFormat(newLocation, this.Argument, this.LeftAlign, this.Width, this.FormatString);
-        }
+		protected override AstNode DoClone(Location newLocation)
+		{
+			return new SimpleFormat(newLocation, Argument, LeftAlign, Width, FormatString);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -25,58 +25,56 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+	using System;
+	using System.Collections.Generic;
+	using System.Globalization;
+	using System.Linq;
 
-    public static class Token
-    {
-        #region Constants and Fields
+	public static class Token
+	{
+		#region Constants and Fields
 
-        public const int And = -5;
+		public const int And = -5;
 
-        public const int Else = -8;
+		public const int Else = -8;
 
-        public const int EndOfInput = -2;
+		public const int EndOfInput = -2;
 
-        public const int GreaterOrEqual = -7;
+		public const int GreaterOrEqual = -7;
 
-        public const int Identifier = -9;
+		public const int Identifier = -9;
 
-        public const int Integer = -4;
+		public const int Integer = -4;
 
-        public const int Invalid = -1;
+		public const int Invalid = -1;
 
-        public const int LessOrEqual = -6;
+		public const int LessOrEqual = -6;
 
-        public const int Text = -3;
+		public const int Text = -3;
 
-        private static readonly Dictionary<int, string> TokenNames =
-            typeof(Token).GetFields().ToDictionary(x => (int)x.GetValue(null), x => x.Name);
+		private static readonly Dictionary<int, string> TokenNames =
+			typeof(Token).GetFields().ToDictionary(x => (int) x.GetValue(null), x => x.Name);
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public static string ToString(int token)
-        {
-            if (token >= char.MinValue && token <= char.MaxValue)
-            {
-                return ((char)token).ToString();
-            }
+		public static string ToString(int token)
+		{
+			if(token >= char.MinValue && token <= char.MaxValue)
+				return ((char) token).ToString(CultureInfo.InvariantCulture);
 
-            string name;
+			string name;
 
-            if (TokenNames.TryGetValue(token, out name))
-            {
-                return name;
-            }
+			if(TokenNames.TryGetValue(token, out name))
+				return name;
 
-            throw new ArgumentException(Utilities.InvariantFormat("{0} is not valid token.", token));
-        }
+			throw new ArgumentException(Utilities.InvariantFormat("{0} is not valid token.", token));
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

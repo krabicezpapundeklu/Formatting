@@ -25,36 +25,37 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public interface IAstVisitor
-    {
-        #region Public Methods
+	public interface IAstVisitor
+	{
+		#region Public Methods
 
-        object Visit(ArgumentIndex argumentIndex);
+		object Visit(ArgumentIndex argumentIndex);
 
-        object Visit(ArgumentName argumentName);
+		object Visit(ArgumentName argumentName);
 
-        object Visit(BinaryExpression binaryExpression);
+		object Visit(BinaryExpression binaryExpression);
 
-        object Visit(Case @case);
+		object Visit(Case @case);
 
-        object Visit(ConditionalFormat conditionalFormat);
+		object Visit(ConditionalFormat conditionalFormat);
 
-        object Visit(ConstantExpression constantExpression);
+		object Visit(ConstantExpression constantExpression);
 
-        object Visit(FormatString formatString);
+		object Visit(FormatString formatString);
 
-        object Visit(Integer integer);
+		object Visit(Integer integer);
 
-        object Visit(Operator @operator);
+		object Visit(Operator @operator);
 
-        object Visit(SimpleFormat simpleFormat);
+		object Visit(SimpleFormat simpleFormat);
 
-        object Visit(Text text);
+		object Visit(Text text);
 
-        object Visit(UnaryExpression unaryExpression);
+		object Visit(UnaryExpression unaryExpression);
 
-        #endregion
-    }
+		#endregion
+	}
 }

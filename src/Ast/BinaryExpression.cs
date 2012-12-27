@@ -25,72 +25,71 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    using System;
+	using System;
 
-    public class BinaryExpression : Expression
-    {
-        #region Constructors and Destructors
+	public class BinaryExpression : Expression
+	{
+		#region Constructors and Destructors
 
-        public BinaryExpression(
-            Location location, Operator binaryOperator, Expression leftExpression, Expression rightExpression)
-            : base(location)
-        {
-            this.Operator = Utilities.ThrowIfNull(binaryOperator, "binaryOperator");
-            this.LeftExpression = Utilities.ThrowIfNull(leftExpression, "leftExpression");
-            this.RightExpression = Utilities.ThrowIfNull(rightExpression, "rightExpression");
+		public BinaryExpression(
+			Location location, Operator binaryOperator, Expression leftExpression, Expression rightExpression)
+			: base(location)
+		{
+			Operator = Utilities.ThrowIfNull(binaryOperator, "binaryOperator");
+			LeftExpression = Utilities.ThrowIfNull(leftExpression, "leftExpression");
+			RightExpression = Utilities.ThrowIfNull(rightExpression, "rightExpression");
 
-            if (!Operator.IsBinaryOperator(this.Operator.Token))
-            {
-                throw new ArgumentException(
-                    Utilities.InvariantFormat("\"{0}\" is not binary operator.", this.Operator), "binaryOperator");
-            }
-        }
+			if(!Operator.IsBinaryOperator(Operator.Token))
+				throw new ArgumentException(
+					Utilities.InvariantFormat("\"{0}\" is not binary operator.", Operator), "binaryOperator");
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public Expression LeftExpression { get; private set; }
+		public Expression LeftExpression { get; private set; }
 
-        public Operator Operator { get; private set; }
+		public Operator Operator { get; private set; }
 
-        public Expression RightExpression { get; private set; }
+		public Expression RightExpression { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public override string ToString()
-        {
-            switch (this.Operator.Token)
-            {
-                case ',':
-                    return string.Concat(this.LeftExpression, ',', this.RightExpression);
+		public override string ToString()
+		{
+			switch(Operator.Token)
+			{
+			case ',':
+				return string.Concat(LeftExpression, ',', RightExpression);
 
-                case Token.And:
-                    return string.Concat(this.LeftExpression, this.RightExpression);
+			case Token.And:
+				return string.Concat(LeftExpression, RightExpression);
 
-                default:
-                    return string.Concat(this.Operator, this.RightExpression);
-            }
-        }
+			default:
+				return string.Concat(Operator, RightExpression);
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override object DoAccept(IAstVisitor visitor)
-        {
-            return visitor.Visit(this);
-        }
+		protected override object DoAccept(IAstVisitor visitor)
+		{
+			return visitor.Visit(this);
+		}
 
-        protected override AstNode DoClone(Location newLocation)
-        {
-            return new BinaryExpression(newLocation, this.Operator, this.LeftExpression, this.RightExpression);
-        }
+		protected override AstNode DoClone(Location newLocation)
+		{
+			return new BinaryExpression(newLocation, Operator, LeftExpression, RightExpression);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

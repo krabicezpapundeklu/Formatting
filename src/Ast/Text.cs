@@ -25,47 +25,48 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public class Text : FormatStringItem
-    {
-        #region Constructors and Destructors
+	public class Text : FormatStringItem
+	{
+		#region Constructors and Destructors
 
-        public Text(Location location, string value)
-            : base(location)
-        {
-            this.Value = Utilities.ThrowIfNull(value, "value");
-        }
+		public Text(Location location, string value)
+			: base(location)
+		{
+			Value = Utilities.ThrowIfNull(value, "value");
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public string Value { get; private set; }
+		public string Value { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public override string ToString()
-        {
-            return Utilities.Escape(this.Value);
-        }
+		public override string ToString()
+		{
+			return Utilities.Escape(Value);
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override object DoAccept(IAstVisitor visitor)
-        {
-            return visitor.Visit(this);
-        }
+		protected override object DoAccept(IAstVisitor visitor)
+		{
+			return visitor.Visit(this);
+		}
 
-        protected override AstNode DoClone(Location newLocation)
-        {
-            return new Text(newLocation, this.Value);
-        }
+		protected override AstNode DoClone(Location newLocation)
+		{
+			return new Text(newLocation, Value);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -25,50 +25,51 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Ast
 {
-    public class Case : AstNode
-    {
-        #region Constructors and Destructors
+	public class Case : AstNode
+	{
+		#region Constructors and Destructors
 
-        public Case(Location location, Expression condition, FormatString formatString)
-            : base(location)
-        {
-            this.Condition = Utilities.ThrowIfNull(condition, "condition");
-            this.FormatString = Utilities.ThrowIfNull(formatString, "formatString");
-        }
+		public Case(Location location, Expression condition, FormatString formatString)
+			: base(location)
+		{
+			Condition = Utilities.ThrowIfNull(condition, "condition");
+			FormatString = Utilities.ThrowIfNull(formatString, "formatString");
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Properties
+		#region Public Properties
 
-        public Expression Condition { get; private set; }
+		public Expression Condition { get; private set; }
 
-        public FormatString FormatString { get; private set; }
+		public FormatString FormatString { get; private set; }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public override string ToString()
-        {
-            return Utilities.InvariantFormat("{{{0}:{1}}}", this.Condition, this.FormatString);
-        }
+		public override string ToString()
+		{
+			return Utilities.InvariantFormat("{{{0}:{1}}}", Condition, FormatString);
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        protected override object DoAccept(IAstVisitor visitor)
-        {
-            return visitor.Visit(this);
-        }
+		protected override object DoAccept(IAstVisitor visitor)
+		{
+			return visitor.Visit(this);
+		}
 
-        protected override AstNode DoClone(Location newLocation)
-        {
-            return new Case(newLocation, this.Condition, this.FormatString);
-        }
+		protected override AstNode DoClone(Location newLocation)
+		{
+			return new Case(newLocation, Condition, FormatString);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

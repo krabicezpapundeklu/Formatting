@@ -25,16 +25,17 @@ The views and conclusions contained in the software and documentation are those 
 authors and should not be interpreted as representing official policies, either expressed
 or implied, of krabicezpapundeklu.
 */
+
 namespace Krabicezpapundeklu.Formatting.Errors
 {
-    public interface IErrorLogger
-    {
-        #region Public Methods
+	public interface IErrorLogger
+	{
+		#region Public Methods
 
-        void LogError(Error error);
+		void LogError(Error error);
 
-        void LogError(Location location, string description);
+		void LogError(Location location, string description);
 
-        #endregion
-    }
+		#endregion
+	}
 }
